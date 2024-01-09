@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Testzero = () => {
+const Testiti = () => {
 
     const [profile, setProfile] = useState<boolean>(false)
 
@@ -8,9 +8,16 @@ const Testzero = () => {
         <>
             <div className="bg-sky-600 w-full h-screen flex flex-col text-white">
                 <div className="bg-black flex justify-between px-5 py-4">
-                    <div>Item1</div>
                     <div>
-
+						<ul className="bg-slate-300 flex gap-5 text-center">
+							<li className="bg-orange-400 p-1 border-solid rounded-lg">Menu1</li>
+							<li className="bg-orange-400 p-1">menu2</li>
+							<li className="bg-orange-400 p-1">menu3</li>
+							<li className="bg-orange-400 p-1">menu4</li>
+							<li className="bg-orange-400 p-1">menu5</li>
+						</ul>
+					</div>
+                    <div>
                         <div className="relative inline-block text-left">
                             <div>
                                 <button type="button" className="inline-flex w-full justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -37,25 +44,11 @@ const Testzero = () => {
                                 )
                             }
                         </div>
-
-
                     </div>
-                </div>
-                <div className="flex bg-slate-800 h-svh justify-between">
-                    <div className="bg-red-200 w-1/5">
-                        <ul className="bg-slate-300 text-center">
-                            <li className="bg-orange-400 p-1 ">Menu1</li>
-                            <li className="bg-orange-400 p-1">menu2</li>
-                            <li className="bg-orange-400 p-1">menu3</li>
-                            <li className="bg-orange-400 p-1">menu4</li>
-                            <li className="bg-orange-400 p-1">menu5</li>
-                        </ul>
-                    </div>
-                    <div className="bg-lime-300 w-4/5">Item4</div>
                 </div>
             </div>
         </>
     )
 }
 
-export default Testzero
+export default Testiti
