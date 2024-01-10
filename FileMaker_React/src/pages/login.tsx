@@ -15,7 +15,8 @@ const Login = () => {
 
 	useEffect(()=>{
 		const storedData = localStorage.getItem("isUser");
-		storedData ? navigate("/mypage") : null;
+		console.log(4554545)
+		storedData ? navigate("/mypage") : <div>kjkj</div>;
 	},[navigate])
 	
 	const { register, handleSubmit, formState: {errors} } = useForm<LoginForm>({mode: "onBlur", resolver: zodResolver(validationSchema)});
@@ -26,8 +27,8 @@ const Login = () => {
 
 	return(
 		<>
-			<div className="bg-sky-600 w-full h-screen flex justify-center items-center text-white">
-				<div className="bg-blue-300 bg-opacity-15 w-[32rem] h-[25rem] border-solid rounded-3xl backdrop-blur-md">
+			<div className="bg-gradient-to-br from-sky-300 to-blue-500 w-full h-screen flex justify-center items-center text-black">
+				<div className="bg-sky-200 bg-opacity-40 w-[32rem] h-[25rem] border-solid rounded-3xl backdrop-blur-md">
 					<div className="mx-16 my-10">
 						<div className="">
 							<h2 className="text-4xl font-bold">Login</h2>
@@ -56,7 +57,7 @@ const Login = () => {
 								<p className="text-red-500">{errors.password?.message as ReactNode}</p>
 							</div>
 							<button
-							className="bg-blue-950 p-2 mt-7 border-solid rounded-md"
+							className="bg-gradient-to-br from-sky-300 to-blue-500 p-2 mt-7 border-solid rounded-md"
 							>Sign In</button>
 						</form>
 					</div>
