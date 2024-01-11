@@ -3,16 +3,8 @@ import { ReactNode, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { RegisterSchema } from "../utils/validationSchema";
 import { useNavigate } from "react-router-dom";
-
-export interface RegisterForm {
-	firstname: string;
-	lastname: string;
-	firstname_kana: string;
-	lastname_kana: string;
-	email: string;
-	sex: string;
-	yubin: string;
-}
+import { categoryObj, sexObj } from "../component/object";
+import { RegisterFormI } from "../utils/interface";
 
 const Register = () => {
 	const navigate = useNavigate()
@@ -25,10 +17,17 @@ const Register = () => {
 		}
 	}, [navigate, storedData]);
 
-	const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({ mode: "onBlur", resolver: zodResolver(RegisterSchema) });
+	const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormI>({ mode: "onBlur", resolver: zodResolver(RegisterSchema) });
 
-	const onSubmit = (data: RegisterForm) => {
-		console.log(data);
+	const onSubmit = (data: RegisterFormI) => {
+		const defaultUser = {
+			"username": "999999",
+			"password": "P@ssword"
+		}
+
+		const mergedData = { ...data, ...defaultUser };
+		console.log(mergedData);
+
 	}
 
 	return (
@@ -83,30 +82,49 @@ const Register = () => {
 								</div>
 								<p className="text-red-500">{errors.lastname_kana?.message as ReactNode}|{errors.firstname_kana?.message as ReactNode}</p>
 							</div>
+
+
 							{/* sex */}
 							<div className="flex flex-col gap-1">
 								<span className="">性別</span>
-								<div className="flex items-center ml-3">
-									<input 
-										id="default-radio-1" 
-										type="radio" 
-										className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-										value="male"
-										{...register("sex")}
-									/>
-									<label htmlFor="default-radio-1" className="ms-2 text-sm font-medium text-gray-900">男性</label>
-								</div>
-								<div className="flex items-center ml-3">
-									<input 
-										id="default-radio-2" 
-										type="radio" 
-										className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" 
-										value="female"
-										{...register("sex")}
-									/>
-									<label htmlFor="default-radio-2" className="ms-2 text-sm font-medium text-gray-900">女性</label>
-								</div>
+								{
+									sexObj.map((option: typeof sexObj[0], index: number) => (
+										<div className="flex items-center ml-3" key={index}>
+											<input
+												type="radio"
+												className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+												value={option.value}
+												{...register("sex")}
+											/>
+											<label htmlFor="default-radio-1" className="ms-2 text-sm font-medium text-gray-900">{option.label}</label>
+										</div>
+									))
+								}
+								<p className="text-red-500">{errors.sex?.message as ReactNode}</p>
 							</div>
+
+
+							{/*  */}
+							<div className="flex flex-col gap-1">
+								<span className="">希望勤務形態 (複数選択可)</span>
+								{
+									categoryObj.map((option: typeof categoryObj[0], index: number) => (
+										<div className="flex items-center ml-3" key={index}>
+											<input
+												type="checkbox"
+												className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+												value={option.value}
+												{...register("category")}
+											/>
+											<label className="ms-2 text-sm font-medium text-gray-900">{option.label}</label>
+										</div>
+									))
+								}
+								<p className="text-red-500">{errors.category?.message as ReactNode}</p>
+							</div>
+
+
+							{/*  */}
 							<div className="flex flex-col gap-1">
 								<span className="">郵便番号</span>
 								<input
@@ -117,6 +135,9 @@ const Register = () => {
 									{...register("yubin")}
 								/>
 							</div>
+
+
+							{/*  */}
 							<div className="flex flex-col gap-1">
 								<span className="">Eメール</span>
 								<input
@@ -127,6 +148,18 @@ const Register = () => {
 									{...register("email")}
 								/>
 								<p className="text-red-500">{errors.email?.message as ReactNode}</p>
+							</div>
+
+
+								{/*  */}
+							<div className="flex flex-col gap-1">
+								<span className="">File</span>
+								<input
+									type="file"
+									className="p-2 border-solid rounded-md text-black w-1/6"
+									{...register("file")}
+								/>
+								<p className="text-red-500">{errors.file?.message as ReactNode}</p>
 							</div>
 							<button
 								className="bg-gradient-to-br from-sky-300 to-blue-500 p-2 mt-7 border-solid rounded-md w-5/12 self-center"

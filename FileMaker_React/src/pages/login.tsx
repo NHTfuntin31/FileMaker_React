@@ -4,11 +4,9 @@ import { validationSchema } from "../utils/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginApi } from "../api/FileMakerApi";
 import { useNavigate } from "react-router-dom";
+import { LoginFormI } from "../utils/interface";
+import { Loading } from "../component/icon/loading";
 
-export interface LoginForm {
-	username: string;
-	password: string;
-}
 
 const Login = () => {
 	const navigate = useNavigate()
@@ -19,9 +17,9 @@ const Login = () => {
 		storedData ? navigate("/mypage") : <div>kjkj</div>;
 	},[navigate])
 	
-	const { register, handleSubmit, formState: {errors} } = useForm<LoginForm>({mode: "onBlur", resolver: zodResolver(validationSchema)});
+	const { register, handleSubmit, formState: {errors} } = useForm<LoginFormI>({mode: "onBlur", resolver: zodResolver(validationSchema)});
 
-	const onSubmit = (data: LoginForm) => {
+	const onSubmit = (data: LoginFormI) => {
 		LoginApi(data, navigate)
 	}
 

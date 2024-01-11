@@ -1,10 +1,10 @@
 import axios from "axios";
-import { LoginForm } from "../pages/login"
+import { LoginFormI } from "../utils/interface"; 
 import { NavigateFunction } from 'react-router-dom';
 
 
 
-const LoginApi = (data: LoginForm, navigate: NavigateFunction) => {
+const LoginApi = (data: LoginFormI, navigate: NavigateFunction) => {
 	console.log(data);
 	const LoginUrl = "http://osk-195:8080/api/login"
 	if(data){
