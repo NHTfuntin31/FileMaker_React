@@ -4,6 +4,7 @@ import MyPage from "./pages/mypage"
 import Testzero from "./pages/TestPage_01"
 import Testiti from "./pages/TestPage_02"
 import Register from "./pages/register"
+import Calendar from "./pages/calendar"
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/testzero" element={<Testzero />} />
         <Route path="/testiti" element={<Testiti />} />
+        <Route path="/calendar" element={<Calendar />} />
       </Routes>
     </Router>
   )

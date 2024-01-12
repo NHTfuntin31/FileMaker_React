@@ -1,30 +1,31 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form"
 import { validationSchema } from "../utils/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginApi } from "../api/FileMakerApi";
 import { useNavigate } from "react-router-dom";
 import { LoginFormI } from "../utils/interface";
-import { Loading } from "../component/icon/loading";
+import { Loading } from "../component/loading";
 
 
 const Login = () => {
 	const navigate = useNavigate()
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(()=>{
 		const storedData = localStorage.getItem("isUser");
-		console.log(4554545)
-		storedData ? navigate("/mypage") : <div>kjkj</div>;
+		storedData ? navigate("/mypage") : null;
 	},[navigate])
 	
 	const { register, handleSubmit, formState: {errors} } = useForm<LoginFormI>({mode: "onBlur", resolver: zodResolver(validationSchema)});
 
 	const onSubmit = (data: LoginFormI) => {
-		LoginApi(data, navigate)
+		LoginApi(data, navigate, setIsLoading)
 	}
 
 	return(
 		<>
+			<Loading show={isLoading} />
 			<div className="bg-gradient-to-br from-sky-300 to-blue-500 w-full h-screen flex justify-center items-center text-black">
 				<div className="bg-sky-200 bg-opacity-40 w-[32rem] h-[25rem] border-solid rounded-3xl backdrop-blur-md">
 					<div className="mx-16 my-10">
