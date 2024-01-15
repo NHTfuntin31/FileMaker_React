@@ -111,13 +111,11 @@ const getData = (yy: number, mm: number, startOnMonday: boolean) => {
 	//何曜日かを確認
 	//1 2 3 4 5 6 0
 	let firstWeek = first.getDay();
-	const firstWeek_pro = firstWeek
 
 
 	//30 31 29
 	const lastDate = last.getDate();
 	const lastDate_m = last_demo.getDate();
-	// console.log(lastDate_demo);
 
 
 	const result = []; //週
@@ -132,12 +130,25 @@ const getData = (yy: number, mm: number, startOnMonday: boolean) => {
 			firstWeek = firstWeek - 1;
 		}
 	}
+	const firstWeek_pro = firstWeek
+	for (let i = 1; i <= 7; i += 1) {
+
+	if((firstWeek_pro - i) >= 0) {
+		weekArray[(firstWeek_pro-i)] = String(lastDate_m - i +1)
+	}
+	}
 
 	for (let i = 1; i <= lastDate; i += 1) {
-		if((firstWeek_pro-i) >= 0) {
-			weekArray[(firstWeek_pro-i)] = String(lastDate_m -(i-1))
-		}
+		
 		weekArray[firstWeek] = String(i);
+
+		if(i === lastDate){
+			for (let y = 1; y <= 7; y += 1) {
+				if(weekArray[firstWeek + y] == "") {
+					weekArray[firstWeek + y] = String(y);
+				}
+				}
+		}
 
 		if (firstWeek === 6 || i === lastDate) {
 			result.push(weekArray);
@@ -162,10 +173,10 @@ const getCalendar = (year: number, month: number, startOnMonday: boolean) => {
 		mm = 12;
 	}
 
-	let yy_m = (mm - 1) == 0 ? yy - 1 : yy
-	let yy_p = (mm + 1) == 13 ? yy + 1 : yy
-	let mm_m = (mm - 1) == 0 ? 12 : mm - 1
-	let mm_p = (mm + 1) == 13 ? 1 : mm + 1
+	const yy_m = (mm - 1) == 0 ? yy - 1 : yy
+	const yy_p = (mm + 1) == 13 ? yy + 1 : yy
+	const mm_m = (mm - 1) == 0 ? 12 : mm - 1
+	const mm_p = (mm + 1) == 13 ? 1 : mm + 1
 
 	const calendar_m = getData(yy_m, mm_m, startOnMonday);
 	const calendar = getData(yy, mm, startOnMonday);
@@ -175,18 +186,17 @@ const getCalendar = (year: number, month: number, startOnMonday: boolean) => {
 		{ year: yy, month: mm, calendar: calendar },
 		{ year: yy_p, month: mm_p, calendar: calendar_p },
 	];
-	const result1 = { year: yy, month: mm, calendar };
-
-	console.log(result)
+	// const result1 = { year: yy, month: mm, calendar };
 
 	return result;
 };
 
-const ScheduleItem = ({ color }: { color?: string }) => {
+const ScheduleItem = ({ color, time }: { color?: string, time?:string }) => {
 	return (
 		<span
 			className="h-[6px] w-[6px] rounded-full"
 			style={{ background: color }}
+			onClick={() => console.log(time)}
 		/>
 	);
 };
@@ -232,7 +242,6 @@ const WeekRow = ({
 const Calendar = (props: any) => {
 	const { year, month, schedules, onClick, startOnMonday } = props; 
 	const data = getCalendar(year, month, startOnMonday);
-	console.log(data)
 	return (
 		<div className="flex gap-20">
 			{data.map((item: any, index: number) => (
@@ -243,7 +252,6 @@ const Calendar = (props: any) => {
 							<WeekRow
 								className={cn(
 									// key === data?.calendar.length - 1 ? "border-b-0" : "",
-									
 								)}
 								key={key}
 							>
@@ -253,26 +261,22 @@ const Calendar = (props: any) => {
 											key={`day-${_key}`}
 											className={cn(
 												`flex flex-1 flex-col border-r border-gray-100 py-2 text-sm`,
-												e === ""
+												((key == 0 && (+e > 15)) || (key > 1 && (+e < 7)))
 													? "bg-orange-400 opacity-15"
 													: "",
 											)}
-											onClick={() => onClick(e)}
 										>
-											{
-												(key == 0 && e == "") ? (<span>wtf</span>)
-													: (key > 1 && e == "") ? (<span>dcm</span>)
-														: (<span>{e}</span>)
-											}
+											<span onClick={() => onClick(item.year ,item.month ,e)}>{e}</span>
 											<div className="mt-1 flex justify-center gap-[2px]">
-												{schedules?.map((s: any, key: number) => {
+												{schedules?.map((s: any, key_: number) => {
 													if (
 														e !== ""
 													) {
 														return (
 															<ScheduleItem
-																key={`${s.year}${s.month}${s.day}${key}`}
+																key={`${item.year}${item.month}${e}${key_}`}
 																color={s.color}
+																time = {`${item.year}/${item.month}/${e}-${s.time}`}
 															/>
 														);
 													}
@@ -312,7 +316,7 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 		setPage([page + newDirection, newDirection]);
 	};
 
-	const onClick = (d: any) => {
+	const onClick = (y: any ,m: any,d: any, time?:any) => {
 		console.log(`${y}-${m}-${d}`);
 	};
 

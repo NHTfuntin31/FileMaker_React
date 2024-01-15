@@ -5,9 +5,9 @@ import { ScheduleCalendar } from "../component/CalendarComponent"
 const Calendar = () => {
 	// const date = new Date();
 	const schedules = [
-		{ color: "#ff0049" },
-		{ color: "#0ce7ff" },
-		{ color: "#68df00" },
+		{ color: "#ff0049" , time :"gozen"},
+		{ color: "#0ce7ff" , time :"gogo"},
+		{ color: "#68df00" , time :"yoru"},
 	];
 	return (
 		<>
