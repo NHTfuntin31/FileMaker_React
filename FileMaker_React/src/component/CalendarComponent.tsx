@@ -69,7 +69,7 @@ const CarouselArea = ({ page, direction, children, onPrev, onNext }: any) => {
 				x: { type: "spring", stiffness: 300, damping: 30 },
 				opacity: { duration: 0.2 },
 			}}
-			drag="x"
+			drag="y"
 			dragConstraints={{ left: 0, right: 0 }}
 			dragElastic={1}
 			onDragEnd={(_e: any, { offset, velocity }) => {
@@ -243,7 +243,7 @@ const Calendar = (props: any) => {
 	const { year, month, schedules, onClick, startOnMonday } = props; 
 	const data = getCalendar(year, month, startOnMonday);
 	return (
-		<div className="flex gap-20">
+		<div className="flex gap-1 flex-col">
 			{data.map((item: any, index: number) => (
 				<div className="flex h-[100%] w-[100%] flex-1 flex-col" key={index}>
 					<WeekHeader startOnMonday={startOnMonday} />
