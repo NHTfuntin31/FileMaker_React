@@ -10,7 +10,22 @@ const cn = (...inputs: any) => twMerge(clsx(inputs));
 ************************************/
 
 type ScheduleType = {
-	color: string;
+	edoctor_id: string,
+	id: number,
+	no: number,
+	tarrget_date: string,
+	display_char: string,
+	job_no: string,
+	time_zone: string,
+	times: string,
+	start_time: any,
+	end_time: any,
+	classification: string,
+	cancel: boolean,
+	factory_name: string,
+	address: string,
+	overview: string,
+	detail: string
 };
 
 type ScheduleCalendarProps = {
@@ -35,19 +50,19 @@ const swipePower = (offset: number, velocity: number) => {
 const variants = {
 	enter: (direction: number) => {
 		return {
-			x: direction > 0 ? 1000 : direction === 0 ? 0 : -1000,
+			y: direction > 0 ? 100 : direction === 0 ? 0 : -100,
 			opacity: 0,
 		};
 	},
 	center: {
 		zIndex: 1,
-		x: 0,
+		y: 0,
 		opacity: 1,
 	},
 	exit: (direction: number) => {
 		return {
 			zIndex: 0,
-			x: direction < 0 ? 1000 : -1000,
+			y: direction < 0 ? 100 : -100,
 			opacity: 0,
 		};
 	},
@@ -66,20 +81,31 @@ const CarouselArea = ({ page, direction, children, onPrev, onNext }: any) => {
 			animate="center"
 			exit="exit"
 			transition={{
-				x: { type: "spring", stiffness: 300, damping: 30 },
-				opacity: { duration: 0.2 },
+				y: { type: "spring", stiffness: 300, damping: 15 },
+				opacity: { duration: 0.5 },
 			}}
 			drag="y"
 			dragConstraints={{ left: 0, right: 0 }}
 			dragElastic={1}
 			onDragEnd={(_e: any, { offset, velocity }) => {
-				const swipe = swipePower(offset.x, velocity.x);
+				const swipe = swipePower(offset.y, velocity.y);
 				if (swipe < -swipeConfidenceThreshold) {
 					onNext();
 				} else if (swipe > swipeConfidenceThreshold) {
 					onPrev();
 				}
 			}}
+			onWheel={(e: any) => {
+				const delta = e.deltaY;
+				if (Math.abs(delta) > 1) {
+					if (delta > 0) {
+						onNext();
+					} else if (delta < 0) {
+						onPrev();
+					}
+				}
+			}
+			}
 		>
 			{children}
 		</motion.div>
@@ -133,21 +159,21 @@ const getData = (yy: number, mm: number, startOnMonday: boolean) => {
 	const firstWeek_pro = firstWeek
 	for (let i = 1; i <= 7; i += 1) {
 
-	if((firstWeek_pro - i) >= 0) {
-		weekArray[(firstWeek_pro-i)] = String(lastDate_m - i +1)
-	}
+		if ((firstWeek_pro - i) >= 0) {
+			weekArray[(firstWeek_pro - i)] = String(lastDate_m - i + 1)
+		}
 	}
 
 	for (let i = 1; i <= lastDate; i += 1) {
-		
+
 		weekArray[firstWeek] = String(i);
 
-		if(i === lastDate){
+		if (i === lastDate) {
 			for (let y = 1; y <= 7; y += 1) {
-				if(weekArray[firstWeek + y] == "") {
+				if (weekArray[firstWeek + y] == "") {
 					weekArray[firstWeek + y] = String(y);
 				}
-				}
+			}
 		}
 
 		if (firstWeek === 6 || i === lastDate) {
@@ -186,24 +212,13 @@ const getCalendar = (year: number, month: number, startOnMonday: boolean) => {
 		{ year: yy, month: mm, calendar: calendar },
 		{ year: yy_p, month: mm_p, calendar: calendar_p },
 	];
-	// const result1 = { year: yy, month: mm, calendar };
 
 	return result;
 };
 
-const ScheduleItem = ({ color, time }: { color?: string, time?:string }) => {
-	return (
-		<span
-			className="h-[6px] w-[6px] rounded-full"
-			style={{ background: color }}
-			onClick={() => console.log(time)}
-		/>
-	);
-};
-
 const WeekHeader = ({ startOnMonday }: { startOnMonday: any }) => {
 	return (
-		<div className="week-header z-[999] grid w-[100%] grid-cols-7 border-b border-gray-200 text-center text-sm font-bold shadow-sm">
+		<div className="week-header z-[999] grid w-[100%] grid-cols-7 border border-gray-200 text-center text-sm font-bold shadow-sm">
 			{startOnMonday ? null : (
 				<span className="py-3 text-xs text-red-400">日</span>
 			)}
@@ -240,49 +255,59 @@ const WeekRow = ({
 };
 
 const Calendar = (props: any) => {
-	const { year, month, schedules, onClick, startOnMonday } = props; 
+	const { year, month, schedules, onClick, startOnMonday } = props;
 	const data = getCalendar(year, month, startOnMonday);
 	return (
 		<div className="flex gap-1 flex-col">
 			{data.map((item: any, index: number) => (
 				<div className="flex h-[100%] w-[100%] flex-1 flex-col" key={index}>
+					<h2 className="heading-2 text-xl font-bold mt-3 ml-2">
+						{item.year}年{toDouble(item.month)}月
+					</h2>
 					<WeekHeader startOnMonday={startOnMonday} />
 					{item.calendar.map((week: string[], key: number) => {
 						return (
 							<WeekRow
-								className={cn(
-									// key === data?.calendar.length - 1 ? "border-b-0" : "",
-								)}
-								key={key}
+								className="border-b border-l border-r border-gray-200"
+								key={`${item.year}-${item.month}-${key}`}
 							>
 								{week.map((e, _key) => {
 									return (
-										<div
-											key={`day-${_key}`}
-											className={cn(
-												`flex flex-1 flex-col border-r border-gray-100 py-2 text-sm`,
-												((key == 0 && (+e > 15)) || (key > 1 && (+e < 7)))
-													? "bg-orange-400 opacity-15"
-													: "",
-											)}
-										>
-											<span onClick={() => onClick(item.year ,item.month ,e)}>{e}</span>
-											<div className="mt-1 flex justify-center gap-[2px]">
-												{schedules?.map((s: any, key_: number) => {
-													if (
-														e !== ""
-													) {
-														return (
-															<ScheduleItem
-																key={`${item.year}${item.month}${e}${key_}`}
-																color={s.color}
-																time = {`${item.year}/${item.month}/${e}-${s.time}`}
-															/>
-														);
-													}
-												})}
+										<>
+										{((index == 0 && key < 2) || (index == 2 && key > 2))
+										? ""
+										: (
+											<div
+												key={`day-${_key}`}
+												className={cn(
+													`flex flex-1 flex-col py-1 text-base font-medium`,
+													((key == 0 && (+e > 15)) || (key > 1 && (+e < 7)))
+														? "bg-gray-400 opacity-50"
+														: "",
+												)}
+											>
+												<span onClick={() => onClick(item.year, item.month, e)}>{e}</span>
+												<div className="mt-1 flex justify-center gap-[2px]">
+													{schedules?.map((s: any, key_: number) => {
+														console.log((s.tarrget_date == `${item.year}-${item.month}-${e}`) ? "a" : "");
+														if (
+															e !== "" && (s.display_char == `${item.year}-${item.month}-${e}`)
+														) {
+															return (
+																<span
+																	key={`${item.year}${item.month}${e}${key_}`}
+																	className="h-[6px] w-[6px] rounded-full"
+																	// style={{ background: s.color }}
+																	// onClick={() => onClick(item.year, item.month, e, s.time)}
+																>a</span>
+															);
+														}
+													})}
+												</div>
 											</div>
-										</div>
+										)}
+											
+										</>
 									);
 								})}
 							</WeekRow>
@@ -309,6 +334,7 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	}
 	const [y, setY]: any = useState(t.getFullYear());
 	const [m, setM]: any = useState(t.getMonth() + 1);
+	const [content, setContent] = useState("")
 
 	const [[page, direction], setPage] = React.useState([0, 0]);
 
@@ -316,8 +342,9 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 		setPage([page + newDirection, newDirection]);
 	};
 
-	const onClick = (y: any ,m: any,d: any, time?:any) => {
-		console.log(`${y}-${m}-${d}`);
+	const onClick = (y: any, m: any, d: any, t?: any) => {
+		console.log(`${y}-${m}-${d}`, t);
+		setContent(t ? `${y}-${m}-${d}-${t}` : `${y}-${m}-${d}`)
 	};
 
 	const onNext = () => {
@@ -343,43 +370,39 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	return (
 		<div id={id} className={cn("flex w-[100%] flex-col", className)}>
 			<div className="calendar-header mb-3 flex w-[100%] items-center justify-between px-1">
-				<h2 className="heading-2 text-xl font-bold">
-					{(m - 1) == 0 ? y - 1 : y}年{(m - 1) == 0 ? 12 : toDouble(m - 1)}月
-				</h2>
-				<h2 className="heading-2 text-xl font-bold">
-					{y}年{toDouble(m)}月
-				</h2>
-				<h2 className="heading-2 text-xl font-bold">
-					{(m + 1) == 13 ? y + 1 : y}年{(m + 1) == 13 ? 1 : toDouble(m + 1)}月
-				</h2>
-				<div className="buttons mt-1 flex items-center gap-5 text-sm font-black">
+				{/* <div className="buttons mt-1 flex items-center gap-5 text-sm font-black">
 					<button onClick={onPrev}>先月</button>
 					<button onClick={onNext}>来月</button>
-				</div>
+				</div> */}
 			</div>
 			<div className="flex gap-2">
-				<div className="h-[100%] w-[100%] flex-1 select-none">
-					<div
-						id={id}
-						className="flex h-[100%] w-[100%] select-none flex-col overflow-hidden rounded-md shadow-md"
-					>
-						<AnimatePresence>
-							<CarouselArea
-								page={page}
-								direction={direction}
-								onNext={onNext}
-								onPrev={onPrev}
-							>
-								<Calendar
-									year={y}
-									month={m}
-									onClick={onClick}
-									schedules={schedules}
-									startOnMonday={startOnMonday}
-								/>
-							</CarouselArea>
-						</AnimatePresence>
+				<div className="flex gap-2 w-1/2">
+					<div className="h-[100%] w-[100%] flex-1 select-none">
+						<div
+							id={id}
+							className="flex h-[100%] w-[100%] select-none flex-col overflow-hidden rounded-md shadow-md"
+						>
+							<AnimatePresence>
+								<CarouselArea
+									page={page}
+									direction={direction}
+									onNext={onNext}
+									onPrev={onPrev}
+								>
+									<Calendar
+										year={y}
+										month={m}
+										onClick={onClick}
+										schedules={schedules}
+										startOnMonday={startOnMonday}
+									/>
+								</CarouselArea>
+							</AnimatePresence>
+						</div>
 					</div>
+				</div>
+				<div className="bg-gray-600 w-1/2">
+					{content}
 				</div>
 			</div>
 		</div>
