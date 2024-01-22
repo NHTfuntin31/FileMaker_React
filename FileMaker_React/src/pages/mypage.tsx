@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Evenodd_bot, Evenodd_left } from "../component/icon/evenodd";
+import Calendar from "./calendar";
 
 interface MenuItem {
 	MenuNo: number;
@@ -121,7 +122,9 @@ const MyPage = () => {
 							/>
 						))}
 					</div>
-					<div className="bg-lime-300 w-4/5">Item4</div>
+					<div className="bg-white w-4/5">
+						<Calendar />
+					</div>
 				</div>
 			</div>
 		</>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -119,6 +119,20 @@ const CarouselArea = ({ page, direction, children, onPrev, onNext }: any) => {
 //3 -> 03, 13 -> 13
 const toDouble: any = (number: number) => {
 	return `0${String(number)}`.slice(-2);
+};
+const caculatorMonth: any = (year: number, month: number) => {
+	let yy = year;
+	let mm = month;
+	if (month === 13) {
+		yy += 1;
+		mm = 1;
+	} else if (month === 0) {
+		yy -= 1;
+		mm = 12;
+	}
+
+	return ([yy, mm])
+
 };
 
 const init = () => {
@@ -274,45 +288,81 @@ const Calendar = (props: any) => {
 								{week.map((e, _key) => {
 									return (
 										<>
-										{((index == 0 && key < 2) || (index == 2 && key > 2))
-										? ""
-										: (
-											<div
-												key={`day-${_key}`}
-												className={cn(
-													`flex flex-1 flex-col py-1 text-base font-medium`,
-													((key == 0 && (+e > 15)) || (key > 1 && (+e < 7)))
-														? "bg-gray-400 opacity-50"
-														: "",
+											{((index == 0 && key < 2) || (index == 2 && key > 2))
+												? ""
+												: (
+													<div
+														key={`day-${_key}`}
+														className={cn(
+															`flex flex-1 flex-col py-1 text-base font-medium`,
+															((key == 0 && (+e > 15)) || (key > 1 && (+e < 7)))
+																? "bg-gray-400 opacity-50"
+																: "",
+														)}
+													>
+														<span
+															onClick={() =>
+																(key === 0 && +e > 15) ? (
+																	onClick(...caculatorMonth(item.year, item.month - 1), e)
+																) : (key > 1 && +e < 7) ? (
+																	onClick(...caculatorMonth(item.year, item.month + 1), e)
+																) : (
+																	onClick(item.year, item.month, e)
+																)
+															}
+														>
+															{e}
+														</span>
+
+														<div className="mt-1 flex justify-center gap-[2px]">
+															{schedules
+																?.filter((s: any) =>
+																	s.tarrget_date === `${item.year}/${toDouble(item.month)}/${toDouble(e)}`
+																	&& !((key === 0 && +e > 15) || (key > 1 && +e < 7))
+																)
+																.map((s: any, key_: number) => (
+																	<span
+																		key={`${item.year}${item.month}${e}${key_}`}
+																		className=""
+																		// style={{ background: s.color }}
+																		onClick={() => onClick(item.year, item.month, e, s.time)}
+																	>
+																		{s.display_char}
+																	</span>
+																))}
+														</div>
+
+													</div>
 												)}
-											>
-												<span onClick={() => onClick(item.year, item.month, e)}>{e}</span>
-												<div className="mt-1 flex justify-center gap-[2px]">
-													{schedules?.map((s: any, key_: number) => {
-														console.log((s.tarrget_date == `${item.year}-${item.month}-${e}`) ? "a" : "");
-														if (
-															e !== "" && (s.display_char == `${item.year}-${item.month}-${e}`)
-														) {
-															return (
-																<span
-																	key={`${item.year}${item.month}${e}${key_}`}
-																	className="h-[6px] w-[6px] rounded-full"
-																	// style={{ background: s.color }}
-																	// onClick={() => onClick(item.year, item.month, e, s.time)}
-																>a</span>
-															);
-														}
-													})}
-												</div>
-											</div>
-										)}
-											
+
 										</>
 									);
 								})}
 							</WeekRow>
 						);
 					})}
+				</div>
+			))}
+		</div>
+	);
+};
+
+/************************************
+	Information
+************************************/
+
+const Information = (content: string, schedules: any): ReactNode => {
+	const matchingSchedules = schedules.filter((item: any) => item.tarrget_date === content);
+
+	return (
+		<div className="">
+			{matchingSchedules.map((item: any, index: number) => (
+				<div key={index} className="whitespace-pre-line">
+					{item.tarrget_date} <br/>
+					{item.overview} <br/>
+					{item.times} <br/>
+					{item.factory_name} <br/>
+					{item.detail} <br/>
 				</div>
 			))}
 		</div>
@@ -343,8 +393,8 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	};
 
 	const onClick = (y: any, m: any, d: any, t?: any) => {
-		console.log(`${y}-${m}-${d}`, t);
-		setContent(t ? `${y}-${m}-${d}-${t}` : `${y}-${m}-${d}`)
+		console.log(t ? `${y}-${m}-${d}-${t}` : `${y}-${m}-${d}`);
+		setContent(t ? `${y}/${toDouble(m)}/${toDouble(d)}/${t}` : `${y}/${toDouble(m)}/${toDouble(d)}`)
 	};
 
 	const onNext = () => {
@@ -401,8 +451,8 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 						</div>
 					</div>
 				</div>
-				<div className="bg-gray-600 w-1/2">
-					{content}
+				<div className="w-1/2 mt-10 ml-10">
+					{Information(content, schedules)}
 				</div>
 			</div>
 		</div>

@@ -38,4 +38,14 @@ const LoginApi = async (data: LoginFormI, navigate: NavigateFunction, setIsLoadi
     }
 }
 
-export {LoginApi}
+const fetchData = async () => {
+	try {
+		const response = await fetch('/src/fake_json/newschema.json');
+		const data = await response.json();
+		return data.Schedules
+	} catch (error) {
+		console.error('Error fetching JSON data:', error);
+	}
+};
+
+export {LoginApi, fetchData}
