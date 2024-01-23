@@ -323,7 +323,7 @@ const Calendar = (props: any) => {
 																.map((s: any, key_: number) => (
 																	<span
 																		key={`${item.year}${item.month}${e}${key_}`}
-																		className=""
+																		className="text-red-500"
 																		// style={{ background: s.color }}
 																		onClick={() => onClick(item.year, item.month, e, s.time)}
 																	>
@@ -358,11 +358,16 @@ const Information = (content: string, schedules: any): ReactNode => {
 		<div className="">
 			{matchingSchedules.map((item: any, index: number) => (
 				<div key={index} className="whitespace-pre-line">
-					{item.tarrget_date} <br/>
-					{item.overview} <br/>
-					{item.times} <br/>
-					{item.factory_name} <br/>
-					{item.detail} <br/>
+					{item.tarrget_date} <br />
+					{item.overview} <br />
+					{item.times} <br />
+					{item.factory_name} <br />
+					{item.detail.split('\n').map((line: string, lineIndex: number) => (
+						<div key={lineIndex} className="flex justify-between mb-3 mt-3">
+							<span>{line}</span>
+							<input type="text" className="border p-1" value="" placeholder="enter" />
+						</div>
+					))} <br />
 				</div>
 			))}
 		</div>
