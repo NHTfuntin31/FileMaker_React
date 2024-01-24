@@ -353,21 +353,41 @@ const Calendar = (props: any) => {
 
 const Information = (content: string, schedules: any): ReactNode => {
 	const matchingSchedules = schedules.filter((item: any) => item.tarrget_date === content);
-
+	const [formData, setFormData] = useState([]);
+	const handleChange = (index: any, value: any) => {
+		const newData: any = [...formData];
+		newData[index] = value;
+		setFormData(newData);
+	};
+	const handleSubmit = (e: any) => {
+		e.preventDefault();
+		console.log(formData);
+	};
 	return (
 		<div className="">
 			{matchingSchedules.map((item: any, index: number) => (
-				<div key={index} className="whitespace-pre-line">
+				<div key={item.id} className="whitespace-pre-line">
 					{item.tarrget_date} <br />
 					{item.overview} <br />
 					{item.times} <br />
 					{item.factory_name} <br />
-					{item.detail.split('\n').map((line: string, lineIndex: number) => (
-						<div key={lineIndex} className="flex justify-between mb-3 mt-3">
-							<span>{line}</span>
-							<input type="text" className="border p-1" value="" placeholder="enter" />
-						</div>
-					))} <br />
+					<form key={item.id} action="" onSubmit={handleSubmit}>
+						{item.detail.split('\n').map((line: string, lineIndex: number) => (
+							lineIndex < item.detail.split('\n').length-1 ? (
+								<div key={`${index}${lineIndex}`} className="flex justify-between mb-3 mt-3">
+									<span>{line}</span>
+									<input
+										type="text"
+										className="border p-1"
+										value={formData[lineIndex] || ""}
+										placeholder="enter"
+										onChange={(e) => handleChange(lineIndex, e.target.value)}
+									/>
+								</div>
+							) : null
+						))} <br />
+						<button type="submit">Submit</button>
+					</form>
 				</div>
 			))}
 		</div>
