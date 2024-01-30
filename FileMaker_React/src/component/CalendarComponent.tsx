@@ -2,6 +2,7 @@ import React, { ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { DetailsModal, RequestModal } from "./Modal";
 
 const cn = (...inputs: any) => twMerge(clsx(inputs));
 
@@ -213,16 +214,16 @@ const getCalendar = (year: number, month: number, startOnMonday: boolean) => {
 		mm = 12;
 	}
 
-	const yy_m = (mm - 1) == 0 ? yy - 1 : yy
+	// const yy_m = (mm - 1) == 0 ? yy - 1 : yy
 	const yy_p = (mm + 1) == 13 ? yy + 1 : yy
-	const mm_m = (mm - 1) == 0 ? 12 : mm - 1
+	// const mm_m = (mm - 1) == 0 ? 12 : mm - 1
 	const mm_p = (mm + 1) == 13 ? 1 : mm + 1
 
-	const calendar_m = getData(yy_m, mm_m, startOnMonday);
+	// const calendar_m = getData(yy_m, mm_m, startOnMonday);
 	const calendar = getData(yy, mm, startOnMonday);
 	const calendar_p = getData(yy_p, mm_p, startOnMonday);
 	const result = [
-		{ year: yy_m, month: mm_m, calendar: calendar_m },
+		// { year: yy_m, month: mm_m, calendar: calendar_m },
 		{ year: yy, month: mm, calendar: calendar },
 		{ year: yy_p, month: mm_p, calendar: calendar_p },
 	];
@@ -288,52 +289,56 @@ const Calendar = (props: any) => {
 								{week.map((e, _key) => {
 									return (
 										<>
-											{((index == 0 && key < 2) || (index == 2 && key > 2))
+											{/* {((index == 0 && key < 2) || (index == 2 && key > 2))
 												? ""
-												: (
-													<div
-														key={`day-${_key}`}
-														className={cn(
-															`flex flex-1 flex-col py-1 text-base font-medium`,
-															((key == 0 && (+e > 15)) || (key > 1 && (+e < 7)))
-																? "bg-gray-400 opacity-50"
-																: "",
-														)}
-													>
-														<span
-															onClick={() =>
-																(key === 0 && +e > 15) ? (
-																	onClick(...caculatorMonth(item.year, item.month - 1), e)
-																) : (key > 1 && +e < 7) ? (
-																	onClick(...caculatorMonth(item.year, item.month + 1), e)
-																) : (
-																	onClick(item.year, item.month, e)
-																)
-															}
-														>
-															{e}
-														</span>
-
-														<div className="mt-1 flex justify-center gap-[2px]">
-															{schedules
-																?.filter((s: any) =>
-																	s.tarrget_date === `${item.year}/${toDouble(item.month)}/${toDouble(e)}`
-																	&& !((key === 0 && +e > 15) || (key > 1 && +e < 7))
-																)
-																.map((s: any, key_: number) => (
-																	<span
-																		key={`${item.year}${item.month}${e}${key_}`}
-																		className="text-red-500"
-																		// style={{ background: s.color }}
-																		onClick={() => onClick(item.year, item.month, e, s.time)}
-																	>
-																		{s.display_char}
-																	</span>
-																))}
-														</div>
-
-													</div>
+												: 
+												( */}
+											<div
+												key={`day-${_key}`}
+												className={cn(
+													`flex flex-1 flex-col py-1 text-base font-medium`,
+													((key == 0 && (+e > 15)) || (key > 1 && (+e < 7)))
+														? "bg-gray-400 opacity-50"
+														: "",
 												)}
+											>
+												<div>
+													<span
+														onClick={() =>
+															(key === 0 && +e > 15) ? (
+																onClick(...caculatorMonth(item.year, item.month - 1), e)
+															) : (key > 1 && +e < 7) ? (
+																onClick(...caculatorMonth(item.year, item.month + 1), e)
+															) : (
+																onClick(item.year, item.month, e)
+															)
+														}
+														className="cursor-pointer hover:bg-sky-500 hover:text-white py-1 px-2 rounded-full"
+													>
+														{e}
+													</span>
+												</div>
+
+												<div className="mt-1 flex justify-center gap-[2px]">
+													{schedules
+														?.filter((s: any) =>
+															s.tarrget_date === `${item.year}/${toDouble(item.month)}/${toDouble(e)}`
+															&& !((key === 0 && +e > 15) || (key > 1 && +e < 7))
+														)
+														.map((s: any, key_: number) => (
+															<span
+																key={`${item.year}${item.month}${e}${key_}`}
+																className="text-red-500"
+																// style={{ background: s.color }}
+																onClick={() => onClick(item.year, item.month, e, s.time)}
+															>
+																{s.display_char}
+															</span>
+														))}
+												</div>
+
+											</div>
+											{/* )} */}
 
 										</>
 									);
@@ -354,6 +359,7 @@ const Calendar = (props: any) => {
 const Information = (content: string, schedules: any): ReactNode => {
 	const matchingSchedules = schedules.filter((item: any) => item.tarrget_date === content);
 	const [formData, setFormData] = useState([]);
+	const [openModal, setOpenModal] = useState(false);
 	const handleChange = (index: any, value: any) => {
 		const newData: any = [...formData];
 		newData[index] = value;
@@ -365,29 +371,39 @@ const Information = (content: string, schedules: any): ReactNode => {
 	};
 	return (
 		<div className="">
+			<h4 className="hidden text-2xl text-center md:block">{content}</h4>
 			{matchingSchedules.map((item: any, index: number) => (
-				<div key={item.id} className="whitespace-pre-line">
-					{item.tarrget_date} <br />
-					{item.overview} <br />
-					{item.times} <br />
-					{item.factory_name} <br />
-					<form key={item.id} action="" onSubmit={handleSubmit}>
-						{item.detail.split('\n').map((line: string, lineIndex: number) => (
-							lineIndex < item.detail.split('\n').length-1 ? (
-								<div key={`${index}${lineIndex}`} className="flex justify-between mb-3 mt-3">
-									<span>{line}</span>
-									<input
-										type="text"
-										className="border p-1"
-										value={formData[lineIndex] || ""}
-										placeholder="enter"
-										onChange={(e) => handleChange(lineIndex, e.target.value)}
-									/>
-								</div>
-							) : null
-						))} <br />
-						<button type="submit">Submit</button>
-					</form>
+				<div key={item.id} className="whitespace-pre-line mb-4">
+					{/* <h4 className="text-2xl text-center">{content}</h4> */}
+					<div
+						className="bg-white border rounded-md p-2 hover:bg-slate-600 hover:text-white cursor-pointer transition duration-500 ease-in-out"
+						onClick={() => setOpenModal(true)}
+					>
+						{item.overview} <br />
+						{item.factory_name} <br />
+						{item.times} <br />
+					</div>
+					<RequestModal status={openModal} changeStatus={setOpenModal} title={item.overview} hopital={item.factory_name} submit={handleSubmit}>
+						<form key={item.id} action="" onSubmit={handleSubmit}>
+							{item.detail.split('\n').map((line: string, lineIndex: number) => (
+								lineIndex < item.detail.split('\n').length - 1 ? (
+									<div key={`${index}${lineIndex}`} className="flex flex-col items-start justify-between mb-3 mt-3">
+										<label className="block text-white text-sm font-bold mb-2" htmlFor={`input-${lineIndex}`}>
+											{line}
+										</label>
+										<input
+											id={`input-${lineIndex}`}
+											type="text"
+											className="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
+											value={formData[lineIndex] || ""}
+											placeholder="Enter"
+											onChange={(e) => handleChange(lineIndex, e.target.value)}
+										/>
+									</div>
+								) : null
+							))} <br />
+						</form>
+					</RequestModal>
 				</div>
 			))}
 		</div>
@@ -411,6 +427,7 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	const [m, setM]: any = useState(t.getMonth() + 1);
 	const [content, setContent] = useState("")
 
+	const [openModal, setOpenModal] = useState(false);
 	const [[page, direction], setPage] = React.useState([0, 0]);
 
 	const paginate = (newDirection: number) => {
@@ -420,6 +437,7 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	const onClick = (y: any, m: any, d: any, t?: any) => {
 		console.log(t ? `${y}-${m}-${d}-${t}` : `${y}-${m}-${d}`);
 		setContent(t ? `${y}/${toDouble(m)}/${toDouble(d)}/${t}` : `${y}/${toDouble(m)}/${toDouble(d)}`)
+		setOpenModal(true)
 	};
 
 	const onNext = () => {
@@ -444,14 +462,14 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 
 	return (
 		<div id={id} className={cn("flex w-[100%] flex-col", className)}>
-			<div className="calendar-header mb-3 flex w-[100%] items-center justify-between px-1">
-				{/* <div className="buttons mt-1 flex items-center gap-5 text-sm font-black">
+			{/* <div className="calendar-header mb-3 flex w-[100%] items-center justify-between px-1">
+				<div className="buttons mt-1 flex items-center gap-5 text-sm font-black">
 					<button onClick={onPrev}>先月</button>
 					<button onClick={onNext}>来月</button>
-				</div> */}
-			</div>
-			<div className="flex gap-2">
-				<div className="flex gap-2 w-1/2">
+				</div>
+			</div> */}
+			<div className="flex md:gap-2">
+				<div className="flex gap-2 w-full md:w-1/2">
 					<div className="h-[100%] w-[100%] flex-1 select-none">
 						<div
 							id={id}
@@ -476,8 +494,14 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 						</div>
 					</div>
 				</div>
-				<div className="w-1/2 mt-10 ml-10">
+				<div className="hidden md:block md:w-1/2 md:ml-10">
 					{Information(content, schedules)}
+					<button className="border rounded-lg p-2 hover:bg-sky-300 hover:text-white hover:font-bold transition duration-500 ease-in-out">スケジュールを追加</button>
+				</div>
+				<div>
+					<DetailsModal status={openModal} changeStatus={setOpenModal} title={content}>
+						{Information(content, schedules)}
+					</DetailsModal>
 				</div>
 			</div>
 		</div>

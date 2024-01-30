@@ -24,10 +24,9 @@ const Calendar = () => {
 		return <div>Loading...</div>;
 	}
 	return (
-		<>
-			<div className="w-full h-[90vh] flex justify-center items-center text-black">
+			<div className="w-full h-[100%] flex justify-center items-start text-black">
 				{/* <div className="bg-sky-200 bg-opacity-40 border-solid rounded-3xl backdrop-blur-md"> */}
-				<div className="mx-16 my-10 w-full">
+				<div className="mx-5 my-3 md:mx-16 md:my-10 w-full">
 					{/* <h2 className="text-4xl font-bold">Calender</h2> */}
 					<div className="w-full">
 						<ScheduleCalendar schedules={jsonData} className="w-[100%] h-[95vh]" startOnMonday />
@@ -35,7 +34,6 @@ const Calendar = () => {
 				</div>
 				{/* </div> */}
 			</div>
-		</>
 	)
 }
 

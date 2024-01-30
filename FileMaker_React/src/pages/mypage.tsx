@@ -83,7 +83,7 @@ const MyPage = () => {
 
 	return (
 		<>
-			<div className="bg-sky-600 w-full h-screen flex flex-col text-white">
+			<div className="bg-sky-600 w-full h-screen flex flex-col text-white overflow-y-hidden">
 				<div className="flex justify-between px-5 py-4">
 					<div>FILEMAKER</div>
 					<div>
@@ -109,8 +109,8 @@ const MyPage = () => {
 					</div>
 				</div>
 
-				<div className="flex bg-slate-800 h-svh justify-between">
-					<div className="w-1/5">
+				<div className="flex flex-col md:flex-row bg-slate-800 h-svh md:justify-between">
+					<div className="w-full flex md:w-1/5 md:flex-col">
 						{/* <li className="px-2 hover:bg-secondary-100">One</li> */}
 						{/* slice(1). */}
 						{sessionUserRef.current.Menu.map((menu: any) => (
@@ -122,7 +122,7 @@ const MyPage = () => {
 							/>
 						))}
 					</div>
-					<div className="bg-white w-4/5">
+					<div className="bg-white w-full md:w-4/5">
 						<Calendar />
 					</div>
 				</div>
