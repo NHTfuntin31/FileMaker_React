@@ -1,0 +1,35 @@
+
+① 既存データ修正
+job_noに値が入っている場合、以下の項目のみ変更可能・削除不可
+以下の項目以外は、元のデータをそのまま送る。
+"cancel": false,
+"factory_name": "社会医療法人社団　尚篤会　赤心堂病院",
+"address": "",
+"overview": "スポット勤務",
+"detail": "◆勤務日時：\n◆医療機関：社会医療法人社団　尚篤会　赤心堂病院\n◆住所：\n◆募集科目：\n◆勤務内容：\n◆給与：\n◆交通費：\n◆給与支払：\n◆医療機関連絡先：\n◆当日持参物：\n◆補足事項：\n◆リンクスタッフ担当者：森田 純一\n",
+
+② 新規追加
+　以下の項目を埋めて、APIにて登録を行う。
+　
+"id":Null
+"edoctor_id": "D021348"→自身のIDを設定する。
+"no": null,
+"tarrget_date": "2022/02/10",　必須
+"display_char": "▽",　固定値
+"job_no": null,　入力不要
+"time_zone": null,　入力不要
+"times": "",　入力不要
+"start_time": "HH:MM:SS", 必須
+"end_time": "HH:MM:SS","　必須
+classification":"02",　コードマスター1201から選択"cancel": false,　固定値
+"factory_name": "社会医療法人社団　尚篤会　赤心堂病院",　入力任意
+"address": "",　入力任意
+"overview": "スポット勤務",　入力必須
+"detail": "" 入力任意
+
+③ 削除機能
+　削除はさせず、変更画面にてキャンセルとする。
+"cancel": true,　固定値
+"display_char":黒貫の文字(元の文字データのコード値を+1する
+参考）
+https: //seiai.ed.jp/sys/text/java/shiftjis_table.html

@@ -375,16 +375,10 @@ const Information = (content: string, schedules: any, setOpenModalRegister?: any
 	const matchingSchedules = schedules.filter(
 		(item: any) => item.tarrget_date === content
 	);
-	const [formData, setFormData] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
-	const handleChange = (index: any, value: any) => {
-		const newData: any = [...formData];
-		newData[index] = value;
-		setFormData(newData);
-	};
+
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		console.log(formData);
 	};
 	return (
 		<div className="">
@@ -395,7 +389,7 @@ const Information = (content: string, schedules: any, setOpenModalRegister?: any
 				>
 				スケジュールを追加
 			</button>
-			{matchingSchedules.map((item: any, index: number) => (
+			{matchingSchedules.map((item: any) => (
 				<div key={item.id} className="whitespace-pre-line mb-4">
 					{/* <h4 className="text-2xl text-center">{content}</h4> */}
 					<div
@@ -414,30 +408,7 @@ const Information = (content: string, schedules: any, setOpenModalRegister?: any
 						submit={handleSubmit}
 					>
 						<form key={item.id} action="" onSubmit={handleSubmit}>
-							{item.detail.split("\n").map((line: string, lineIndex: number) =>
-								lineIndex < item.detail.split("\n").length - 1 ? (
-									<div
-										key={`${index}${lineIndex}`}
-										className="flex flex-col items-start justify-between mb-3 mt-3"
-									>
-										<label
-											className="block text-white text-sm font-bold mb-2"
-											htmlFor={`input-${lineIndex}`}
-										>
-											{line}
-										</label>
-										<input
-											id={`input-${lineIndex}`}
-											type="text"
-											className="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"
-											value={formData[lineIndex] || ""}
-											placeholder="Enter"
-											onChange={(e) => handleChange(lineIndex, e.target.value)}
-										/>
-									</div>
-								) : null
-							)}{" "}
-							<br />
+							
 						</form>
 					</RequestModal>
 				</div>
