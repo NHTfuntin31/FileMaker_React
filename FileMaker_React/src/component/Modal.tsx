@@ -54,7 +54,7 @@ const RegisterModal = (props: any) => {
 
 	return (
 		<>
-			<Modal show={status} onClose={() => changeStatus(false)} className='block md:hidden'>
+			<Modal show={status} onClose={() => changeStatus(false)}>
 				<Modal.Header>
 					{title} <br />
 					スケジュールを追加

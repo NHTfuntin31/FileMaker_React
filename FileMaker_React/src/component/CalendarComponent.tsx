@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { DetailsModal, RequestModal } from "./Modal";
+import { DetailsModal, RegisterModal, RequestModal } from "./Modal";
 
 const cn = (...inputs: any) => twMerge(clsx(inputs));
 
@@ -11,22 +11,22 @@ const cn = (...inputs: any) => twMerge(clsx(inputs));
 ************************************/
 
 type ScheduleType = {
-	edoctor_id: string,
-	id: number,
-	no: number,
-	tarrget_date: string,
-	display_char: string,
-	job_no: string,
-	time_zone: string,
-	times: string,
-	start_time: any,
-	end_time: any,
-	classification: string,
-	cancel: boolean,
-	factory_name: string,
-	address: string,
-	overview: string,
-	detail: string
+	edoctor_id: string;
+	id: number;
+	no: number;
+	tarrget_date: string;
+	display_char: string;
+	job_no: string;
+	time_zone: string;
+	times: string;
+	start_time: any;
+	end_time: any;
+	classification: string;
+	cancel: boolean;
+	factory_name: string;
+	address: string;
+	overview: string;
+	detail: string;
 };
 
 type ScheduleCalendarProps = {
@@ -41,7 +41,6 @@ type ScheduleCalendarProps = {
 /************************************
 	animation
 ************************************/
-
 
 //操作スピードを計算
 const swipePower = (offset: number, velocity: number) => {
@@ -105,8 +104,7 @@ const CarouselArea = ({ page, direction, children, onPrev, onNext }: any) => {
 						onPrev();
 					}
 				}
-			}
-			}
+			}}
 		>
 			{children}
 		</motion.div>
@@ -132,8 +130,7 @@ const caculatorMonth: any = (year: number, month: number) => {
 		mm = 12;
 	}
 
-	return ([yy, mm])
-
+	return [yy, mm];
 };
 
 const init = () => {
@@ -148,16 +145,13 @@ const getData = (yy: number, mm: number, startOnMonday: boolean) => {
 
 	const last_demo = new Date(yy, mm - 1, 0);
 
-
 	//何曜日かを確認
 	//1 2 3 4 5 6 0
 	let firstWeek = first.getDay();
 
-
 	//30 31 29
 	const lastDate = last.getDate();
 	const lastDate_m = last_demo.getDate();
-
 
 	const result = []; //週
 	let weekArray = init(); //週の7日間
@@ -171,16 +165,14 @@ const getData = (yy: number, mm: number, startOnMonday: boolean) => {
 			firstWeek = firstWeek - 1;
 		}
 	}
-	const firstWeek_pro = firstWeek
+	const firstWeek_pro = firstWeek;
 	for (let i = 1; i <= 7; i += 1) {
-
-		if ((firstWeek_pro - i) >= 0) {
-			weekArray[(firstWeek_pro - i)] = String(lastDate_m - i + 1)
+		if (firstWeek_pro - i >= 0) {
+			weekArray[firstWeek_pro - i] = String(lastDate_m - i + 1);
 		}
 	}
 
 	for (let i = 1; i <= lastDate; i += 1) {
-
 		weekArray[firstWeek] = String(i);
 
 		if (i === lastDate) {
@@ -215,9 +207,9 @@ const getCalendar = (year: number, month: number, startOnMonday: boolean) => {
 	}
 
 	// const yy_m = (mm - 1) == 0 ? yy - 1 : yy
-	const yy_p = (mm + 1) == 13 ? yy + 1 : yy
+	const yy_p = mm + 1 == 13 ? yy + 1 : yy;
 	// const mm_m = (mm - 1) == 0 ? 12 : mm - 1
-	const mm_p = (mm + 1) == 13 ? 1 : mm + 1
+	const mm_p = mm + 1 == 13 ? 1 : mm + 1;
 
 	// const calendar_m = getData(yy_m, mm_m, startOnMonday);
 	const calendar = getData(yy, mm, startOnMonday);
@@ -261,7 +253,7 @@ const WeekRow = ({
 		<div
 			className={cn(
 				"flex w-[100%] flex-1 border-b border-gray-100 text-center",
-				className,
+				className
 			)}
 		>
 			{children}
@@ -270,7 +262,7 @@ const WeekRow = ({
 };
 
 const Calendar = (props: any) => {
-	const { year, month, schedules, onClick, startOnMonday } = props;
+	const { year, month, schedules, onClick, startOnMonday, selectedDay } = props;
 	const data = getCalendar(year, month, startOnMonday);
 	return (
 		<div className="flex gap-1 flex-col">
@@ -297,23 +289,42 @@ const Calendar = (props: any) => {
 												key={`day-${_key}`}
 												className={cn(
 													`flex flex-1 flex-col py-1 text-base font-medium`,
-													((key == 0 && (+e > 15)) || (key > 1 && (+e < 7)))
+													(key == 0 && +e > 15) || (key > 1 && +e < 7)
 														? "bg-gray-400 opacity-50"
-														: "",
+														: ""
 												)}
 											>
 												<div>
 													<span
 														onClick={() =>
-															(key === 0 && +e > 15) ? (
-																onClick(...caculatorMonth(item.year, item.month - 1), e)
-															) : (key > 1 && +e < 7) ? (
-																onClick(...caculatorMonth(item.year, item.month + 1), e)
-															) : (
-																onClick(item.year, item.month, e)
-															)
+															key === 0 && +e > 15
+																? onClick(
+																	...caculatorMonth(
+																		item.year,
+																		item.month - 1
+																	),
+																	e
+																)
+																: key > 1 && +e < 7
+																	? onClick(
+																		...caculatorMonth(
+																			item.year,
+																			item.month + 1
+																		),
+																		e
+																	)
+																	: onClick(item.year, item.month, e)
 														}
-														className="cursor-pointer hover:bg-sky-500 hover:text-white py-1 px-2 rounded-full"
+														className={
+															"cursor-pointer hover:bg-sky-500 hover:text-white py-1 px-2 rounded-full transition duration-200 ease-in-out" +
+															(selectedDay ==
+																`${item.year}/${toDouble(
+																	item.month
+																)}/${toDouble(e)}` &&
+																!((key == 0 && +e > 15) || (key > 1 && +e < 7))
+																? " bg-sky-500 text-white"
+																: "")
+														}
 													>
 														{e}
 													</span>
@@ -321,25 +332,29 @@ const Calendar = (props: any) => {
 
 												<div className="mt-1 flex justify-center gap-[2px]">
 													{schedules
-														?.filter((s: any) =>
-															s.tarrget_date === `${item.year}/${toDouble(item.month)}/${toDouble(e)}`
-															&& !((key === 0 && +e > 15) || (key > 1 && +e < 7))
+														?.filter(
+															(s: any) =>
+																s.tarrget_date ===
+																`${item.year}/${toDouble(
+																	item.month
+																)}/${toDouble(e)}` &&
+																!((key === 0 && +e > 15) || (key > 1 && +e < 7))
 														)
 														.map((s: any, key_: number) => (
 															<span
 																key={`${item.year}${item.month}${e}${key_}`}
-																className="text-red-500"
+																className=""
 																// style={{ background: s.color }}
-																onClick={() => onClick(item.year, item.month, e, s.time)}
+																onClick={() =>
+																	onClick(item.year, item.month, e, s.time)
+																}
 															>
 																{s.display_char}
 															</span>
 														))}
 												</div>
-
 											</div>
 											{/* )} */}
-
 										</>
 									);
 								})}
@@ -356,8 +371,10 @@ const Calendar = (props: any) => {
 	Information
 ************************************/
 
-const Information = (content: string, schedules: any): ReactNode => {
-	const matchingSchedules = schedules.filter((item: any) => item.tarrget_date === content);
+const Information = (content: string, schedules: any, setOpenModalRegister?: any): ReactNode => {
+	const matchingSchedules = schedules.filter(
+		(item: any) => item.tarrget_date === content
+	);
 	const [formData, setFormData] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
 	const handleChange = (index: any, value: any) => {
@@ -372,6 +389,12 @@ const Information = (content: string, schedules: any): ReactNode => {
 	return (
 		<div className="">
 			<h4 className="hidden text-2xl text-center md:block">{content}</h4>
+			<button 
+				className="border rounded-lg p-2 bg-sky-100 text-black hover:font-bold transition duration-500 ease-in-out mb-3 md:hidden"
+				onClick={() => setOpenModalRegister(true)}
+				>
+				スケジュールを追加
+			</button>
 			{matchingSchedules.map((item: any, index: number) => (
 				<div key={item.id} className="whitespace-pre-line mb-4">
 					{/* <h4 className="text-2xl text-center">{content}</h4> */}
@@ -383,12 +406,24 @@ const Information = (content: string, schedules: any): ReactNode => {
 						{item.factory_name} <br />
 						{item.times} <br />
 					</div>
-					<RequestModal status={openModal} changeStatus={setOpenModal} title={item.overview} hopital={item.factory_name} submit={handleSubmit}>
+					<RequestModal
+						status={openModal}
+						changeStatus={setOpenModal}
+						title={`${content} ⁂ ${item.overview}`}
+						hopital={item.factory_name}
+						submit={handleSubmit}
+					>
 						<form key={item.id} action="" onSubmit={handleSubmit}>
-							{item.detail.split('\n').map((line: string, lineIndex: number) => (
-								lineIndex < item.detail.split('\n').length - 1 ? (
-									<div key={`${index}${lineIndex}`} className="flex flex-col items-start justify-between mb-3 mt-3">
-										<label className="block text-white text-sm font-bold mb-2" htmlFor={`input-${lineIndex}`}>
+							{item.detail.split("\n").map((line: string, lineIndex: number) =>
+								lineIndex < item.detail.split("\n").length - 1 ? (
+									<div
+										key={`${index}${lineIndex}`}
+										className="flex flex-col items-start justify-between mb-3 mt-3"
+									>
+										<label
+											className="block text-white text-sm font-bold mb-2"
+											htmlFor={`input-${lineIndex}`}
+										>
 											{line}
 										</label>
 										<input
@@ -401,7 +436,8 @@ const Information = (content: string, schedules: any): ReactNode => {
 										/>
 									</div>
 								) : null
-							))} <br />
+							)}{" "}
+							<br />
 						</form>
 					</RequestModal>
 				</div>
@@ -425,9 +461,10 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	}
 	const [y, setY]: any = useState(t.getFullYear());
 	const [m, setM]: any = useState(t.getMonth() + 1);
-	const [content, setContent] = useState("")
+	const [content, setContent] = useState("");
 
-	const [openModal, setOpenModal] = useState(false);
+	const [openModalInfo, setOpenModalInfo] = useState(false);
+	const [openModalRegister, setOpenModalRegister] = useState(false);
 	const [[page, direction], setPage] = React.useState([0, 0]);
 
 	const paginate = (newDirection: number) => {
@@ -436,8 +473,12 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 
 	const onClick = (y: any, m: any, d: any, t?: any) => {
 		console.log(t ? `${y}-${m}-${d}-${t}` : `${y}-${m}-${d}`);
-		setContent(t ? `${y}/${toDouble(m)}/${toDouble(d)}/${t}` : `${y}/${toDouble(m)}/${toDouble(d)}`)
-		setOpenModal(true)
+		setContent(
+			t
+				? `${y}/${toDouble(m)}/${toDouble(d)}/${t}`
+				: `${y}/${toDouble(m)}/${toDouble(d)}`
+		);
+		setOpenModalInfo(true);
 	};
 
 	const onNext = () => {
@@ -488,19 +529,40 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 										onClick={onClick}
 										schedules={schedules}
 										startOnMonday={startOnMonday}
+										selectedDay={content}
 									/>
 								</CarouselArea>
 							</AnimatePresence>
 						</div>
 					</div>
 				</div>
-				<div className="hidden md:block md:w-1/2 md:ml-10">
+				<div
+					className={content ? "hidden md:block md:w-1/2 md:ml-10" : "hidden"}
+				>
 					{Information(content, schedules)}
-					<button className="border rounded-lg p-2 hover:bg-sky-300 hover:text-white hover:font-bold transition duration-500 ease-in-out">スケジュールを追加</button>
+					<button
+						className="border rounded-lg p-2 hover:bg-sky-300 hover:text-white hover:font-bold transition duration-500 ease-in-out"
+						onClick={() => setOpenModalRegister(true)}
+					>
+						スケジュールを追加
+					</button>
 				</div>
 				<div>
-					<DetailsModal status={openModal} changeStatus={setOpenModal} title={content}>
-						{Information(content, schedules)}
+					<RegisterModal
+						status={openModalRegister}
+						changeStatus={setOpenModalRegister}
+						title={content}
+					>
+						<p className="text-white">情報を入力</p>
+					</RegisterModal>
+				</div>
+				<div>
+					<DetailsModal
+						status={openModalInfo}
+						changeStatus={setOpenModalInfo}
+						title={content}
+					>
+						{Information(content, schedules, setOpenModalRegister)}
 					</DetailsModal>
 				</div>
 			</div>
