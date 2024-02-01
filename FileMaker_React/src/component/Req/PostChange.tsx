@@ -20,11 +20,16 @@ const formFields = [
 
 export const PostChange = (props: any) => {
 	const { jobInfo } = props
-	const { register, formState: { errors } } = useForm({
+	const { register, handleSubmit, formState: { errors } } = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
 	});
+
+	const onSubmit = (data: any) => {
+		console.log(data);
+	}
 	return (
 		<div>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="flex flex-wrap">
 					{formFields.map((field, index) => {
 						const time = (index == 0 || index == 1)
@@ -66,6 +71,8 @@ export const PostChange = (props: any) => {
 					}
 					)}
 				</div>
+				<button>aaaa</button>
+			</form>
 		</div>
 	)
 }
