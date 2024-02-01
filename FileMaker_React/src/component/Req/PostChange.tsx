@@ -1,6 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { DoctorUpdateTest } from "../../utils/validationSchema";
 import { ReactNode } from "react";
 
 const formFields = [
@@ -19,60 +16,51 @@ const formFields = [
 
 
 export const PostChange = (props: any) => {
-	const { jobInfo } = props
-	const { register, handleSubmit, formState: { errors } } = useForm({
-		resolver: zodResolver(DoctorUpdateTest),
-	});
+	const { jobInfo, form } = props
+	const { register, formState: { errors } } = form;
 
-	const onSubmit = (data: any) => {
-		console.log(data);
-	}
+
 	return (
-		<div>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className="flex flex-wrap">
-					{formFields.map((field, index) => {
-						const time = (index == 0 || index == 1)
-						return(
-							<div key={field.name} 
-								className={
-									"text-black pb-2 flex flex-col md:flex-row " 
-									+ (index == formFields.length -1 ? "md:flex-col " : "")
-									+ (time ? "w-1/2" : "w-full justify-between")
-								}
-								>
-									<div className={"text-white p-1 w-full " + (time ? "md:w-1/3" : "md:w-1/5") }>{field.label}:</div>
+		<div className="flex flex-wrap">
+			{formFields.map((field, index) => {
+				const time = (index == 0 || index == 1)
+				return (
+					<div key={field.name}
+						className={
+							"text-black pb-2 flex flex-col md:flex-row "
+							+ (index == formFields.length - 1 ? "md:flex-col " : "")
+							+ (time ? "w-1/2" : "w-full justify-between")
+						}
+					>
+						<div className={"text-white p-1 w-full " + (time ? "md:w-1/3" : "md:w-1/5")}>{field.label}:</div>
 
 
-									{index == formFields.length -1 ?
-										<textarea className="border rounded-lg p-1 w-full"
-										placeholder={field.name}
-										defaultValue={jobInfo[field.name]}
-										{...register(field.name)}
-										/>
-										: time ? <input 
-											type="time"
-											className={"border rounded-lg p-1 " + (time ? "w-1/2" : "w-4/5") }
-											placeholder={field.name}
-											defaultValue={jobInfo[field.name]}
-											{...register(field.name)} 
-										/>
-										:
-										<input 
-											type="text"
-											className="border rounded-lg p-1 md:w-4/5 w-full"
-											placeholder={field.name}
-											defaultValue={jobInfo[field.name]}
-											{...register(field.name)} 
-										/>}
-								<p>{errors[field.name] && <div>{errors[field.name]?.message as ReactNode}</div>}</p>
-							</div>
-						)
-					}
-					)}
-				</div>
-				<button>aaaa</button>
-			</form>
+						{index == formFields.length - 1 ?
+							<textarea className="border rounded-lg p-1 w-full"
+								placeholder={field.name}
+								defaultValue={jobInfo[field.name]}
+								{...register(field.name)}
+							/>
+							: time ? <input
+								type="time"
+								className={"border rounded-lg p-1 " + (time ? "w-1/2" : "w-4/5")}
+								placeholder={field.name}
+								defaultValue={jobInfo[field.name]}
+								{...register(field.name)}
+							/>
+								:
+								<input
+									type="text"
+									className="border rounded-lg p-1 md:w-4/5 w-full"
+									placeholder={field.name}
+									defaultValue={jobInfo[field.name]}
+									{...register(field.name)}
+								/>}
+						<p>{errors[field.name] && <div>{errors[field.name]?.message as ReactNode}</div>}</p>
+					</div>
+				)
+			}
+			)}
 		</div>
 	)
 }

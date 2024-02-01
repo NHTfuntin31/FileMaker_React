@@ -4,6 +4,9 @@ import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { DetailsModal, RegisterModal, RequestModal } from "./Modal";
 import { PostChange } from "./Req/PostChange";
+import { useForm } from "react-hook-form";
+import { DoctorUpdateTest } from "../utils/validationSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 // import { FormProvider, useForm } from "react-hook-form";
 
 const cn = (...inputs: any) => twMerge(clsx(inputs));
@@ -377,11 +380,17 @@ const Information = (content: string, schedules: any, setOpenModalRegister?: any
 	const matchingSchedules = schedules.filter(
 		(item: any) => item.tarrget_date === content
 	);
+
+	const form = useForm({
+		resolver: zodResolver(DoctorUpdateTest),
+	});
 	// const methods = useForm();
 
 	const [openModal, setOpenModal] = useState(false);
 
-
+	const onSubmit = (data: any) => {
+		console.log(data);
+	}
 	return (
 		<div className="">
 			<h4 className="hidden text-2xl text-center md:block">{content}</h4>
@@ -402,14 +411,20 @@ const Information = (content: string, schedules: any, setOpenModalRegister?: any
 						{item.factory_name} <br />
 						{item.times} <br />
 					</div>
+					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<RequestModal
 							status={openModal}
-							changeStatus={setOpenModal}
+							changeStatus={()=>{
+								form.reset()
+								setOpenModal(false)
+							}}
 							title={`${content} ⁂ ${item.overview}`}
 							hopital={item.factory_name}
+							submit={form.handleSubmit(onSubmit)}
 						>
-							<PostChange jobInfo={item} />
+							<PostChange jobInfo={item} form={form} />
 						</RequestModal>
+					</form>
 				</div>
 			))}
 		</div>

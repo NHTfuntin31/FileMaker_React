@@ -2,11 +2,12 @@
 import { Button, Modal } from 'flowbite-react';
 
 const RequestModal = (props: any) => {
-	const {status, changeStatus, children, title, hopital} = props;
-
+	const {status, changeStatus, children, title, hopital, submit} = props;
+	
+	// const { handleSubmit } = form;
 	return (
 		<>
-			<Modal show={status} onClose={() => changeStatus(false)}>
+			<Modal show={status} onClose={()=>changeStatus()}>
 				<Modal.Header>
 					<div>
 						{title} <br />
@@ -19,7 +20,7 @@ const RequestModal = (props: any) => {
 					</div>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button>確認</Button>
+					<Button onClick={() => submit()}>確認</Button>
 					<Button color="gray" onClick={() => changeStatus(false)}>
 						閉じる
 					</Button>
