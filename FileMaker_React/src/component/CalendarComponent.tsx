@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { DetailsModal, RegisterModal, RequestModal } from "./Modal";
+import { PostChange } from "./Req/PostChange";
+// import { FormProvider, useForm } from "react-hook-form";
 
 const cn = (...inputs: any) => twMerge(clsx(inputs));
 
@@ -375,11 +377,11 @@ const Information = (content: string, schedules: any, setOpenModalRegister?: any
 	const matchingSchedules = schedules.filter(
 		(item: any) => item.tarrget_date === content
 	);
+	// const methods = useForm();
+
 	const [openModal, setOpenModal] = useState(false);
 
-	const handleSubmit = (e: any) => {
-		e.preventDefault();
-	};
+
 	return (
 		<div className="">
 			<h4 className="hidden text-2xl text-center md:block">{content}</h4>
@@ -400,17 +402,14 @@ const Information = (content: string, schedules: any, setOpenModalRegister?: any
 						{item.factory_name} <br />
 						{item.times} <br />
 					</div>
-					<RequestModal
-						status={openModal}
-						changeStatus={setOpenModal}
-						title={`${content} ⁂ ${item.overview}`}
-						hopital={item.factory_name}
-						submit={handleSubmit}
-					>
-						<form key={item.id} action="" onSubmit={handleSubmit}>
-							
-						</form>
-					</RequestModal>
+						<RequestModal
+							status={openModal}
+							changeStatus={setOpenModal}
+							title={`${content} ⁂ ${item.overview}`}
+							hopital={item.factory_name}
+						>
+							<PostChange jobInfo={item} />
+						</RequestModal>
 				</div>
 			))}
 		</div>

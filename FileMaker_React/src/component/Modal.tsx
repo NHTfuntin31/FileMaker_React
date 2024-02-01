@@ -1,8 +1,16 @@
 
 import { Button, Modal } from 'flowbite-react';
+import { FormProvider, useForm } from 'react-hook-form';
+
 
 const RequestModal = (props: any) => {
-	const {status, changeStatus, children, title, hopital, submit} = props;
+	const {status, changeStatus, children, title, hopital} = props;
+
+	const methods  = useForm();
+
+	const submit = (data: any) => {
+		console.log(data);
+	}
 
 	return (
 		<>
@@ -13,19 +21,21 @@ const RequestModal = (props: any) => {
 						{hopital}
 					</div>
 				</Modal.Header>
-				<Modal.Body>
-					<div className="space-y-6">
-						<div>
-						{children}
-						</div>
-					</div>
-				</Modal.Body>
-				<Modal.Footer>
-					<Button onClick={(e) => submit(e)}>確認</Button>
-					<Button color="gray" onClick={() => changeStatus(false)}>
-						閉じる
-					</Button>
-				</Modal.Footer>
+				<form onSubmit={methods.handleSubmit(submit)}>
+					<FormProvider {...methods}>
+						<Modal.Body>
+							<div className="space-y-6">
+								{children}
+							</div>
+						</Modal.Body>
+						<Modal.Footer>
+							<Button onSubmit={methods.handleSubmit(submit)}>確認</Button>
+							<Button color="gray" onClick={() => changeStatus(false)}>
+								閉じる
+							</Button>
+						</Modal.Footer>
+					</FormProvider>
+				</form>
 			</Modal>
 		</>
 	);

@@ -35,3 +35,33 @@ export const RegisterSchema = z.object({
 			'pdf, excel',
 		),
 })
+
+export const DoctorSchema = z.object({
+	id: z.number(),
+	edoctor_id: z.string(),
+	no: z.number(),
+	target_date: z.string(),
+	display_char: z.string(),
+	job_no: z.string(),
+	time_zone: z.string(),
+	times: z.string(),
+	start_time: z.any(),
+	end_time: z.any(),
+	classification:z.string(),
+	cancel: z.any(),
+	factory_name: z.string(),
+	address: z.string(),
+	overview: z.string(),
+	detail: z.string(),
+})
+
+export const DoctorUpdateTest = z.object({
+	start_time: z.any(),
+	end_time: z.any(),
+	classification:z.string(),
+	cancel: z.any(),
+	factory_name: z.string(),
+	address: z.string(),
+	overview: z.string(),
+	detail: z.string(),
+})

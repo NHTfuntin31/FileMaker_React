@@ -1,6 +1,7 @@
 
 ① 既存データ修正
-job_noに値が入っている場合、以下の項目のみ変更可能・削除不可
+job_noに値が入っている場合、
+以下の項目のみ変更可能・削除不可
 以下の項目以外は、元のデータをそのまま送る。
 "cancel": false,
 "factory_name": "社会医療法人社団　尚篤会　赤心堂病院",
@@ -21,7 +22,8 @@ job_noに値が入っている場合、以下の項目のみ変更可能・削�
 "times": "",　入力不要
 "start_time": "HH:MM:SS", 必須
 "end_time": "HH:MM:SS","　必須
-classification":"02",　コードマスター1201から選択"cancel": false,　固定値
+classification":"02",　コードマスター1201から選択
+"cancel": false,　固定値
 "factory_name": "社会医療法人社団　尚篤会　赤心堂病院",　入力任意
 "address": "",　入力任意
 "overview": "スポット勤務",　入力必須
