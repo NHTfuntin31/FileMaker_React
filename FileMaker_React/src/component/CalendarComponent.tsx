@@ -24,19 +24,19 @@ const swipePower = (offset: number, velocity: number) => {
 const variants = {
 	enter: (direction: number) => {
 		return {
-			y: direction > 0 ? 100 : direction === 0 ? 0 : -100,
+			x: direction > 0 ? 1000 : direction === 0 ? 0 : -1000,
 			opacity: 0,
 		};
 	},
 	center: {
 		zIndex: 1,
-		y: 0,
+		x: 0,
 		opacity: 1,
 	},
 	exit: (direction: number) => {
 		return {
 			zIndex: 0,
-			y: direction < 0 ? 100 : -100,
+			x: direction < 0 ? 1000 : -1000,
 			opacity: 0,
 		};
 	},
@@ -55,28 +55,18 @@ const CarouselArea = ({ page, direction, children, onPrev, onNext }: any) => {
 			animate="center"
 			exit="exit"
 			transition={{
-				y: { type: "spring", stiffness: 300, damping: 15 },
-				opacity: { duration: 0.5 },
+				x: { type: "spring", stiffness: 300, damping: 30 },
+				opacity: { duration: 0.2 },
 			}}
-			drag="y"
+			drag="x"
 			dragConstraints={{ left: 0, right: 0 }}
 			dragElastic={1}
-			onDragEnd={(_e: any, { offset, velocity }) => {
-				const swipe = swipePower(offset.y, velocity.y);
+			onDragEnd={(_e, { offset, velocity }) => {
+				const swipe = swipePower(offset.x, velocity.x);
 				if (swipe < -swipeConfidenceThreshold) {
 					onNext();
 				} else if (swipe > swipeConfidenceThreshold) {
 					onPrev();
-				}
-			}}
-			onWheel={(e: any) => {
-				const delta = e.deltaY;
-				if (Math.abs(delta) > 1) {
-					if (delta > 0) {
-						onNext();
-					} else if (delta < 0) {
-						onPrev();
-					}
 				}
 			}}
 		>
@@ -180,18 +170,9 @@ const getCalendar = (year: number, month: number, startOnMonday: boolean) => {
 		mm = 12;
 	}
 
-	// const yy_m = (mm - 1) == 0 ? yy - 1 : yy
-	const yy_p = mm + 1 == 13 ? yy + 1 : yy;
-	// const mm_m = (mm - 1) == 0 ? 12 : mm - 1
-	const mm_p = mm + 1 == 13 ? 1 : mm + 1;
-
-	// const calendar_m = getData(yy_m, mm_m, startOnMonday);
 	const calendar = getData(yy, mm, startOnMonday);
-	const calendar_p = getData(yy_p, mm_p, startOnMonday);
 	const result = [
-		// { year: yy_m, month: mm_m, calendar: calendar_m },
 		{ year: yy, month: mm, calendar: calendar },
-		{ year: yy_p, month: mm_p, calendar: calendar_p },
 	];
 
 	return result;
@@ -255,10 +236,6 @@ const Calendar = (props: any) => {
 								{week.map((e, _key) => {
 									return (
 										<>
-											{/* {((index == 0 && key < 2) || (index == 2 && key > 2))
-												? ""
-												: 
-												( */}
 											<div
 												key={`day-${_key}`}
 												className={cn(
