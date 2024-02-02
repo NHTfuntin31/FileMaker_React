@@ -47,3 +47,31 @@ export interface DoctorFormTestI {
 export interface LoadingI {
 	show: boolean;
 }
+
+export type ScheduleType = {
+	edoctor_id: string;
+	id: number;
+	no: number;
+	tarrget_date: string;
+	display_char: string;
+	job_no: string;
+	time_zone: string;
+	times: string;
+	start_time: any;
+	end_time: any;
+	classification: string;
+	cancel: boolean;
+	factory_name: string;
+	address: string;
+	overview: string;
+	detail: string;
+};
+
+export type ScheduleCalendarProps = {
+	id?: string;
+	schedules: ScheduleType[];
+	className?: string;
+	defaultYear?: number;
+	defaultMonth?: number;
+	startOnMonday?: boolean;
+};

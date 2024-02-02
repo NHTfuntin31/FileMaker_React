@@ -1,47 +1,16 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { DetailsModal, RegisterModal, RequestModal } from "./Modal";
-import { PostChange } from "./Req/PostChange";
+import { CalendarModal } from "./Modal";
 import { useForm } from "react-hook-form";
 import { DoctorUpdateTest } from "../utils/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { FormProvider, useForm } from "react-hook-form";
+import { ScheduleCalendarProps } from "../utils/interface";
+import { PostNew } from "./Req/PostNew";
+import { Information } from "./HospitalList";
 
 const cn = (...inputs: any) => twMerge(clsx(inputs));
-
-/************************************
-	type
-************************************/
-
-type ScheduleType = {
-	edoctor_id: string;
-	id: number;
-	no: number;
-	tarrget_date: string;
-	display_char: string;
-	job_no: string;
-	time_zone: string;
-	times: string;
-	start_time: any;
-	end_time: any;
-	classification: string;
-	cancel: boolean;
-	factory_name: string;
-	address: string;
-	overview: string;
-	detail: string;
-};
-
-type ScheduleCalendarProps = {
-	id?: string;
-	schedules: ScheduleType[];
-	className?: string;
-	defaultYear?: number;
-	defaultMonth?: number;
-	startOnMonday?: boolean;
-};
 
 /************************************
 	animation
@@ -372,64 +341,7 @@ const Calendar = (props: any) => {
 	);
 };
 
-/************************************
-	Information
-************************************/
 
-const Information = (content: string, schedules: any, setOpenModalRegister?: any): ReactNode => {
-	const matchingSchedules = schedules.filter(
-		(item: any) => item.tarrget_date === content
-	);
-
-	const form = useForm({
-		resolver: zodResolver(DoctorUpdateTest),
-	});
-	// const methods = useForm();
-
-	const [openModal, setOpenModal] = useState(false);
-
-	const onSubmit = (data: any) => {
-		console.log(data);
-	}
-	return (
-		<div className="">
-			<h4 className="hidden text-2xl text-center md:block">{content}</h4>
-			<button 
-				className="border rounded-lg p-2 bg-sky-100 text-black hover:font-bold transition duration-500 ease-in-out mb-3 md:hidden"
-				onClick={() => setOpenModalRegister(true)}
-				>
-				スケジュールを追加
-			</button>
-			{matchingSchedules.map((item: any) => (
-				<div key={item.id} className="whitespace-pre-line mb-4">
-					{/* <h4 className="text-2xl text-center">{content}</h4> */}
-					<div
-						className="bg-white border rounded-md p-2 hover:bg-slate-600 hover:text-white cursor-pointer transition duration-500 ease-in-out"
-						onClick={() => setOpenModal(true)}
-					>
-						{item.overview} <br />
-						{item.factory_name} <br />
-						{item.times} <br />
-					</div>
-					<form onSubmit={form.handleSubmit(onSubmit)}>
-						<RequestModal
-							status={openModal}
-							changeStatus={()=>{
-								form.reset()
-								setOpenModal(false)
-							}}
-							title={`${content} ⁂ ${item.overview}`}
-							hopital={item.factory_name}
-							submit={form.handleSubmit(onSubmit)}
-						>
-							<PostChange jobInfo={item} form={form} />
-						</RequestModal>
-					</form>
-				</div>
-			))}
-		</div>
-	);
-};
 
 /************************************
 	schedule component
@@ -451,6 +363,10 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	const [openModalInfo, setOpenModalInfo] = useState(false);
 	const [openModalRegister, setOpenModalRegister] = useState(false);
 	const [[page, direction], setPage] = React.useState([0, 0]);
+
+	const form = useForm({
+		resolver: zodResolver(DoctorUpdateTest),
+	});
 
 	const paginate = (newDirection: number) => {
 		setPage([page + newDirection, newDirection]);
@@ -488,12 +404,6 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 
 	return (
 		<div id={id} className={cn("flex w-[100%] flex-col", className)}>
-			{/* <div className="calendar-header mb-3 flex w-[100%] items-center justify-between px-1">
-				<div className="buttons mt-1 flex items-center gap-5 text-sm font-black">
-					<button onClick={onPrev}>先月</button>
-					<button onClick={onNext}>来月</button>
-				</div>
-			</div> */}
 			<div className="flex md:gap-2">
 				<div className="flex gap-2 w-full md:w-1/2">
 					<div className="h-[100%] w-[100%] flex-1 select-none">
@@ -532,23 +442,29 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 						スケジュールを追加
 					</button>
 				</div>
+
+				{/* スケジュールを追加モダール */}
 				<div>
-					<RegisterModal
+					<CalendarModal
 						status={openModalRegister}
 						changeStatus={setOpenModalRegister}
-						title={content}
+						title={`${content} \n ⁂ スケジュールを追`}
 					>
-						<p className="text-white">情報を入力</p>
-					</RegisterModal>
+						<PostNew form={form} />
+					</CalendarModal>
 				</div>
+
+				{/* スマホ対応モダール */}
 				<div>
-					<DetailsModal
+					<CalendarModal
 						status={openModalInfo}
 						changeStatus={setOpenModalInfo}
 						title={content}
+						notFooter
+						mobile
 					>
 						{Information(content, schedules, setOpenModalRegister)}
-					</DetailsModal>
+					</CalendarModal>
 				</div>
 			</div>
 		</div>

@@ -4,14 +4,14 @@ const formFields = [
 	// { name: 'edoctor_id', label: 'eDoctor ID' },
 	// { name: 'target_date', label: 'Target Date' },
 	// { name: 'display_char', label: 'Display Char' },
-	{ name: 'start_time', label: 'Start Time' },
-	{ name: 'end_time', label: 'End Time' },
-	{ name: 'classification', label: 'Classification' },
-	{ name: 'cancel', label: 'Cancel' },
+	{ name: 'start_time', label: 'Start Time', type: 'time' },
+	{ name: 'end_time', label: 'End Time', type: 'time' },
+	// { name: 'classification', label: 'Classification' },
+	// { name: 'cancel', label: 'Cancel' },
 	{ name: 'factory_name', label: 'Factory Name' },
 	{ name: 'address', label: 'Address' },
 	{ name: 'overview', label: 'Overview' },
-	{ name: 'detail', label: 'Detail' },
+	{ name: 'detail', label: 'Detail', type: 'textarea' },
 ];
 
 
@@ -19,31 +19,29 @@ export const PostChange = (props: any) => {
 	const { jobInfo, form } = props
 	const { register, formState: { errors } } = form;
 
-
 	return (
 		<div className="flex flex-wrap">
 			{formFields.map((field, index) => {
-				const time = (index == 0 || index == 1)
 				return (
-					<div key={field.name}
+					<div key={index}
 						className={
 							"text-black pb-2 flex flex-col md:flex-row "
-							+ (index == formFields.length - 1 ? "md:flex-col " : "")
-							+ (time ? "w-1/2" : "w-full justify-between")
+							+ (field.type == "textarea" ? "md:flex-col " : "")
+							+ (field.type == "time" ? "w-1/2" : "w-full justify-between")
 						}
 					>
-						<div className={"text-white p-1 w-full " + (time ? "md:w-1/3" : "md:w-1/5")}>{field.label}:</div>
+						<div className={"text-white p-1 w-full " + (field.type == "time" ? "md:w-1/3" : "md:w-1/5")}>{field.label}:</div>
 
 
-						{index == formFields.length - 1 ?
+						{field.type == "textarea" ?
 							<textarea className="border rounded-lg p-1 w-full"
 								placeholder={field.name}
 								defaultValue={jobInfo[field.name]}
 								{...register(field.name)}
 							/>
-							: time ? <input
+							: field.type == "time" ? <input
 								type="time"
-								className={"border rounded-lg p-1 " + (time ? "w-1/2" : "w-4/5")}
+								className={"border rounded-lg p-1 " + ( field.type == "time" ? "w-1/2" : "w-4/5")}
 								placeholder={field.name}
 								defaultValue={jobInfo[field.name]}
 								{...register(field.name)}

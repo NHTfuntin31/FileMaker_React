@@ -3,7 +3,7 @@
 job_noに値が入っている場合、
 以下の項目のみ変更可能・削除不可
 以下の項目以外は、元のデータをそのまま送る。
-"cancel": false,
+# "cancel": false,
 "factory_name": "社会医療法人社団　尚篤会　赤心堂病院",
 "address": "",
 "overview": "スポット勤務",
