@@ -7,8 +7,8 @@ import { useForm } from "react-hook-form";
 import { DoctorUpdateTest } from "../utils/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ScheduleCalendarProps } from "../utils/interface";
-import { PostNew } from "./Req/PostNew";
 import { Information } from "./HospitalList";
+import { PostChange } from "./Req/PostChange";
 
 const cn = (...inputs: any) => twMerge(clsx(inputs));
 
@@ -219,13 +219,12 @@ const WeekRow = ({
 const Calendar = (props: any) => {
 	const { year, month, schedules, onClick, startOnMonday, selectedDay } = props;
 	const data = getCalendar(year, month, startOnMonday);
+	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
+
 	return (
 		<div className="flex gap-1 flex-col">
 			{data.map((item: any, index: number) => (
 				<div className="flex h-[100%] w-[100%] flex-1 flex-col" key={index}>
-					<h2 className="heading-2 text-xl font-bold mt-3 ml-2">
-						{item.year}年{toDouble(item.month)}月
-					</h2>
 					<WeekHeader startOnMonday={startOnMonday} />
 					{item.calendar.map((week: string[], key: number) => {
 						return (
@@ -239,42 +238,42 @@ const Calendar = (props: any) => {
 											<div
 												key={`day-${_key}`}
 												className={cn(
-													`flex flex-1 flex-col py-1 text-base font-medium`,
+													`flex flex-1 flex-col py-1 border-x text-base font-medium h-20 md:h-28 cursor-pointer hover:bg-sky-500`,
 													(key == 0 && +e > 15) || (key > 1 && +e < 7)
 														? "bg-gray-400 opacity-50"
+														: (selectedDay ==
+																`${item.year}/${toDouble(
+																	item.month
+																)}/${toDouble(e)}`) &&
+																!((key == 0 && +e > 15) || (key > 1 && +e < 7))
+																? " bg-sky-500 text-white"
 														: ""
 												)}
+												onClick={() =>
+													key === 0 && +e > 15
+														? onClick(
+															...caculatorMonth(
+																item.year,
+																item.month - 1
+															),
+															e
+														)
+														: key > 1 && +e < 7
+															? onClick(
+																...caculatorMonth(
+																	item.year,
+																	item.month + 1
+																),
+																e
+															)
+															: onClick(item.year, item.month, e)
+												}
 											>
 												<div>
 													<span
-														onClick={() =>
-															key === 0 && +e > 15
-																? onClick(
-																	...caculatorMonth(
-																		item.year,
-																		item.month - 1
-																	),
-																	e
-																)
-																: key > 1 && +e < 7
-																	? onClick(
-																		...caculatorMonth(
-																			item.year,
-																			item.month + 1
-																		),
-																		e
-																	)
-																	: onClick(item.year, item.month, e)
-														}
-														className={
-															"cursor-pointer hover:bg-sky-500 hover:text-white py-1 px-2 rounded-full transition duration-200 ease-in-out" +
-															(selectedDay ==
-																`${item.year}/${toDouble(
-																	item.month
-																)}/${toDouble(e)}` &&
-																!((key == 0 && +e > 15) || (key > 1 && +e < 7))
-																? " bg-sky-500 text-white"
-																: "")
+														
+														className={ today == `${item.year}/${item.month}/${e}` ?
+															"px-2 py-1 bg-sky-500 rounded-full" : ""
 														}
 													>
 														{e}
@@ -337,7 +336,6 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	const [m, setM]: any = useState(t.getMonth() + 1);
 	const [content, setContent] = useState("");
 
-	const [openModalInfo, setOpenModalInfo] = useState(false);
 	const [openModalRegister, setOpenModalRegister] = useState(false);
 	const [[page, direction], setPage] = React.useState([0, 0]);
 
@@ -356,8 +354,11 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 				? `${y}/${toDouble(m)}/${toDouble(d)}/${t}`
 				: `${y}/${toDouble(m)}/${toDouble(d)}`
 		);
-		setOpenModalInfo(true);
 	};
+	const onSubmit = (data: any) => {
+		console.log(data);
+		//追加フォーム
+	}
 
 	const onNext = () => {
 		paginate(1);
@@ -381,8 +382,17 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 
 	return (
 		<div id={id} className={cn("flex w-[100%] flex-col", className)}>
-			<div className="flex md:gap-2">
-				<div className="flex gap-2 w-full md:w-1/2">
+			<div className="calendar-header mb-3 flex w-[100%] items-center justify-between px-1">
+				<h2 className="heading-2 text-xl font-bold">
+					{y}年{toDouble(m)}月
+				</h2>
+				<div className="buttons mt-1 flex items-center gap-5 text-sm font-black">
+					<button onClick={onPrev}>先月</button>
+					<button onClick={onNext}>来月</button>
+				</div>
+			</div>
+			<div className="flex flex-col md:gap-2">
+				<div className="flex gap-2 w-full">
 					<div className="h-[100%] w-[100%] flex-1 select-none">
 						<div
 							id={id}
@@ -409,39 +419,36 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 					</div>
 				</div>
 				<div
-					className={content ? "hidden md:block md:w-1/2 md:ml-10" : "hidden"}
+					className=""
 				>
+					<div className="pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500 mt-14 mb-5">案件詳細</div>
 					{Information(content, schedules)}
-					<button
-						className="border rounded-lg p-2 hover:bg-sky-300 hover:text-white hover:font-bold transition duration-500 ease-in-out"
-						onClick={() => setOpenModalRegister(true)}
-					>
-						スケジュールを追加
-					</button>
+					<div className="flex justify-center py-2">
+						<button
+							className="w-2/3 border rounded-lg p-2 bg-sky-400 hover:bg-sky-700 hover:text-white hover:font-bold transition duration-500 ease-in-out"
+							onClick={() => setOpenModalRegister(true)}
+						>
+							スケジュールを追加
+						</button>
+					</div>
+
 				</div>
 
 				{/* スケジュールを追加モダール */}
 				<div>
-					<CalendarModal
-						status={openModalRegister}
-						changeStatus={setOpenModalRegister}
-						title={`${content} \n ⁂ スケジュールを追`}
-					>
-						<PostNew form={form} />
-					</CalendarModal>
-				</div>
-
-				{/* スマホ対応モダール */}
-				<div>
-					<CalendarModal
-						status={openModalInfo}
-						changeStatus={setOpenModalInfo}
-						title={content}
-						notFooter
-						mobile
-					>
-						{Information(content, schedules, setOpenModalRegister)}
-					</CalendarModal>
+				<form onSubmit={form.handleSubmit(onSubmit)}>
+							<CalendarModal
+								status={openModalRegister}
+								changeStatus={() => {
+									form.reset()
+									setOpenModalRegister(false)
+								}}
+								title={`${content} ⁂ スケジュールを追加`}
+								submit={form.handleSubmit(onSubmit)}
+							>
+								<PostChange jobInfo="" form={form}/>
+							</CalendarModal>
+						</form>
 				</div>
 			</div>
 		</div>

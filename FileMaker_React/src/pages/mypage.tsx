@@ -83,7 +83,7 @@ const MyPage = () => {
 
 	return (
 		<>
-			<div className="bg-sky-600 w-full h-screen flex flex-col text-white overflow-y-hidden">
+			<div className="bg-sky-600 w-full h-screen flex flex-col text-white">
 				<div className="flex justify-between px-5 py-4">
 					<div>FILEMAKER</div>
 					<div>
@@ -109,7 +109,7 @@ const MyPage = () => {
 					</div>
 				</div>
 
-				<div className="flex flex-col md:flex-row bg-slate-800 h-svh md:justify-between">
+				<div className="flex flex-col bg-slate-800 h-svh md:justify-between">
 					<div className="w-full flex md:w-1/5 md:flex-col">
 						{/* <li className="px-2 hover:bg-secondary-100">One</li> */}
 						{/* slice(1). */}
@@ -122,8 +122,11 @@ const MyPage = () => {
 							/>
 						))}
 					</div>
-					<div className="bg-white w-full md:w-4/5">
-						<Calendar />
+					<div className="bg-white w-full content-center flex items-center justify-center">
+						<div className="w-full max-w-5xl">
+							<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">カレンダー</div>
+							<Calendar />
+						</div>
 					</div>
 				</div>
 			</div>

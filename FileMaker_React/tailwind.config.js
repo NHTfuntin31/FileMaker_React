@@ -8,5 +8,22 @@ export default {
     extend: {},
   },
   plugins: [],
+  safelist: [
+    // Dynamic class names that you want to keep
+    'bg-purple-700',
+    'bg-orange-700',
+    'bg-green-700',
+    'bg-pink-700',
+    'border-purple-700',
+    'border-orange-700',
+    'border-green-700',
+    'border-pink-700',
+    'bg-pink-700',
+    'text-purple-700',
+    'text-orange-700',
+    'text-green-700',
+    'text-pink-700',
+    // Add more dynamic class names as needed
+  ],
 }
 
