@@ -10,6 +10,15 @@ import { ScheduleCalendarProps } from "../utils/interface";
 import { Information } from "./HospitalList";
 import { PostChange } from "./Req/PostChange";
 
+import {
+	Menu,
+	Item,
+	Separator,
+	Submenu,
+	useContextMenu
+} from "react-contexify";
+import "react-contexify/dist/ReactContexify.css";
+
 const cn = (...inputs: any) => twMerge(clsx(inputs));
 
 /************************************
@@ -221,8 +230,60 @@ const Calendar = (props: any) => {
 	const data = getCalendar(year, month, startOnMonday);
 	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
 
+	const MENU_ID = "menu-id";
+
+	const handleContextMenu = (event: any) => {
+		// Hiển thị menu chuột phải tại vị trí click chuột
+		show(event);
+	};
+
+	const { show } = useContextMenu({
+		id: MENU_ID
+	});
+
+	function handleItemClick({ event, props, triggerEvent, data }: { event?: any, props?: any, triggerEvent?: any, data?: any }) {
+		console.log(event, props, triggerEvent, data);
+	}
+
+	function displayMenu(e: any) {
+		// put whatever custom logic you need
+		// you can even decide to not display the Menu
+		show({
+			event: e,
+		});
+	}
+
 	return (
 		<div className="flex gap-1 flex-col">
+			<div>
+				{/* just display the menu on right click */}
+				<div onContextMenu={show}>
+					Right click inside the box
+				</div>
+				{/* run custom logic then display the menu */}
+				<div onContextMenu={displayMenu}>
+					Right click inside the box
+				</div>
+
+
+				<Menu id={MENU_ID}>
+					<Item onClick={handleItemClick}>
+						Item 1
+					</Item>
+					<Item onClick={handleItemClick}>
+						Item 2
+					</Item>
+					<Separator />
+					<Item disabled>Disabled</Item>
+					<Separator />
+					<Submenu label="Submenu">
+						<Item onClick={handleItemClick}>
+							Sub Item 1
+						</Item>
+						<Item onClick={handleItemClick}>Sub Item 2</Item>
+					</Submenu>
+				</Menu>
+			</div>
 			{data.map((item: any, index: number) => (
 				<div className="flex h-[100%] w-[100%] flex-1 flex-col" key={index}>
 					<WeekHeader startOnMonday={startOnMonday} />
@@ -242,12 +303,12 @@ const Calendar = (props: any) => {
 													(key == 0 && +e > 15) || (key > 1 && +e < 7)
 														? "bg-gray-400 opacity-50"
 														: (selectedDay ==
-																`${item.year}/${toDouble(
-																	item.month
-																)}/${toDouble(e)}`) &&
-																!((key == 0 && +e > 15) || (key > 1 && +e < 7))
-																? " bg-sky-500 text-white"
-														: ""
+															`${item.year}/${toDouble(
+																item.month
+															)}/${toDouble(e)}`) &&
+															!((key == 0 && +e > 15) || (key > 1 && +e < 7))
+															? " bg-sky-500 text-white"
+															: ""
 												)}
 												onClick={() =>
 													key === 0 && +e > 15
@@ -271,8 +332,8 @@ const Calendar = (props: any) => {
 											>
 												<div>
 													<span
-														
-														className={ today == `${item.year}/${item.month}/${e}` ?
+
+														className={today == `${item.year}/${item.month}/${e}` ?
 															"px-2 py-1 bg-sky-500 rounded-full" : ""
 														}
 													>
@@ -436,19 +497,19 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 
 				{/* スケジュールを追加モダール */}
 				<div>
-				<form onSubmit={form.handleSubmit(onSubmit)}>
-							<CalendarModal
-								status={openModalRegister}
-								changeStatus={() => {
-									form.reset()
-									setOpenModalRegister(false)
-								}}
-								title={`${content} ⁂ スケジュールを追加`}
-								submit={form.handleSubmit(onSubmit)}
-							>
-								<PostChange jobInfo="" form={form}/>
-							</CalendarModal>
-						</form>
+					<form onSubmit={form.handleSubmit(onSubmit)}>
+						<CalendarModal
+							status={openModalRegister}
+							changeStatus={() => {
+								form.reset()
+								setOpenModalRegister(false)
+							}}
+							title={`${content} ⁂ スケジュールを追加`}
+							submit={form.handleSubmit(onSubmit)}
+						>
+							<PostChange jobInfo="" form={form} />
+						</CalendarModal>
+					</form>
 				</div>
 			</div>
 		</div>
