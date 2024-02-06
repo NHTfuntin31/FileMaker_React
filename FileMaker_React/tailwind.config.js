@@ -14,7 +14,7 @@ export default {
     'bg-orange-700',
     'bg-green-700',
     'bg-pink-700',
-    'bg-slate-700',
+    'bg-slate-200',
     'bg-sky-700',
     'bg-amber-700',
 
