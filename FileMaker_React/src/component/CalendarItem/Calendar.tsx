@@ -165,13 +165,16 @@ export const Calendar = (props: any) => {
 																			item.month
 																		)}/${toDouble(e)}` &&
 																		!((key === 0 && +e > 15) || (key > 1 && +e < 7))
-																).map((s: any) => {
+																)
+																
+																const checkTimes = hospital.map((s: any) => {
 																	[start_time, end_time] = s.times.split('～').map((time: string) => time.replace("：", ":"));
+																	console.log(start_time, end_time);
+																	return isTimeInRange(start_time, end_time, shift.start, shift.end)
+
 																})
 
-																
-															
-															const checkTimes = isTimeInRange(start_time, end_time, shift.start, shift.end)
+															// const checkTimes = isTimeInRange(start_time, end_time, shift.start, shift.end)
 															if (!((key === 0 && +e > 15) || (key > 1 && +e < 7))) {
 																return (
 																	<span
