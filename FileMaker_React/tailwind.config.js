@@ -14,11 +14,15 @@ export default {
     'bg-orange-700',
     'bg-green-700',
     'bg-pink-700',
+    'bg-slate-700',
+    'bg-sky-700',
+    'bg-amber-700',
+
     'border-purple-700',
     'border-orange-700',
     'border-green-700',
     'border-pink-700',
-    'bg-pink-700',
+
     'text-purple-700',
     'text-orange-700',
     'text-green-700',
