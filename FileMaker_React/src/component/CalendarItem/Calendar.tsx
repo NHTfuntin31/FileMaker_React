@@ -111,7 +111,7 @@ export const Calendar = (props: any) => {
 												<div
 													key={`day-${_key}`}
 													className={cn(
-														`flex flex-1 flex-col py-1 border-x text-base font-medium h-20 md:h-28 cursor-pointer hover:bg-sky-500`,
+														`flex flex-1 flex-col py-1 border-x text-base font-medium h-auto md:h-28 cursor-pointer hover:bg-sky-500`,
 														(key == 0 && +e > 15) || (key > 1 && +e < 7)
 															? "bg-gray-400 opacity-50"
 															: (selectedDay ==
@@ -169,16 +169,13 @@ export const Calendar = (props: any) => {
 																
 																const checkTimes = hospital.map((s: any) => {
 																	[start_time, end_time] = s.times.split('～').map((time: string) => time.replace("：", ":"));
-																	console.log(start_time, end_time);
 																	return isTimeInRange(start_time, end_time, shift.start, shift.end)
-
 																})
-
-															// const checkTimes = isTimeInRange(start_time, end_time, shift.start, shift.end)
+																
 															if (!((key === 0 && +e > 15) || (key > 1 && +e < 7))) {
 																return (
 																	<span
-																		className={`bg-${checkTimes ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-sm text-black hover:opacity-50`}
+																		className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm`}
 																		onContextMenu={(e) => handleContextMenu(e, start_time, hospital)}
 																	>{shift.label}</span>
 																)
