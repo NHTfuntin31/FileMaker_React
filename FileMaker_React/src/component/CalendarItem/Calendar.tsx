@@ -52,7 +52,6 @@ export const Calendar = (props: any) => {
 		let key: any;
 		switch (id) {
 			case "add":
-				console.log("add", props.data, props.schema)
 				setAdd("add")
 				if(props.key == "gozen"){
 					key = {
@@ -74,13 +73,11 @@ export const Calendar = (props: any) => {
 				setOpenModalRegister(true)
 				break;
 			case "change":
-				console.log("change", props.data);
 				setAdd("change")
 				setDefaultData(props.schema)
 				setOpenModalRegister(true)
 				break;
 			case "delete":
-				console.log("delete", props.data, props.schema);
 				setAdd("delete")
 				setOpenModalRegister(true)
 				break;
@@ -114,7 +111,7 @@ export const Calendar = (props: any) => {
 		//編集フォーム
 		const mergedObject = Object.assign({}, data, key);
 		console.log(mergedObject);
-		
+
 		//追加フォーム
 		switch (add) {
 			case "add":
