@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { DoctorUpdateTest } from "../utils/validationSchema";
 import { CalendarModal } from "./Modal";
 import { PostChange } from "./Req/PostChange";
+import { userInfo } from "../api/FileMakerApi";
 
 
 // "Code": "{\"01\": \"当社定期\", \"02\": \"当社Spot\", \"03\": \"当社検診\", \"10\": \"他社紹介\", \"11\": \"定期\", \"12\": \"Spot\", \"13\": \"検診\", \"14\": \"常勤\", \"91\": \"プライベート\"}",
@@ -23,6 +24,9 @@ export const Information = (content: string, schedules: any): ReactNode => {
 	const matchingSchedules = schedules.filter(
 		(item: any) => item.tarrget_date === content
 	);
+
+	const userData = userInfo()
+	const doctor_ID = userData.UserInfo.UserID;
 	
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
@@ -31,9 +35,20 @@ export const Information = (content: string, schedules: any): ReactNode => {
 	const [openModal, setOpenModal] = useState(false);
 
 	const onSubmit = (data: any) => {
-		console.log(data);
-
+		// console.log(data);
+		const key = {
+			id: null,
+			edoctor_id: doctor_ID,
+			no: null,
+			job_no: null,
+			times: "",
+			classification: "02",
+			cancel: false,
+			display_char: "▽"
+		}
 		//編集フォーム
+		const mergedObject = Object.assign({}, data, key);
+		console.log(mergedObject);
 	}
 	return (
 		<div>

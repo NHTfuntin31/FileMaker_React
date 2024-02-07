@@ -11,6 +11,7 @@ import { PostChange } from "./Req/PostChange";
 
 import { CarouselArea, cn, toDouble } from "./CalendarItem/Effect";
 import { Calendar } from "./CalendarItem/Calendar";
+import { userInfo } from "../api/FileMakerApi";
 
 
 
@@ -21,6 +22,9 @@ import { Calendar } from "./CalendarItem/Calendar";
 export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	const { id, schedules, className, defaultYear, defaultMonth, startOnMonday } =
 		props;
+
+	const userData = userInfo()
+	const doctor_ID = userData.UserInfo.UserID;
 	let t: any = null;
 	if (defaultYear && defaultMonth) {
 		t = new Date(`${defaultYear}-${defaultMonth}-1`);
@@ -52,8 +56,21 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	};
 	
 	const onSubmit = (data: any) => {
-		console.log(data);
 		//追加フォーム
+
+		const key = {
+			id: null,
+			edoctor_id: doctor_ID,
+			no: null,
+			job_no: null,
+			times: "",
+			classification: "02",
+			cancel: false,
+			display_char: "▽"
+		}
+		const mergedObject = Object.assign({}, data, key);
+		console.log(mergedObject);
+
 	}
 
 	const onNext = () => {

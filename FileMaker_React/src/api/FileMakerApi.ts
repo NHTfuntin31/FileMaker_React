@@ -32,4 +32,10 @@ const fetchData = async () => {
 	}
 };
 
-export {LoginApi, fetchData}
+const userInfo = () => {
+	const storedData = localStorage.getItem("isUser");
+	const userData = storedData ? JSON.parse(storedData) : "";
+	return userData
+}
+
+export {LoginApi, fetchData, userInfo}

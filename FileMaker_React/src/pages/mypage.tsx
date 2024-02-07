@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Evenodd_bot, Evenodd_left } from "../component/icon/evenodd";
+// import { Evenodd_bot, Evenodd_left } from "../component/icon/evenodd";
+import { Evenodd_left } from "../component/icon/evenodd";
 import Calendar from "./calendar";
+import { Header } from "../component/Header";
+import { userInfo } from "../api/FileMakerApi";
 
 interface MenuItem {
 	MenuNo: number;
@@ -16,34 +19,32 @@ interface DropdownMenuProps {
 }
 const MyPage = () => {
 	const navigate = useNavigate();
-	const [profile, setProfile] = useState<boolean>(false)
+	// const [profile, setProfile] = useState<boolean>(false)
 
 	const [menuStates, setMenuStates] = useState<{ [key: number]: boolean }>({});
 
-	const storedData = localStorage.getItem("isUser");
-	const userData = storedData ? JSON.parse(storedData) : "";
+	const userData = userInfo()
 	const sessionUserRef = useRef(userData);
-	
+
 	useEffect(() => {
-		if (!storedData) {
+		if (!userData) {
 			navigate("/")
 		}
-	}, [navigate, storedData])
-	if(!storedData){
+	}, [navigate, userData])
+	if (!userData) {
 		return <></>
 	}
 
 
-
-	const UserMenu = () => {
-		return (
-			sessionUserRef.current.Menu[0].DisplayName.slice(1).map((item: string, index: number) => (
-				<a key={index} href={sessionUserRef.current.Menu[0].Link[index]} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" id={`menu-item-${index}`}>
-					{item}
-				</a>
-			))
-		);
-	};
+	// const UserMenu = () => {
+	// 	return (
+	// 		sessionUserRef.current.Menu[0].DisplayName.slice(1).map((item: string, index: number) => (
+	// 			<a key={index} href={sessionUserRef.current.Menu[0].Link[index]} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" id={`menu-item-${index}`}>
+	// 				{item}
+	// 			</a>
+	// 		))
+	// 	);
+	// };
 
 	const TaskMenu: React.FC<DropdownMenuProps> = ({ menu, isOpen, toggleDropdown }) => {
 		return (
@@ -83,8 +84,9 @@ const MyPage = () => {
 
 	return (
 		<>
+			<Header />
 			<div className="bg-sky-600 w-full h-screen flex flex-col text-white">
-				<div className="flex justify-between px-5 py-4">
+				{/* <div className="flex justify-between px-5 py-4">
 					<div>FILEMAKER</div>
 					<div>
 						<div className="relative inline-block text-left">
@@ -107,10 +109,12 @@ const MyPage = () => {
 							}
 						</div>
 					</div>
-				</div>
+				</div> */}
+				
+
 
 				<div className="flex flex-col bg-slate-800 h-svh md:justify-between">
-					<div className="w-full flex md:w-1/5 md:flex-col">
+					<div className="hidden w-full md:w-1/5 md:flex-col">
 						{/* <li className="px-2 hover:bg-secondary-100">One</li> */}
 						{/* slice(1). */}
 						{sessionUserRef.current.Menu.map((menu: any) => (
