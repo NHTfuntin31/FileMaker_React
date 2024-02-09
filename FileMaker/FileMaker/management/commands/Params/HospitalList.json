@@ -1,0 +1,35 @@
+{
+    "Excel":{
+        "BasePath": "D:\\マーケットリサーチ\\受付",
+        "Offset": 2,
+        "Column":[
+            { "Col":1, "Key":"Clientcd", "Type": "int"},
+            { "Col":2, "Key":"病院名", "Type": "str"},
+            { "Col":3, "Key":"厚労省有無", "Type": "str"},
+            { "Col":5, "Key":"TEL", "Type": "str"},
+            { "Col":6, "Key":"ZIP", "Type": "str"},
+            { "Col":8, "Key":"医療機関CD", "Type": "str"},
+            { "Col":9, "Key":"HP/CL", "Type": "str"},
+            { "Col":10, "Key":"契約有無", "Type": "str"},
+            { "Col":11, "Key":"重複有無", "Type": "str"},
+            { "Col":12, "Key":"集計対象", "Type": "str"}
+        ]
+    },
+    "DocDB":{
+        "Collection": "新病院リスト_テーブル",
+        "Key": "統一クライアントコード",
+        "Column":{"郵便":1, "住所1":1, "住所2":1, "住所3":1, "代表取締役":1, "TEL":1, "病床数合計":1, "常勤医数":1, "非常勤医数":1 }
+    },
+    "RDB":{
+        "TableName": "hospital_list",
+        "UpdColumnMap":[
+            {"In": "Clientcd", "Out": "", "Type": ""},
+            {"In": "HP/CL", "Out": "", "Type": ""},
+            {"In": "契約有無", "Out": "", "Type": ""},
+            {"In": "重複有無", "Out": "", "Type": ""},
+            {"In": "集計対象", "Out": "", "Type": ""},
+            {"In": "更新履歴", "Out": "", "Type": ""}
+        ]
+    }
+}
+
