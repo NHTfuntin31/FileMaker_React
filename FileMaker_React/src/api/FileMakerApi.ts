@@ -24,7 +24,7 @@ const LoginApi = async (data: LoginFormI, navigate: NavigateFunction, setIsLoadi
 
 const fetchData = async () => {
 	try {
-		const response = await fetch('/src/fake_json/newschema.json');
+		const response = await fetch('http://osk-195:8080/api/mypage/schedule?edoctor_no=D021348');
 		const data = await response.json();
 		return data.Schedules
 	} catch (error) {

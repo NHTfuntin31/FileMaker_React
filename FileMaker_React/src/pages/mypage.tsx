@@ -86,32 +86,6 @@ const MyPage = () => {
 		<>
 			<Header />
 			<div className="bg-sky-600 w-full h-screen flex flex-col text-white">
-				{/* <div className="flex justify-between px-5 py-4">
-					<div>FILEMAKER</div>
-					<div>
-						<div className="relative inline-block text-left">
-							<div>
-								<button type="button" className="inline-flex w-full justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-									onClick={() => setProfile(!profile)}
-								>
-									{userData.UserInfo.Name}
-									<Evenodd_bot />
-								</button>
-							</div>
-							{
-								profile && (
-									<div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" >
-										<div className="py-1" role="none">
-											<UserMenu />
-										</div>
-									</div>
-								)
-							}
-						</div>
-					</div>
-				</div> */}
-				
-
 
 				<div className="flex flex-col bg-slate-800 h-svh md:justify-between">
 					<div className="hidden w-full md:w-1/5 md:flex-col">

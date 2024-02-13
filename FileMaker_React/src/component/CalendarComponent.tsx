@@ -12,6 +12,7 @@ import { PostChange } from "./Req/PostChange";
 import { CarouselArea, cn, toDouble } from "./CalendarItem/Effect";
 import { Calendar } from "./CalendarItem/Calendar";
 import { userInfo } from "../api/FileMakerApi";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 
 
@@ -54,7 +55,7 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 				: `${y}/${toDouble(m)}/${toDouble(d)}`
 		);
 	};
-	
+
 	const onSubmit = (data: any) => {
 		//追加フォーム
 
@@ -95,14 +96,12 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 
 	return (
 		<div id={id} className={cn("flex w-[100%] flex-col", className)}>
-			<div className="calendar-header mb-3 flex w-[100%] items-center justify-between px-1">
-				<h2 className="heading-2 text-xl font-bold">
-					{y}年{toDouble(m)}月
-				</h2>
-				<div className="buttons mt-1 flex items-center gap-5 text-sm font-black">
-					<button onClick={onPrev}>先月</button>
-					<button onClick={onNext}>来月</button>
-				</div>
+			<div className="calendar-header mb-3 flex w-[100%] items-center justify-center gap-3 px-1">
+					<button onClick={onPrev}><Icon icon="icon-park-outline:left-c" width="25" height="25"  style={{color: "black"}} /></button>
+					<h2 className="heading-2 text-3xl font-bold">
+						{y}年{toDouble(m)}月
+					</h2>
+					<button onClick={onNext}><Icon icon="icon-park-outline:right-c" width="25" height="25"  style={{color: "black"}} /></button>
 			</div>
 			<div className="flex flex-col md:gap-2">
 				<div className="flex gap-2 w-full">
