@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
 import { CalendarModal } from "./Modal";
@@ -11,7 +11,7 @@ import { PostChange } from "./Req/PostChange";
 
 import { CarouselArea, cn, toDouble } from "./CalendarItem/Effect";
 import { Calendar } from "./CalendarItem/Calendar";
-import { userInfo } from "../api/FileMakerApi";
+import { getSchema, postSchema, userInfo } from "../api/FileMakerApi";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 
@@ -20,12 +20,12 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 	schedule component
 ************************************/
 
-export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
+const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	const { id, schedules, className, defaultYear, defaultMonth, startOnMonday } =
 		props;
 
-	const userData = userInfo()
-	const doctor_ID = userData.UserInfo.UserID;
+	const doctor_ID = userInfo(true);
+	const doctor_Info = userInfo();
 	let t: any = null;
 	if (defaultYear && defaultMonth) {
 		t = new Date(`${defaultYear}-${defaultMonth}-1`);
@@ -58,21 +58,22 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 
 	const onSubmit = (data: any) => {
 
+		data.start_time = data.start_time + ':00';
+		data.end_time = data.end_time + ':00';
+
 		const key = {
-			id: null,
 			tarrget_date: content,
 			edoctor_id: doctor_ID,
-			no: null,
-			job_no: null,
-			times: "",
-			classification: "02",
-			cancel: false,
-			display_char: "▽"
 		}
 
 		//追加フォーム
-		const mergedObject = Object.assign({}, data, key);
-		console.log(mergedObject);
+		const mergedObject = {
+			Schedule : Object.assign({}, data, key)
+		}
+		const postData = Object.assign({}, doctor_Info, mergedObject);
+
+		console.log(postData);
+		postSchema(JSON.stringify(postData))
 
 	}
 
@@ -165,3 +166,36 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 		</div>
 	);
 };
+
+const CalendarComponent = ({ edoctorID }: { edoctorID: string }) => {
+	const [jsonData, setJsonData] = useState(null);
+
+	//変更必須
+	useEffect(() => {
+		const getSchemaAndSetState = async () => {
+			try {
+				const data = await getSchema(edoctorID);
+				setJsonData(data);
+			} catch (error) {
+				console.error('Error fetching JSON data:', error);
+			}
+		};
+
+		getSchemaAndSetState();
+	}, [edoctorID]);
+
+	if (!jsonData) {
+		return <div>Loading...</div>;
+	}
+	return (
+			<div className="w-full h-[100%] flex justify-center items-start text-black">
+				<div className="mx-5 my-3 md:mx-16 md:my-10 w-full">
+					<div className="w-full">
+						<ScheduleCalendar schedules={jsonData} className="w-[100%] h-[95vh]" startOnMonday />
+					</div>
+				</div>
+			</div>
+	)
+}
+
+export default CalendarComponent

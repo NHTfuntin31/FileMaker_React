@@ -32,17 +32,41 @@ const getSchema = async (user_id: string) => {
 		}
 		const userJSON = JSON.stringify(user);
 		localStorage.setItem("User", userJSON)
-		
+
 		return data.Schedules
 	} catch (error) {
 		console.error('Error fetching JSON data:', error);
 	}
 };
 
-const userInfo = () => {
-	const storedData = localStorage.getItem("isUser");
-	const userData = storedData ? JSON.parse(storedData) : "";
-	return userData
+const postSchema = (data: any) => {
+	const url = `http://osk-195:8080/api/mypage/schedule`
+	try {
+		fetch(url,{
+			method: "POST",
+			body: data
+		})
+	} catch (error){
+		console.log("error");
+	}
 }
 
-export {LoginApi, getSchema, userInfo}
+const putSchema = (data: any) => {
+	const url = `http://osk-195:8080/api/mypage/schedule`
+	try {
+		fetch(url,{
+			method: "PUT",
+			body: data
+		})
+	} catch (error){
+		console.log("error");
+	}
+}
+
+const userInfo = (id?: any) => {
+	const storedData = localStorage.getItem("User");
+	const userData = storedData ? JSON.parse(storedData) : "";
+	return id ? userData.User["e-doctor_no"] : userData
+}
+
+export {LoginApi, getSchema, userInfo, postSchema, putSchema}

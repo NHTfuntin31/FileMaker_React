@@ -25,8 +25,7 @@ export const Information = (content: string, schedules: any): ReactNode => {
 		(item: any) => item.tarrget_date === content
 	);
 
-	const userData = userInfo()
-	const doctor_ID = userData.UserInfo.UserID;
+	const doctor_ID = userInfo(true);
 	
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
@@ -36,15 +35,9 @@ export const Information = (content: string, schedules: any): ReactNode => {
 
 	const onSubmit = (data: any) => {
 		const key = {
-			// id: null,
 			tarrget_date: content,
 			edoctor_id: doctor_ID,
-			// no: null,
-			// job_no: null,
 			times: "",
-			// classification: "02",
-			// cancel: false,
-			// display_char: "▽"
 		}
 		//編集フォーム
 		const mergedObject = Object.assign({}, data, key);

@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DoctorUpdateTest } from "../../utils/validationSchema";
-import { userInfo } from "../../api/FileMakerApi";
+import { postSchema, putSchema, userInfo } from "../../api/FileMakerApi";
 
 function isTimeInRange(checkStartTime: string, checkEndTime: string, startTime: string, endTime: string) {
 	const checkStartHour = parseInt(checkStartTime.split(":")[0], 10);
@@ -28,8 +28,8 @@ export const Calendar = (props: any) => {
 	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
 	const shusei: string[] = []
 
-	const userData = userInfo()
-	const doctor_ID = userData.UserInfo.UserID;
+	const doctor_ID = userInfo(true);
+	const doctor_Info = userInfo();
 
 	const [openModalRegister, setOpenModalRegister] = useState(false);
 	const [defaultData, setDefaultData] = useState({});
@@ -95,30 +95,28 @@ export const Calendar = (props: any) => {
 	}
 
 	const onSubmit = (data: any) => {
-		console.log(data);
+
+		data.start_time = data.start_time + ':00';
+		data.end_time = data.end_time + ':00';
 
 		const key = {
-			id: null,
 			tarrget_date: selectedDay,
 			edoctor_id: doctor_ID,
-			no: null,
-			job_no: null,
-			times: "",
-			classification: "02",
-			cancel: false,
-			display_char: "▽"
 		}
 		//編集フォーム
-		const mergedObject = Object.assign({}, data, key);
-		console.log(mergedObject);
+		const mergedObject = {
+			Schedule : Object.assign({}, data, key)
+		}
+		const revertData = Object.assign({}, doctor_Info, mergedObject);
+		console.log(revertData);
 
 		//追加フォーム
 		switch (add) {
 			case "add":
-
+				postSchema(JSON.stringify(revertData))
 				break;
 			case "change":
-
+				putSchema(JSON.stringify(revertData))
 				break;
 			case "delete":
 
