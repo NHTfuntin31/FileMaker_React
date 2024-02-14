@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 import { ScheduleCalendar } from "../component/CalendarComponent"
-import { fetchData } from "../api/FileMakerApi";
+import { getSchema } from "../api/FileMakerApi";
 
 
 
-const Calendar = () => {
+const Calendar = ({ edoctorID }: { edoctorID: string }) => {
 	const [jsonData, setJsonData] = useState(null);
 
 	useEffect(() => {
-		const fetchDataAndSetState = async () => {
+		const getSchemaAndSetState = async () => {
 			try {
-				const data = await fetchData();
+				const data = await getSchema(edoctorID);
 				setJsonData(data);
 			} catch (error) {
 				console.error('Error fetching JSON data:', error);
 			}
 		};
 
-		fetchDataAndSetState();
+		getSchemaAndSetState();
 	}, []);
 
 	if (!jsonData) {

@@ -33,8 +33,8 @@ export const Calendar = (props: any) => {
 
 	const [openModalRegister, setOpenModalRegister] = useState(false);
 	const [defaultData, setDefaultData] = useState({});
-	const [content, setContent] = useState("");
 	const [add, setAdd] = useState("");
+
 
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
@@ -48,7 +48,6 @@ export const Calendar = (props: any) => {
 	});
 
 	const handleItemClick = ({ id, props }: { id?: string, event?: any, props?: any }) => {
-		setContent(props.selectedDay)
 		let key: any;
 		switch (id) {
 			case "add":
@@ -100,6 +99,7 @@ export const Calendar = (props: any) => {
 
 		const key = {
 			id: null,
+			tarrget_date: selectedDay,
 			edoctor_id: doctor_ID,
 			no: null,
 			job_no: null,
@@ -136,7 +136,7 @@ export const Calendar = (props: any) => {
 							form.reset()
 							setOpenModalRegister(false)
 						}}
-						title={`${content}`}
+						title={`${selectedDay}`}
 						submit={form.handleSubmit(onSubmit)}
 					>
 						<PostChange jobInfo={defaultData} form={form} />
@@ -164,7 +164,7 @@ export const Calendar = (props: any) => {
 												<div
 													key={`day-${_key}`}
 													className={cn(
-														`flex flex-1 flex-col py-1 border-x text-base font-medium h-auto md:h-28 cursor-pointer hover:bg-sky-500`,
+														`flex flex-1 flex-col py-1 border-x text-base font-medium h-auto md:h-28 cursor-pointer hover:bg-sky-200`,
 														(key == 0 && +e > 15) || (key > 1 && +e < 7)
 															? "bg-gray-400 opacity-50"
 															: (selectedDay ==
@@ -172,7 +172,7 @@ export const Calendar = (props: any) => {
 																	item.month
 																)}/${toDouble(e)}`) &&
 																!((key == 0 && +e > 15) || (key > 1 && +e < 7))
-																? " bg-sky-500 text-white"
+																? " bg-sky-200 text-white"
 																: ""
 													)}
 													onClick={() =>
@@ -194,6 +194,24 @@ export const Calendar = (props: any) => {
 																)
 																: onClick(item.year, item.month, e)
 													}
+													onContextMenu={() =>
+														key === 0 && +e > 15
+															? onClick(
+																...caculatorMonth(
+																	item.year,
+																	item.month - 1
+																),
+																e
+															)
+															: key > 1 && +e < 7
+																? onClick(
+																	...caculatorMonth(
+																		item.year,
+																		item.month + 1
+																	),
+																	e
+																)
+																: onClick(item.year, item.month, e)}
 												>
 													<div>
 														<span

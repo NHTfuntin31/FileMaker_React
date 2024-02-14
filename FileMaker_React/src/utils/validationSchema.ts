@@ -56,10 +56,14 @@ export const DoctorSchema = z.object({
 })
 
 export const DoctorUpdateTest = z.object({
+	id:z.string().optional(),
+	no:z.string().optional(),
+	classification:z.string(),
+	display_char:z.string(),
+
 	start_time: z.string(),
 	end_time: z.string(),
-	// classification:z.string(),
-	// cancel: z.any(),
+	cancel: z.any(),
 	factory_name: z.string(),
 	address: z.string(),
 	overview: z.string(),

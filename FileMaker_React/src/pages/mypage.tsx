@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { Evenodd_bot, Evenodd_left } from "../component/icon/evenodd";
 import { Evenodd_left } from "../component/icon/evenodd";
 import Calendar from "./calendar";
 import { Header } from "../component/Header";
@@ -19,11 +18,11 @@ interface DropdownMenuProps {
 }
 const MyPage = () => {
 	const navigate = useNavigate();
-	// const [profile, setProfile] = useState<boolean>(false)
 
 	const [menuStates, setMenuStates] = useState<{ [key: number]: boolean }>({});
 
 	const userData = userInfo()
+	const doctor_ID: string = userData.UserInfo.UserID;
 	const sessionUserRef = useRef(userData);
 
 	useEffect(() => {
@@ -34,17 +33,6 @@ const MyPage = () => {
 	if (!userData) {
 		return <></>
 	}
-
-
-	// const UserMenu = () => {
-	// 	return (
-	// 		sessionUserRef.current.Menu[0].DisplayName.slice(1).map((item: string, index: number) => (
-	// 			<a key={index} href={sessionUserRef.current.Menu[0].Link[index]} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" id={`menu-item-${index}`}>
-	// 				{item}
-	// 			</a>
-	// 		))
-	// 	);
-	// };
 
 	const TaskMenu: React.FC<DropdownMenuProps> = ({ menu, isOpen, toggleDropdown }) => {
 		return (
@@ -103,7 +91,7 @@ const MyPage = () => {
 					<div className="bg-white w-full content-center flex items-center justify-center">
 						<div className="w-full max-w-5xl">
 							<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">カレンダー</div>
-							<Calendar />
+							<Calendar edoctorID={doctor_ID} />
 						</div>
 					</div>
 				</div>

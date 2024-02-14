@@ -22,10 +22,17 @@ const LoginApi = async (data: LoginFormI, navigate: NavigateFunction, setIsLoadi
     }
 }
 
-const fetchData = async () => {
+const getSchema = async (user_id: string) => {
 	try {
-		const response = await fetch('http://osk-195:8080/api/mypage/schedule?edoctor_no=D021348');
+		const response = await fetch(`http://osk-195:8080/api/mypage/schedule?edoctor_no=${user_id}`);
 		const data = await response.json();
+
+		const user = {
+			"User": data.User
+		}
+		const userJSON = JSON.stringify(user);
+		localStorage.setItem("User", userJSON)
+		
 		return data.Schedules
 	} catch (error) {
 		console.error('Error fetching JSON data:', error);
@@ -38,4 +45,4 @@ const userInfo = () => {
 	return userData
 }
 
-export {LoginApi, fetchData, userInfo}
+export {LoginApi, getSchema, userInfo}

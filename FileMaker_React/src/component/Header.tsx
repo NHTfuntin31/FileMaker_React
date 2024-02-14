@@ -46,7 +46,7 @@ export const Header = () => {
 
 				<div className="flex justify-between my-1">
 					<div>
-						<img className="" src="/public/Link.png" />
+						<img className="" src="/Link.png" />
 					</div>
 				</div>
 
@@ -60,7 +60,7 @@ export const Header = () => {
 									<Link to={item.url} className="hidden md:block p-3 border font-bold text-center font-meiryo text-base leading-6 whitespace-nowrap cursor-pointer">{item.label}
 									</Link>
 									{
-										item.mobile && <div className="block md:hidden p-3 border font-bold text-center font-meiryo text-sm rounded-t-lg">{item.mobile}</div>
+										item.mobile && <Link to={item.url} className="block md:hidden p-3 border font-bold text-center font-meiryo text-sm rounded-t-lg">{item.mobile}</Link>
 									}
 								</>
 							)

@@ -1,19 +1,28 @@
 import { ReactNode } from "react";
 
 const formFields = [
-	// { name: 'edoctor_id', label: 'eDoctor ID' },
-	// { name: 'target_date', label: 'Target Date' },
-	// { name: 'display_char', label: 'Display Char' },
+	{ name: 'id', hidden: true, default: null},
+	{ name: 'display_char', hidden: true, default: "▽"},
+	{ name: 'classification', hidden: true, default: "02"},
+	{ name: 'no', hidden: true, default: null},
+	{ name: 'cancel', hidden: true, default: false},
+
+
 	{ name: 'start_time', label: 'Start Time', type: 'time' },
 	{ name: 'end_time', label: 'End Time', type: 'time' },
-	// { name: 'classification', label: 'Classification' },
-	// { name: 'cancel', label: 'Cancel' },
 	{ name: 'factory_name', label: 'Factory Name' },
 	{ name: 'address', label: 'Address' },
 	{ name: 'overview', label: 'Overview' },
 	{ name: 'detail', label: 'Detail', type: 'textarea' },
 ];
-
+// tarrget_date: content,
+// edoctor_id: doctor_ID,
+// no: null,
+// job_no: null,
+// times: "",
+// classification: "02",
+// cancel: false,
+// display_char: "▽"
 
 export const PostChange = (props: any) => {
 	const { jobInfo, form } = props
@@ -21,8 +30,9 @@ export const PostChange = (props: any) => {
 
 	return (
 		<div className="flex flex-wrap">
-			{formFields.map((field, index) => {
-				return (
+			{formFields.map((field, index) => (
+				!field.hidden ?
+				(
 					<div key={index}
 						className={
 							"text-black pb-2 flex flex-col md:flex-row "
@@ -31,7 +41,6 @@ export const PostChange = (props: any) => {
 						}
 					>
 						<div className={"text-white p-1 w-full " + (field.type == "time" ? "md:w-1/3" : "md:w-1/5")}>{field.label}:</div>
-
 
 						{field.type == "textarea" ?
 							<textarea className="border rounded-lg p-1 w-full"
@@ -56,8 +65,13 @@ export const PostChange = (props: any) => {
 								/>}
 						<p>{errors[field.name] && <div>{errors[field.name]?.message as ReactNode}</div>}</p>
 					</div>
+				) : (
+					<input type="text" className="hidden"
+					defaultValue={jobInfo[field.name] ? jobInfo[field.name] : field.default}
+					{...register(field.name)}
+					/>
 				)
-			}
+			)
 			)}
 		</div>
 	)

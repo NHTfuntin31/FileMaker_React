@@ -35,3 +35,155 @@ classification":"02",　コードマスター1201から選択
 "display_char":黒貫の文字(元の文字データのコード値を+1する
 参考）
 https: //seiai.ed.jp/sys/text/java/shiftjis_table.html
+
+
+
+
+//Ok_Patern Post
+{
+    "User": {
+        "e-doctor_no": "D021348",
+        "no": 120
+    },
+    "Schedule": {
+        "id": null,
+        "edoctor_id": "D021348",
+        "no": null,
+        "tarrget_date": "2022/02/11",
+        "display_char": "◇",
+        "job_no": null,
+        "time_zone": "110",
+        "times": "8：00～18：00",
+        "start_time": "08:00:00",
+        "end_time": "18:00:00",
+        "classification": "91",
+        "cancel": false,
+        "factory_name": "町内会",
+        "address": "町内会館",
+        "overview": "定期総会",
+        "detail": "1.役員選出\n2.町内清掃スケジュール調整\n3.防災訓練概要説明"
+    }
+}
+
+//Ok_Patern Put
+{
+    "User": {
+        "e-doctor_no": "D021348",
+        "no": 120
+    },
+    "Schedule": {
+        "id": 92217,
+        "edoctor_id": "D021348",
+        "no": 120,
+        "tarrget_date": "2024/02/24",
+        "display_char": "▽",
+        "job_no": null,
+        "time_zone": "110",
+        "times": "8：00～18：00",
+        "start_time": "08:00:00",
+        "end_time": "12:00:00",
+        "classification": "91",
+        "cancel": false,
+        "factory_name": "町内会",
+        "address": "町内会館",
+        "overview": "定期総会",
+        "detail": "1.役員選出\n2.町内清掃スケジュール調整\n3.防災訓練概要説明"
+    }
+}
+
+
+
+//Patern 1
+{
+    "User": {
+        "UserID": "D021348",
+        "Name": "西巻英治",
+        "E-Mail": "nisimaki@mtj.biglobe.ne.jp"
+    },
+    "Schedule": {
+        "id": 123456,
+        "tarrget_date": "2024/02/28",
+        "display_char": "△",
+        "times": "",
+        "start_time": "14:00:00",
+        "end_time": "17:00:00",
+        "factory_name": "社会医療法人社団　尚篤会　赤心堂病院",
+        "address": "住所",
+        "overview": "スポット勤務",
+        "detail": "◆勤務日時：\n◆医療機関：社会医療法人社団　尚篤会　赤心堂病院\n◆住所：\n◆募集科目：\n◆勤務内容：\n◆給与：\n◆交通費：\n◆給与支払：\n◆医療機関連絡先：\n◆当日持参物：\n◆補足事項：\n◆リンクスタッフ担当者：ハ\n"
+    }
+}
+
+
+
+//Patern 2
+
+{
+    "id": null,
+    "no": null,
+    "classification": "02",
+    "display_char": "△",
+    "start_time": "14:00:00",
+    "end_time": "17:00:00",
+    "cancel": false,
+    "factory_name": "社会医療法人社団　尚篤会　赤心堂病院",
+    "address": "aaa",
+    "overview": "スポット勤務",
+    "detail": "◆勤務日時：\n◆医療機関：社会医療法人社団　尚篤会　赤心堂病院\n◆住所：\n◆募集科目：\n◆勤務内容：\n◆給与：\n◆交通費：\n◆給与支払：\n◆医療機関連絡先：\n◆当日持参物：\n◆補足事項：\n◆リンクスタッフ担当者：ハ\n",
+    "tarrget_date": "2024/02/28",
+    "edoctor_id": "D021348",
+    "times": "",
+    "time_zone": null,
+    "job_no": null
+}
+//Patern 3
+{
+    "User": {
+        "e-doctor_no": "D021348",
+        "no": 120
+    },
+    "Schedules": [
+        {
+            "id": 50818,
+            "edoctor_id": "D021348",
+            "no": 120,
+            "tarrget_date": "2023/11/02",
+            "display_char": "△",
+            "job_no": "S170-000-510",
+            "time_zone": "110",
+            "times": "14：00～17：00",
+            "start_time": null,
+            "end_time": null,
+            "classification": "02",
+            "cancel": false,
+            "factory_name": "社会医療法人社団　尚篤会　赤心堂病院",
+            "address": "",
+            "overview": "スポット勤務",
+            "detail": "◆勤務日時：\n◆医療機関：社会医療法人社団　尚篤会　赤心堂病院\n◆住所：\n◆募集科目：\n◆勤務内容：\n◆給与：\n◆交通費：\n◆給与支払：\n◆医療機関連絡先：\n◆当日持参物：\n◆補足事項：\n◆リンクスタッフ担当者：ハ\n"
+        }
+    }
+    //Patern 4
+    {
+        "User": {
+            "e-doctor_no": "D021348",
+            "no": 120
+        },
+        "Schedules": {
+            "id": 50818,
+            "edoctor_id": "D021348",
+            "no": 120,
+            "tarrget_date": "2023/11/02",
+            "display_char": "△",
+            "job_no": "S170-000-510",
+            "time_zone": "110",
+            "times": "14：00～17：00",
+            "start_time": null,
+            "end_time": null,
+            "classification": "02",
+            "cancel": false,
+            "factory_name": "社会医療法人社団　尚篤会　赤心堂病院",
+            "address": "",
+            "overview": "スポット勤務",
+            "detail": "◆勤務日時：\n◆医療機関：社会医療法人社団　尚篤会　赤心堂病院\n◆住所：\n◆募集科目：\n◆勤務内容：\n◆給与：\n◆交通費：\n◆給与支払：\n◆医療機関連絡先：\n◆当日持参物：\n◆補足事項：\n◆リンクスタッフ担当者：ハ\n"
+        }
+    }

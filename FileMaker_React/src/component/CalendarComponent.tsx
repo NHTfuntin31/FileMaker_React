@@ -57,10 +57,10 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	};
 
 	const onSubmit = (data: any) => {
-		//追加フォーム
 
 		const key = {
 			id: null,
+			tarrget_date: content,
 			edoctor_id: doctor_ID,
 			no: null,
 			job_no: null,
@@ -69,6 +69,8 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 			cancel: false,
 			display_char: "▽"
 		}
+
+		//追加フォーム
 		const mergedObject = Object.assign({}, data, key);
 		console.log(mergedObject);
 
@@ -130,7 +132,7 @@ export const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 						</div>
 					</div>
 				</div>
-				<div>
+				<div className={!content ? "hidden" : "block"}>
 					<div className="pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500 mt-14 mb-5">案件詳細</div>
 					{Information(content, schedules)}
 					<div className="flex justify-center py-2">

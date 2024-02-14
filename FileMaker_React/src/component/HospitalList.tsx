@@ -35,16 +35,16 @@ export const Information = (content: string, schedules: any): ReactNode => {
 	const [openModal, setOpenModal] = useState(false);
 
 	const onSubmit = (data: any) => {
-		// console.log(data);
 		const key = {
-			id: null,
+			// id: null,
+			tarrget_date: content,
 			edoctor_id: doctor_ID,
-			no: null,
-			job_no: null,
+			// no: null,
+			// job_no: null,
 			times: "",
-			classification: "02",
-			cancel: false,
-			display_char: "▽"
+			// classification: "02",
+			// cancel: false,
+			// display_char: "▽"
 		}
 		//編集フォーム
 		const mergedObject = Object.assign({}, data, key);

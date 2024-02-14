@@ -28,7 +28,7 @@ export const categoryObj = [
 ]
 
 export const shifts = [
-	{ key: "gozen", label : "午前", start: "08:00", end: "12:00" , color : "sky-700", default : "slate-200" },
-	{ key: "gogo", label : "午後", start: "12:00", end: "18:00" , color : "amber-700", default : "slate-200" },
-	{ key: "yoru", label : "夜", start: "18:00", end: "22:00" ,color : "pink-700", default : "slate-200" },
+	{ key: "gozen", label : "午前", start: "08:00", end: "12:00" , color : "sky-200", default : "slate-200" },
+	{ key: "gogo", label : "午後", start: "12:00", end: "18:00" , color : "amber-200", default : "slate-200" },
+	{ key: "yoru", label : "夜", start: "18:00", end: "22:00" ,color : "pink-200", default : "slate-200" },
 ]

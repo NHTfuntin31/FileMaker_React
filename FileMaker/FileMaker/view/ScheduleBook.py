@@ -106,7 +106,7 @@ class ScheduleBook(APIView):
     #         "start_time":開始時刻, "end_time":終了時刻, "factory_name":施設名/勤務先名,
     #         "address":住所, "overview":概要, "detail":詳細}
     #       }
-    def put(self, request):
+    def post(self, request):
         #
         dLog = settings.LOG_INFO['LogWeb']
         self.cLog = Log.Log(dLog)
@@ -233,22 +233,22 @@ class ScheduleBook(APIView):
 
 
     #
-    # スケジュール更新プライベートのみ)
+    # スケジュール更新
     # Request: 
     #   Param:None
-    #   Body:{UserInfo":{"UserID": "D021348","Name": "西巻英治","E-Mail": "nisimaki@mtj.biglobe.ne.jp"},
+    #   Body:{User":{"UserID": "D021348","Name": "西巻英治","E-Mail": "nisimaki@mtj.biglobe.ne.jp"},
     #         "Schedule":{"id":123456, "tarrget_date":対象日 ,"display_char":表示記号, "times":時間帯, 
     #         "start_time":開始時刻, "end_time":終了時刻, "factory_name":施設名/勤務先名,
     #         "address":住所, "overview":概要, "detail":詳細}
     #       }
-    def post(self, request):
+    def put(self, request):
         #
         sql = "update schedule_book set tarrget_date='{:s}', display_char = '{:s}',\n"+\
               "       time_zone = '{:s}', times = '{:s}', start_time = '{:s}',\n"+\
               "       end_time = '{:s}',classification = '{:s}' ,cancel = {:s},\n"+\
               "       factory_name = '{:s}', address = '{:s}',overview='{:s}',\n"+\
               "       detail='{:s}',upd_user='{:s}' \n"+\
-              "  Where id = '{:s}"
+              "  Where id = '{:d}' "
         #
         dLog = settings.LOG_INFO['LogWeb']
         self.cLog = Log.Log(dLog)
@@ -257,6 +257,7 @@ class ScheduleBook(APIView):
         dUser = dData['User']
         dRecord = dData["Schedule"]
         # 入力チェックとSQLボディ生成
+        rsp_data = {}
         sMsg,dValues = self.validationSchedulePost(dUser,dRecord)
         if sMsg != "":
             # 入力エラー
@@ -264,19 +265,22 @@ class ScheduleBook(APIView):
             rsp_data["Message"] = sMsg
             return Response(rsp_data,status = status.HTTP_400_BAD_REQUEST)
         # DB登録
+        print("checked",dValues)
+        dValues["upd_user"] = dUser["e-doctor_no"]
         sSql = sql.format(dValues["tarrget_date"],dValues["display_char"],dValues["time_zone"],\
                           dValues["times"],dValues["start_time"],dValues["end_time"],\
-                          dValues["classification"],dValues["cancel"],dValues["factory_name"],\
+                          dValues["classification"],str(dValues["cancel"]),dValues["factory_name"],\
                           dValues["address"],dValues["overview"],dValues["detail"],dValues["upd_user"],\
-                          dValues["edoctor_id"])
+                          dValues["id"])
         #
         rsp_data["User"] = dUser
         rsp_data["Message"] = ""
+        print("SQL:", sSql)
         self.cPostgres = PG.Postgres(self.cLog)
         self.cPostgres.connect()
         cCur = self.cPostgres.getCursor()
-        stat, iCount, cCur =self.cPostgres.execute(sql,cCur)
-        if stat != ChildProcessError.SQL_EXEC_OK:
+        stat, iCount, cCur =self.cPostgres.execute(sSql,cCur)
+        if stat != self.cPostgres.SQL_EXEC_OK:
             # 登録エラー
             rsp_data["Message"] = "スケジュール更新に失敗しました。"
             return Response(rsp_data,status = status.HTTP_400_BAD_REQUEST)
@@ -308,14 +312,15 @@ class ScheduleBook(APIView):
         dRslt["no"] = dUser["no"]
         # tarrget_date
         try:
+            print("日付チェック:",dRec["tarrget_date"])
             pattern = re.compile(r'(\d{4})/(\d{2})/(\d{2})')
             match = re.search(pattern, dRec["tarrget_date"])
             if match == None:
                 sMessage = "日付の形式が不正です。\n入力内容を確認してください。"
                 return sMessage, ""
-            datetime.date(year=match.group(1), month=match.group(2),day=match.group(3))
+            datetime.date(year=int(match.group(1)), month=int(match.group(2)),day=int(match.group(3)))
             dRslt["tarrget_date"] = dRec["tarrget_date"]
-        except:
+        except Exception as e:
             sMessage = "日付の形式が不正です。\n入力内容を確認してください。"
             return sMessage, {}
         # display_char
@@ -324,7 +329,7 @@ class ScheduleBook(APIView):
             return sMessage, {}
         dRslt["display_char"] = dRec["display_char"]
         # job_no
-        dRslt["job_no"] += "Null"
+        dRslt["job_no"] = "Null"
         # time_zone
         tTimeZone = Strings.makeTimeZone(dRec["start_time"], dRec["end_time"])
         if tTimeZone == []:
@@ -332,7 +337,7 @@ class ScheduleBook(APIView):
             return sMessage, ""
         dRslt["time_zone"] = tTimeZone[0]
         # times
-        dRslt["times"] = "'{:s}～{:s}'".foramt(tTimeZone[1],tTimeZone[2])
+        dRslt["times"] = "{:s}～{:s}".format(tTimeZone[1],tTimeZone[2])
         # start_time
         dRslt["start_time"] = "{:s}".format(tTimeZone[1])
         # end_time
@@ -349,7 +354,7 @@ class ScheduleBook(APIView):
             sMessage = "区分指定を選択してください"
             return sMessage, {}
         # cancel
-        dRslt["cancel"] = dRec["calcen"]
+        dRslt["cancel"] = dRec["cancel"]
         # factory_name
         dRslt["factory_name"] = dRec["factory_name"]
         # address
