@@ -13,6 +13,7 @@ export default {
     'bg-purple-700',
     'bg-orange-700',
     'bg-green-700',
+    'bg-pink-700',
     'bg-pink-200',
     'bg-slate-200',
     'bg-sky-200',

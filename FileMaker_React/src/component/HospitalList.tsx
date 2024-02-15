@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { DoctorUpdateTest } from "../utils/validationSchema";
 import { CalendarModal } from "./Modal";
 import { PostChange } from "./Req/PostChange";
-import { userInfo } from "../api/FileMakerApi";
+import { putSchema, userInfo } from "../api/FileMakerApi";
 
 
 // "Code": "{\"01\": \"当社定期\", \"02\": \"当社Spot\", \"03\": \"当社検診\", \"10\": \"他社紹介\", \"11\": \"定期\", \"12\": \"Spot\", \"13\": \"検診\", \"14\": \"常勤\", \"91\": \"プライベート\"}",
@@ -26,6 +26,7 @@ export const Information = (content: string, schedules: any): ReactNode => {
 	);
 
 	const doctor_ID = userInfo(true);
+	const doctor_Info = userInfo();
 	
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
@@ -34,14 +35,22 @@ export const Information = (content: string, schedules: any): ReactNode => {
 	const [openModal, setOpenModal] = useState(false);
 
 	const onSubmit = (data: any) => {
+
+		data.no = parseInt(data.no)
+		data.id = parseInt(data.id)
+
 		const key = {
 			tarrget_date: content,
 			edoctor_id: doctor_ID,
-			times: "",
 		}
 		//編集フォーム
-		const mergedObject = Object.assign({}, data, key);
-		console.log(mergedObject);
+		const mergedObject = {
+			Schedule : Object.assign({}, data, key)
+		}
+		const revertData = Object.assign({}, doctor_Info, mergedObject);
+		putSchema(JSON.stringify(revertData), setOpenModal)
+
+		console.log(revertData);
 	}
 	return (
 		<div>
@@ -86,13 +95,13 @@ export const Information = (content: string, schedules: any): ReactNode => {
 									</tr>
 								</table>
 							</div>
-							<div className="flex justify-center items-center">
+							<div className={"flex justify-center items-center " + `${item.classification != "91" && "hidden"}`}>
 								<button 
 								className={`w-1/2 md:w-1/3 rounded-lg bg-${color} text-white mt-2 self-center p-2 hover:opacity-50 transition duration-500 ease-in-out`}
 								onClick={() =>setOpenModal(true)}
 								>スケジュールを編集</button>
 								</div>
-						</div>
+							</div>
 						{/* スケジュールを編集モダール */}
 						<form onSubmit={form.handleSubmit(onSubmit)}>
 							<CalendarModal

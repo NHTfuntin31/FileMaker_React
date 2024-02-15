@@ -2,8 +2,7 @@ import { ReactNode } from "react";
 
 const formFields = [
 	{ name: 'id', hidden: true, default: null },
-	{ name: 'display_char', hidden: true, default: "▽" },
-	{ name: 'classification', hidden: true, default: "02" },
+	{ name: 'classification', hidden: true, default: "91" },
 	{ name: 'times', hidden: true, default: "" },
 	{ name: 'no', hidden: true, default: null },
 	{ name: 'job_no', hidden: true, default: null },
@@ -14,7 +13,8 @@ const formFields = [
 	{ name: 'end_time', label: 'End Time', type: 'time' },
 	{ name: 'factory_name', label: 'Factory Name' },
 	{ name: 'address', label: 'Address' },
-	{ name: 'overview', label: 'Overview', type: 'select' },
+	{ name: 'overview', label: 'Overview'},
+	{ name: 'display_char', label: 'display_char', type: 'select' },
 	{ name: 'detail', label: 'Detail', type: 'textarea' },
 ];
 // no: null,
@@ -62,12 +62,11 @@ export const PostChange = (props: any) => {
 													<select 
 														className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-4/5 p-1.5"
 														{...register(field.name)}
+														defaultValue={jobInfo[field.name] ? jobInfo[field.name] : ""}
 														>
-														<option value="" selected>選択してください</option>
-														<option value="US">United States</option>
-														<option value="CA">Canada</option>
-														<option value="FR">France</option>
-														<option value="DE">Germany</option>
+														<option value="">選択してください</option>
+														<option value="▽">プライベート</option>
+														<option value="◇">他業務</option>
 													</select>
 
 												</>

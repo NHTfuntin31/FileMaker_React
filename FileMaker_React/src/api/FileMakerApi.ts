@@ -26,7 +26,6 @@ const getSchema = async (user_id: string) => {
 	try {
 		const response = await fetch(`http://osk-195:8080/api/mypage/schedule?edoctor_no=${user_id}`);
 		const data = await response.json();
-
 		const user = {
 			"User": data.User
 		}
@@ -39,25 +38,27 @@ const getSchema = async (user_id: string) => {
 	}
 };
 
-const postSchema = (data: any) => {
+const postSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) => {
 	const url = `http://osk-195:8080/api/mypage/schedule`
 	try {
 		fetch(url,{
 			method: "POST",
 			body: data
 		})
+		setOpenModal(false)
 	} catch (error){
 		console.log("error");
 	}
 }
 
-const putSchema = (data: any) => {
+const putSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) => {
 	const url = `http://osk-195:8080/api/mypage/schedule`
 	try {
 		fetch(url,{
 			method: "PUT",
 			body: data
 		})
+		setOpenModal(false)
 	} catch (error){
 		console.log("error");
 	}

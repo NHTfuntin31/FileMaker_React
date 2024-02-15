@@ -16,7 +16,7 @@ job_noに値が入っている場合、
 "edoctor_id": "D021348"→自身のIDを設定する。
 "no": null,
 "tarrget_date": "2022/02/10",　必須
-"display_char": "▽",　固定値
+"display_char": "▽"か"◇",　固定値
 "job_no": null,　入力不要
 "time_zone": null,　入力不要
 "times": "",　入力不要
@@ -37,7 +37,8 @@ classification":"02",　コードマスター1201から選択
 https: //seiai.ed.jp/sys/text/java/shiftjis_table.html
 
 
-
+"91\": \"プライベート\" "▽\"
+"91\": \"他業務\" "◇\"
 
 //Ok_Patern Post
 {

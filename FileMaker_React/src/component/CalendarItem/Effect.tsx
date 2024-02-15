@@ -164,9 +164,9 @@ const getCalendar = (year: number, month: number, startOnMonday: boolean) => {
 	}
 
 	const calendar = getData(yy, mm, startOnMonday);
-	const result = [
-		{ year: yy, month: mm, calendar: calendar },
-	];
+	const result = { year: yy, month: mm, calendar: calendar }
+		
+	
 
 	return result;
 };
