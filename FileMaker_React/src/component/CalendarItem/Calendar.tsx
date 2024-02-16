@@ -5,11 +5,12 @@ import { shifts } from "../object"
 import 'react-contexify/ReactContexify.css';
 import { CalendarModal } from "../Modal";
 import { PostChange } from "../Req/PostChange";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DoctorUpdateTest } from "../../utils/validationSchema";
 import { postSchema, putSchema, userInfo } from "../../api/FileMakerApi";
+import { ScheduleType } from "../../utils/interface";
 
 function isTimeInRange(checkStartTime: string, checkEndTime: string, startTime: string, endTime: string) {
 	const checkStartHour = parseInt(checkStartTime.split(":")[0], 10);
@@ -24,23 +25,9 @@ function isTimeInRange(checkStartTime: string, checkEndTime: string, startTime: 
 export const Calendar = (props: any) => {
 	const { year, month, schedules, onClick, startOnMonday, selectedDay } = props;
 
-	const calendarData = getCalendar(year, month, startOnMonday);
-
-	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
-	const result: string[] = []
-
-	const doctor_ID = userInfo(true);
-	const doctor_Info = userInfo();
-
-	const [openModal, setOpenModal] = useState(false);
-	const [defaultData, setDefaultData] = useState({});
-	const [add, setAdd] = useState("");
-
-
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
 	});
-
 
 	const MENU_ID = "menu-id";
 
@@ -48,7 +35,31 @@ export const Calendar = (props: any) => {
 		id: MENU_ID
 	});
 
+
+	const calendarData = getCalendar(year, month, startOnMonday);
+
+	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
+	const result: ScheduleType[] = []
+	const [test, settest] = useState<ScheduleType[]>()
+
+	const doctor_ID = userInfo(true);
+	const doctor_Info = userInfo();
+
+	const [openModal, setOpenModal] = useState(false);
+	const [select, setSelect] = useState(true)
+	const [defaultData, setDefaultData] = useState({});
+	const [add, setAdd] = useState("");
+	
+	useEffect(() => {
+		settest(result)
+		setSelect(select)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedDay, handleContextMenu])
+
+	
 	const handleItemClick = ({ id, props }: { id?: string, event?: any, props?: any }) => {
+		const element = test![props.index] ? test![props.index] : " ";
+		console.log(element);
 		let key: any;
 		switch (id) {
 			case "add":
@@ -74,7 +85,7 @@ export const Calendar = (props: any) => {
 				break;
 			case "change":
 				setAdd("change")
-				setDefaultData(props.schema)
+				setDefaultData(element)
 				setOpenModal(true)
 				break;
 			case "delete":
@@ -84,15 +95,23 @@ export const Calendar = (props: any) => {
 		}
 	}
 
-	function handleContextMenu(event: any, schema: any, key: string, selectedDay: string) {
+	function handleContextMenu(event: any, index: number ,key: string, selectedDay: string) {
+		
 		show({
 			event,
 			props: {
-				schema: schema,
 				key: key,
+				index: index,
 				selectedDay: selectedDay
 			}
 		})
+	}
+
+	function checkRightClick(index: number) {
+		// result[index] && result[index]["classification"] !== "91";
+		const element = test![index];
+		console.log(element.classification);
+		element.classification !== "91" ? setSelect(false) : setSelect(true)
 	}
 
 	const onSubmit = (data: any) => {
@@ -142,9 +161,9 @@ export const Calendar = (props: any) => {
 				</form>
 			</div>
 			<Menu id={MENU_ID} className="z-50">
-				<Item id="add" onClick={handleItemClick}>追加</Item>
-				<Item id="change" onClick={handleItemClick}>編集</Item>
-				<Item id="delete" onClick={handleItemClick}><p className="text-red-700">削除</p></Item>
+				<Item id="add" onClick={handleItemClick} disabled={!select}>追加</Item>
+				<Item id="change" onClick={handleItemClick} disabled={!select}>編集</Item>
+				<Item id="delete" onClick={handleItemClick} disabled={!select}><p className="text-red-700">削除</p></Item>
 			</Menu>
 			<div className="flex gap-1 flex-col z-1">
 					<div className="flex h-[100%] w-[100%] flex-1 flex-col">
@@ -237,14 +256,11 @@ export const Calendar = (props: any) => {
 																)
 															
 															const selectedHospital = schedules?.filter((s: any) => s.tarrget_date === selectedDay)
-																
-															selectedHospital.map((job: any) => {
-																const includesTime = isTimeInRange(job.start_time, job.end_time, shift.start, shift.end)
-																includesTime && (result[index] = job)
-																return includesTime
-															})
-															const checkTimes = hospital.map((job: any) => {
 
+															const selectedHospitalList = selectedHospital.filter((s: any) => isTimeInRange(s.start_time, s.end_time, shift.start, shift.end) == true)
+															selectedHospitalList.length > 0 ? (result[index] = selectedHospitalList[0]) : null
+
+															const checkTimes = hospital.map((job: any) => {
 																[start_time, end_time] = job.times.split('～').map((time: string) => time.replace("：", ":"));
 																const includesTime = isTimeInRange(start_time, end_time, shift.start, shift.end)
 																job.start_time = start_time
@@ -252,13 +268,15 @@ export const Calendar = (props: any) => {
 
 																return includesTime
 															})
-															console.log(result);
 															
 															if (!((key === 0 && +e > 15) || (key > 1 && +e < 7))) {
 																return (
 																	<span
 																		className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm`}
-																		onContextMenu={(e) => handleContextMenu(e,  result[index], shift.key, selectedDay)}
+																		onContextMenu={(event) => {
+																			handleContextMenu(event, index,shift.key, selectedDay),
+																			checkRightClick(index)
+																		}}
 																	>{shift.label}</span>
 																)
 															}

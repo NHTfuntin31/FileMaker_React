@@ -58,11 +58,11 @@ export const DoctorSchema = z.object({
 export const DoctorUpdateTest = z.object({
 	id:z.string().optional(),
 	no:z.string().optional(),
-	classification:z.string(),
-	display_char:z.string(),
+	classification:z.string().optional(),
+	display_char:z.string().nonempty("選択してください"),
 
-	start_time: z.string(),
-	end_time: z.string(),
+	start_time: z.string().nonempty("時間設定してください"),
+	end_time: z.string().nonempty("時間設定してください"),
 	cancel: z.any(),
 	factory_name: z.string(),
 	address: z.string(),

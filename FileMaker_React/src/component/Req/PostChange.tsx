@@ -9,13 +9,13 @@ const formFields = [
 	{ name: 'cancel', hidden: true, default: false },
 
 
-	{ name: 'start_time', label: 'Start Time', type: 'time' },
-	{ name: 'end_time', label: 'End Time', type: 'time' },
-	{ name: 'factory_name', label: 'Factory Name' },
-	{ name: 'address', label: 'Address' },
-	{ name: 'overview', label: 'Overview'},
-	{ name: 'display_char', label: 'display_char', type: 'select' },
-	{ name: 'detail', label: 'Detail', type: 'textarea' },
+	{ name: 'start_time', label: '開始時間', type: 'time', hissu:true },
+	{ name: 'end_time', label: '終了時間', type: 'time', hissu:true },
+	{ name: 'factory_name', label: '病院名'},
+	{ name: 'address', label: '住所' },
+	{ name: 'overview', label: 'タイトル', hissu:true },
+	{ name: 'display_char', label: 'タイプ', type: 'select' },
+	{ name: 'detail', label: '詳細', type: 'textarea' },
 ];
 // no: null,
 // job_no: null,
@@ -28,6 +28,8 @@ export const PostChange = (props: any) => {
 	const { jobInfo, form } = props
 	const { register, formState: { errors } } = form;
 
+	console.log(jobInfo);
+
 	return (
 		<div className="flex flex-wrap">
 			{formFields.map((field, index) => (
@@ -37,11 +39,13 @@ export const PostChange = (props: any) => {
 							<div key={index}
 								className={
 									"text-black pb-2 flex flex-col md:flex-row "
-									+ (field.type == "textarea" ? "md:flex-col " : "")
-									+ (field.type == "time" ? "w-1/2" : "w-full justify-between")
+									+ (field.type == "textarea" ? "flex-col md:flex-col " : "")
+									+ (field.type == "time" ? "w-1/2 gap-1" : "w-full justify-between")
 								}
 							>
-								<div className={"text-white p-1 w-full " + (field.type == "time" ? "md:w-1/3" : "md:w-1/5")}>{field.label}:</div>
+								<div className={"text-white whitespace-nowrap p-1 " + (field.type == "time" ? "md:w-1/3" : "md:w-1/5")}>
+								{field.hissu ? <span className="text-red-500">*</span> : ""}{field.label}:
+									</div>
 								{
 									field.type == "textarea" ?
 										<textarea className="border rounded-lg p-1 w-full"
@@ -49,37 +53,44 @@ export const PostChange = (props: any) => {
 											defaultValue={jobInfo[field.name]}
 											{...register(field.name)}
 										/>
-										: field.type == "time" ?
+									: field.type == "time" ?
+										<div className={"flex flex-col w-3/4 " + (field.type == "time" ? "md:w-2/5" : "w-4/5")}>
 											<input
 												type="time"
-												className={"border rounded-lg p-1 " + (field.type == "time" ? "w-1/2" : "w-4/5")}
+												className={"border rounded-lg p-1 w-full"}
 												placeholder={field.name}
 												defaultValue={jobInfo[field.name]}
 												{...register(field.name)}
 											/>
-											: field.type == "select" ?
-												<>
-													<select 
-														className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-4/5 p-1.5"
-														{...register(field.name)}
-														defaultValue={jobInfo[field.name] ? jobInfo[field.name] : ""}
-														>
-														<option value="">選択してください</option>
-														<option value="▽">プライベート</option>
-														<option value="◇">他業務</option>
-													</select>
+											<div className="text-red-600 font-bold w-full pr-2">{errors[field.name] && <p>{errors[field.name]?.message as ReactNode}</p>}</div>
+										</div>
 
-												</>
-												: <input
-													type="text"
-													className="border rounded-lg p-1 md:w-4/5 w-full"
-													placeholder={field.name}
-													defaultValue={jobInfo[field.name]}
-													{...register(field.name)}
-												/>}
+									: field.type == "select" ?
+										<div className="flex flex-col  md:w-4/5 items-center">
+											<select
+												className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-1.5"
+												{...register(field.name)}
+												defaultValue={jobInfo[field.name] ? jobInfo[field.name] : ""}
+											>
+												<option value="">選択してください</option>
+												<option value="▽">プライベート</option>
+												<option value="◇">他業務</option>
+											</select>
+											<div className="text-red-600 font-bold w-full pr-2">{errors[field.name] && <p>{errors[field.name]?.message as ReactNode}</p>}</div>
+
+										</div>
+									: <div className="flex flex-col  md:w-4/5 items-center">
+										<input
+											type="text"
+											className="border rounded-lg p-1 w-full"
+											placeholder={field.name}
+											defaultValue={jobInfo[field.name]}
+											{...register(field.name)}
+										/>
+										<div className="text-red-600 font-bold w-full pr-2">{errors[field.name] && <p>{errors[field.name]?.message as ReactNode}</p>}</div>
+									</div>
+								}
 							</div>
-							<p>{errors[field.name] && <div>{errors[field.name]?.message as ReactNode}</div>}</p>
-
 						</>
 
 					) : (
