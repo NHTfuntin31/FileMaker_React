@@ -75,3 +75,15 @@ export type ScheduleCalendarProps = {
 	defaultMonth?: number;
 	startOnMonday?: boolean;
 };
+
+interface MenuItem {
+	MenuNo: number;
+	Function: number[];
+	DisplayName: string[];
+	Link: string[];
+}
+export interface DropdownMenuProps {
+	menu: MenuItem;
+	isOpen: boolean;
+	toggleDropdown: () => void;
+}

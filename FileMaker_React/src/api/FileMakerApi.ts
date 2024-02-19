@@ -1,25 +1,40 @@
-import axios from "axios";
-import { LoginFormI } from "../utils/interface"; 
-import { NavigateFunction } from 'react-router-dom';
 
 
+// const LoginApi = async (data: LoginFormI, navigate: NavigateFunction, setIsLoading: (isLoading: boolean) => void) => {
+// 	console.log(data);
+// 	const LoginUrl = "http://osk-195:8080/api/login"
 
-const LoginApi = async (data: LoginFormI, navigate: NavigateFunction, setIsLoading: (isLoading: boolean) => void) => {
-	console.log(data);
-	const LoginUrl = "http://osk-195:8080/api/login"
+// 	try {
+//         setIsLoading(true)
+//         await axios
+// 		.post(LoginUrl, data)
+// 		.then((res) => {
+// 			console.log(res.data);
+// 			localStorage.setItem('isUser', JSON.stringify(res.data));
+// 			navigate('/mypage')
+// 		})
+//     } catch (error) {
+//         setIsLoading(false)
+//     }
+// }
 
-	try {
-        setIsLoading(true)
-        await axios
-		.post(LoginUrl, data)
-		.then((res) => {
-			console.log(res.data);
-			localStorage.setItem('isUser', JSON.stringify(res.data));
-			navigate('/mypage')
+const LoginApi = async(user_id: string) => {
+	const data = {
+		username: user_id,
+		password: ""
+	}
+	try{
+		const response = await fetch(`http://osk-195:8080/api/login`, {
+			method: "POST",
+			body: JSON.stringify(data)
 		})
-    } catch (error) {
-        setIsLoading(false)
-    }
+
+		const resData = await response.json()
+		const userJSON = JSON.stringify(resData);
+		localStorage.setItem("isLogin", userJSON)
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 const getSchema = async (user_id: string) => {
@@ -64,10 +79,38 @@ const putSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) => 
 	}
 }
 
+const getCash = (user_id: string) => {
+	const url = `http://osk-196/api/mypage/schedule/Cahchier?edoctor_no=${user_id}`
+
+	try{
+		const response = fetch(url, {
+			method: "GET"
+		})
+
+		return response
+	} catch(error) {
+		console.log(error);
+	}
+}
+const getCashFAKE = async () => {
+	const url = `/src/fake_json/cash.json`
+
+	try{
+		const response = await fetch(url, {
+			method: "GET"
+		})
+
+		const data = await response.json();
+		return data.Cashier;
+	} catch(error) {
+		console.log(error);
+	}
+}
+
 const userInfo = (id?: any) => {
 	const storedData = localStorage.getItem("User");
 	const userData = storedData ? JSON.parse(storedData) : "";
 	return id ? userData.User["e-doctor_no"] : userData
 }
 
-export {LoginApi, getSchema, userInfo, postSchema, putSchema}
+export {LoginApi, getSchema, userInfo, postSchema, putSchema, getCash, getCashFAKE}

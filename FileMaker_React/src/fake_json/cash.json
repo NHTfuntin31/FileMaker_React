@@ -1,0 +1,321 @@
+{
+	"User": {
+		"e-doctor_no": "D009332",
+		"no": 8535
+	},
+	"Cashier": [
+		{
+			"tarrget_date": "2022-03-21",
+			"division": "01",
+			"job_no": "S512-430-776",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 80000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-04-05",
+			"division": "01",
+			"job_no": "S384-337-013",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-04-12",
+			"division": "01",
+			"job_no": "S754-212-057",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-04-13",
+			"division": "01",
+			"job_no": "S762-786-278",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-04-19",
+			"division": "01",
+			"job_no": "S028-646-733",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-04-26",
+			"division": "01",
+			"job_no": "S100-500-342",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-04-27",
+			"division": "01",
+			"job_no": "S701-767-122",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-04-29",
+			"division": "01",
+			"job_no": "S048-846-035",
+			"expense_item": "医療法人　信和会　高嶺病院",
+			"price": 80000,
+			"memo": "医療法人　信和会　高嶺病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-05-03",
+			"division": "01",
+			"job_no": "S008-553-000",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 80000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-05-10",
+			"division": "01",
+			"job_no": "S016-011-508",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-05-11",
+			"division": "01",
+			"job_no": "S160-044-033",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-05-17",
+			"division": "01",
+			"job_no": "S062-180-611",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-05-24",
+			"division": "01",
+			"job_no": "S160-818-771",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-05-25",
+			"division": "01",
+			"job_no": "S760-084-408",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-05-29",
+			"division": "01",
+			"job_no": "S767-538-567",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 80000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-05-31",
+			"division": "01",
+			"job_no": "S720-800-271",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-06-07",
+			"division": "01",
+			"job_no": "S024-707-550",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-06-08",
+			"division": "01",
+			"job_no": "S074-454-110",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-06-14",
+			"division": "01",
+			"job_no": "S668-882-410",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-06-21",
+			"division": "01",
+			"job_no": "S282-560-404",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-06-22",
+			"division": "01",
+			"job_no": "S051-710-800",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-06-28",
+			"division": "01",
+			"job_no": "S435-340-862",
+			"expense_item": "医療法人　ふらて会　西野病院",
+			"price": 35000,
+			"memo": "医療法人　ふらて会　西野病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-07-13",
+			"division": "01",
+			"job_no": "S301-843-812",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-07-27",
+			"division": "01",
+			"job_no": "S418-001-344",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-08-17",
+			"division": "01",
+			"job_no": "S800-620-673",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-08-24",
+			"division": "01",
+			"job_no": "S207-760-701",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		},
+		{
+			"tarrget_date": "2022-08-31",
+			"division": "01",
+			"job_no": "S003-056-880",
+			"expense_item": "社会医療法人　北九州病院　北九州八幡東病院",
+			"price": 38000,
+			"memo": "社会医療法人　北九州病院　北九州八幡東病院",
+			"payment_date": null,
+			"edoctor_id": "D009332",
+			"no": 8535
+		}
+	],
+	"Master": {
+		"1202": {
+			"Code": {
+				"01": "収入",
+				"02": "経費支出",
+				"03": "その他収入",
+				"04": "その他支出"
+			},
+			"Value": {
+				"収入": "01",
+				"経費支出": "02",
+				"その他収入": "03",
+				"その他支出": "04"
+			}
+		}
+	}
+}

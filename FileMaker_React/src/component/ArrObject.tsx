@@ -32,3 +32,8 @@ export const shifts = [
 	{ key: "gogo", label : "午後", start: "12:00", end: "18:00" , color : "amber-200", default : "slate-200" },
 	{ key: "yoru", label : "夜", start: "18:00", end: "22:00" ,color : "pink-200", default : "slate-200" },
 ]
+
+export const masterMenu = [
+	{ key: "61" },
+	{ key: "71" },
+]

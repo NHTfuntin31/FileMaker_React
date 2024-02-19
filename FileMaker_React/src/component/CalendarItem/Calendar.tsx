@@ -1,6 +1,6 @@
 import { Item, Menu, useContextMenu } from "react-contexify";
 import { WeekHeader, WeekRow, caculatorMonth, cn, getCalendar, toDouble } from "./Effect";
-import { shifts } from "../object"
+import { shifts } from "../ArrObject"
 
 import 'react-contexify/ReactContexify.css';
 import { CalendarModal } from "../Modal";
@@ -40,25 +40,44 @@ export const Calendar = (props: any) => {
 
 	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
 	const result: ScheduleType[] = []
-	const [test, settest] = useState<ScheduleType[]>()
+	const [jobArr, setJobArr] = useState<ScheduleType[]>()
 
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
 
 	const [openModal, setOpenModal] = useState(false);
-	const [select, setSelect] = useState(true)
+
+	const [selectAdd, setSelectAdd] = useState(true)
+	const [selectChange, setSelectChange] = useState(true)
+	const [selectDelete, setSelectDelete] = useState(true)
+
+
 	const [defaultData, setDefaultData] = useState({});
 	const [add, setAdd] = useState("");
+	const [classsifi, setClasssifi] = useState<number>();
 	
 	useEffect(() => {
-		settest(result)
-		setSelect(select)
+		setJobArr(result)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedDay, handleContextMenu])
+	}, [selectedDay, defaultData])
+
+	useEffect(() => {
+		function checkRightClick() {
+			const element = (jobArr) && jobArr[classsifi!];
+
+			element?.classification === "91"
+				? (setSelectAdd(false), setSelectChange(true), setSelectDelete(true))
+			: element?.classification == undefined 
+				? (setSelectAdd(true), setSelectChange(false), setSelectDelete(false))
+			: (setSelectAdd(false), setSelectChange(false), setSelectDelete(false))
+		}
+		checkRightClick()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [jobArr, result])
 
 	
 	const handleItemClick = ({ id, props }: { id?: string, event?: any, props?: any }) => {
-		const element = test![props.index] ? test![props.index] : " ";
+		const element = jobArr![props.index] ? jobArr![props.index] : " ";
 		console.log(element);
 		let key: any;
 		switch (id) {
@@ -96,7 +115,6 @@ export const Calendar = (props: any) => {
 	}
 
 	function handleContextMenu(event: any, index: number ,key: string, selectedDay: string) {
-		
 		show({
 			event,
 			props: {
@@ -105,13 +123,6 @@ export const Calendar = (props: any) => {
 				selectedDay: selectedDay
 			}
 		})
-	}
-
-	function checkRightClick(index: number) {
-		// result[index] && result[index]["classification"] !== "91";
-		const element = test![index];
-		console.log(element.classification);
-		element.classification !== "91" ? setSelect(false) : setSelect(true)
 	}
 
 	const onSubmit = (data: any) => {
@@ -161,9 +172,9 @@ export const Calendar = (props: any) => {
 				</form>
 			</div>
 			<Menu id={MENU_ID} className="z-50">
-				<Item id="add" onClick={handleItemClick} disabled={!select}>追加</Item>
-				<Item id="change" onClick={handleItemClick} disabled={!select}>編集</Item>
-				<Item id="delete" onClick={handleItemClick} disabled={!select}><p className="text-red-700">削除</p></Item>
+				<Item id="add" onClick={handleItemClick} disabled={!selectAdd}>追加</Item>
+				<Item id="change" onClick={handleItemClick} disabled={!selectChange}>編集</Item>
+				<Item id="delete" onClick={handleItemClick} disabled={!selectDelete}><p className="text-red-700">削除</p></Item>
 			</Menu>
 			<div className="flex gap-1 flex-col z-1">
 					<div className="flex h-[100%] w-[100%] flex-1 flex-col">
@@ -258,7 +269,10 @@ export const Calendar = (props: any) => {
 															const selectedHospital = schedules?.filter((s: any) => s.tarrget_date === selectedDay)
 
 															const selectedHospitalList = selectedHospital.filter((s: any) => isTimeInRange(s.start_time, s.end_time, shift.start, shift.end) == true)
-															selectedHospitalList.length > 0 ? (result[index] = selectedHospitalList[0]) : null
+
+															selectedHospitalList.length > 0 
+															? (selectedHospitalList[0] && (result[index] = selectedHospitalList[0]))
+															: null
 
 															const checkTimes = hospital.map((job: any) => {
 																[start_time, end_time] = job.times.split('～').map((time: string) => time.replace("：", ":"));
@@ -275,7 +289,7 @@ export const Calendar = (props: any) => {
 																		className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm`}
 																		onContextMenu={(event) => {
 																			handleContextMenu(event, index,shift.key, selectedDay),
-																			checkRightClick(index)
+																			setClasssifi(index)
 																		}}
 																	>{shift.label}</span>
 																)
