@@ -1,81 +1,90 @@
 import { Item, Menu, useContextMenu } from "react-contexify";
 import { WeekHeader, WeekRow, caculatorMonth, cn, getCalendar, toDouble } from "./Effect";
 import { shifts } from "../ArrObject"
-
-import 'react-contexify/ReactContexify.css';
 import { CalendarModal } from "../Modal";
 import { PostChange } from "../Req/PostChange";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DoctorUpdateTest } from "../../utils/validationSchema";
-import { postSchema, putSchema, userInfo } from "../../api/FileMakerApi";
+import { getSchema, postSchema, putSchema, userInfo } from "../../api/FileMakerApi";
 import { ScheduleType } from "../../utils/interface";
-
-function isTimeInRange(checkStartTime: string, checkEndTime: string, startTime: string, endTime: string) {
-	const checkStartHour = parseInt(checkStartTime.split(":")[0], 10);
-	const checkEndHour = parseInt(checkEndTime.split(":")[0], 10);
-	const startHour = parseInt(startTime.split(":")[0], 10);
-	const endHour = parseInt(endTime.split(":")[0], 10);
-
-	return (checkStartHour >= startHour && checkStartHour <= endHour) || (checkEndHour >= startHour && checkEndHour <= endHour);
-}
+import { useSelector } from "react-redux";
+import { createSchedule } from "../../redux/schemaSlice";
+import { useDispatch } from "react-redux";
+import { formatTime, isTimeInRange } from "./timeCheck";
+import 'react-contexify/ReactContexify.css';
 
 
 export const Calendar = (props: any) => {
-	const { year, month, schedules, onClick, startOnMonday, selectedDay } = props;
+	const { year, month, onClick, startOnMonday, selectedDay } = props;
+	const schedules = useSelector((state: any) => state.schedule.schedules)
+
+	const calendarData = getCalendar(year, month, startOnMonday)
+	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
 
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
 	});
 
 	const MENU_ID = "menu-id";
-
 	const { show } = useContextMenu({
 		id: MENU_ID
 	});
 
-
-	const calendarData = getCalendar(year, month, startOnMonday);
-
-	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
-	const result: ScheduleType[] = []
+	const result: any[] = []
 	const [jobArr, setJobArr] = useState<ScheduleType[]>()
 
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
+	const dispatch = useDispatch()
 
 	const [openModal, setOpenModal] = useState(false);
 
+	//右クリック  追加・編集・削除
+	const [add, setAdd] = useState("");
+	//右クリックが表示・非表示
 	const [selectAdd, setSelectAdd] = useState(true)
 	const [selectChange, setSelectChange] = useState(true)
 	const [selectDelete, setSelectDelete] = useState(true)
-
-
-	const [defaultData, setDefaultData] = useState({});
-	const [add, setAdd] = useState("");
 	const [classsifi, setClasssifi] = useState<number>();
+
+
+	//モダールデータ
+	const [defaultData, setDefaultData] = useState({});
 	
+
+	const fetchSchema = async (id: string) => {
+		const data = await getSchema(id);
+		dispatch(createSchedule(data));
+	};
+
 	useEffect(() => {
 		setJobArr(result)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedDay, defaultData])
 
 	useEffect(() => {
-		function checkRightClick() {
-			const element = (jobArr) && jobArr[classsifi!];
+		fetchSchema(doctor_ID)
+		fetchSchema(doctor_ID)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [openModal])
 
+	useEffect(() => {
+		const checkRightClick = () => {
+			const element = (jobArr) && jobArr[classsifi!];
+			console.log(jobArr);
 			element?.classification === "91"
 				? (setSelectAdd(false), setSelectChange(true), setSelectDelete(true))
-			: element?.classification == undefined 
-				? (setSelectAdd(true), setSelectChange(false), setSelectDelete(false))
-			: (setSelectAdd(false), setSelectChange(false), setSelectDelete(false))
+				: element?.classification == undefined
+					? (setSelectAdd(true), setSelectChange(false), setSelectDelete(false))
+				: (setSelectAdd(false), setSelectChange(false), setSelectDelete(false))
 		}
 		checkRightClick()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [jobArr, result])
 
-	
+
 	const handleItemClick = ({ id, props }: { id?: string, event?: any, props?: any }) => {
 		const element = jobArr![props.index] ? jobArr![props.index] : " ";
 		console.log(element);
@@ -83,20 +92,20 @@ export const Calendar = (props: any) => {
 		switch (id) {
 			case "add":
 				setAdd("add")
-				if(props.key == "gozen"){
+				if (props.key == "gozen") {
 					key = {
-						start_time : "08:00",
-						end_time : "12:00"
+						start_time: "08:00",
+						end_time: "12:00"
 					}
-				} else if (props.key == "gogo"){
+				} else if (props.key == "gogo") {
 					key = {
-						start_time : "12:00",
-						end_time : "18:00"
+						start_time: "12:00",
+						end_time: "18:00"
 					}
 				} else {
 					key = {
-						start_time : "18:00",
-						end_time : "22:00"
+						start_time: "18:00",
+						end_time: "22:00"
 					}
 				}
 				setDefaultData(key)
@@ -114,7 +123,7 @@ export const Calendar = (props: any) => {
 		}
 	}
 
-	function handleContextMenu(event: any, index: number ,key: string, selectedDay: string) {
+	const handleContextMenu = (event: any, index: number, key: string, selectedDay: string) => {
 		show({
 			event,
 			props: {
@@ -124,21 +133,33 @@ export const Calendar = (props: any) => {
 			}
 		})
 	}
+	const handleDayClick = (lastMonth: boolean, nextMonth: boolean, day: any) => {
+		const [year, month] = lastMonth
+			? caculatorMonth(calendarData.year, calendarData.month - 1)
+			: nextMonth
+				? caculatorMonth(calendarData.year, calendarData.month + 1)
+				: [calendarData.year, calendarData.month];
+		onClick(year, month, day);
+	};
 
 	const onSubmit = (data: any) => {
 
-		data.start_time = data.start_time + ':00';
-		data.end_time = data.end_time + ':00';
+		data.start_time = formatTime(data.start_time);
+		data.end_time = formatTime(data.end_time);
+		data.id = Number(data.id);
+		data.no = Number(data.no);
 
 		const key = {
 			tarrget_date: selectedDay,
 			edoctor_id: doctor_ID,
 		}
+
 		const mergedObject = {
-			Schedule : Object.assign({}, data, key)
+			Schedule: Object.assign({}, data, key)
 		}
 		const revertData = Object.assign({}, doctor_Info, mergedObject);
 		console.log(revertData);
+
 		//編集フォーム
 		//追加フォーム
 		switch (add) {
@@ -146,10 +167,9 @@ export const Calendar = (props: any) => {
 				postSchema(JSON.stringify(revertData), setOpenModal)
 				break;
 			case "change":
-				putSchema(JSON.stringify(revertData), setOpenModal)
+				putSchema(JSON.stringify(revertData), setOpenModal);
 				break;
 			case "delete":
-
 				break;
 		}
 	}
@@ -177,134 +197,96 @@ export const Calendar = (props: any) => {
 				<Item id="delete" onClick={handleItemClick} disabled={!selectDelete}><p className="text-red-700">削除</p></Item>
 			</Menu>
 			<div className="flex gap-1 flex-col z-1">
-					<div className="flex h-[100%] w-[100%] flex-1 flex-col">
-						<WeekHeader startOnMonday={startOnMonday} />
-						{calendarData.calendar.map((week: string[], key: number) => {
-							return (
-								<WeekRow
-									className="border-b border-l border-r border-gray-200"
-									key={`${calendarData.year}-${calendarData.month}-${key}`}
-								>
-									{week.map((e, _key) => {
-										return (
-											<>
-												<div
-													key={`day-${_key}`}
-													className={cn(
-														`flex flex-1 flex-col py-1 border-x text-base font-medium h-auto md:h-28 cursor-pointer hover:bg-sky-200`,
-														(key == 0 && +e > 15) || (key > 1 && +e < 7)
-															? "bg-gray-400 opacity-50"
-															: (selectedDay ==
-																`${calendarData.year}/${toDouble(
-																	calendarData.month
-																)}/${toDouble(e)}`) &&
-																!((key == 0 && +e > 15) || (key > 1 && +e < 7))
-																? " bg-sky-200"
-																: ""
-													)}
-													onClick={() =>
-														key === 0 && +e > 15
-															? onClick(
-																...caculatorMonth(
-																	calendarData.year,
-																	calendarData.month - 1
-																),
-																e
-															)
-															: key > 1 && +e < 7
-																? onClick(
-																	...caculatorMonth(
-																		calendarData.year,
-																		calendarData.month + 1
-																	),
-																	e
-																)
-																: onClick(calendarData.year, calendarData.month, e)
-													}
-													onContextMenu={() =>
-														key === 0 && +e > 15
-															? onClick(
-																...caculatorMonth(
-																	calendarData.year,
-																	calendarData.month - 1
-																),
-																e
-															)
-															: key > 1 && +e < 7
-																? onClick(
-																	...caculatorMonth(
-																		calendarData.year,
-																		calendarData.month + 1
-																	),
-																	e
-																)
-																: onClick(calendarData.year, calendarData.month, e)}
-												>
-													<div>
-														<span
+				<div className="flex h-[100%] w-[100%] flex-1 flex-col">
+					<WeekHeader startOnMonday={startOnMonday} />
+					{calendarData.calendar.map((week: string[], key: number) => {
+						return (
+							<WeekRow
+								className="border-b border-l border-r border-gray-200"
+								key={`${calendarData.year}-${calendarData.month}-${key}`}
+							>
+								{week.map((e, _key) => {
 
-															className={today == `${calendarData.year}/${calendarData.month}/${e}` ?
-																"px-2 py-1 bg-sky-500 rounded-full" : ""
-															}
-														>
-															{e}
-														</span>
-													</div>
+									const lastMonth = (key === 0 && +e > 15)
+									const nextMonth = (key > 1 && +e < 7)
 
-													<div className="mt-1 flex flex-col justify-center gap-[1px] p-1 mx-2">
-														{shifts.map((shift: any, index: number) => {
-															let start_time: string = ""
-															let end_time: string = ""
-															
-															const hospital = schedules
-																?.filter(
-																	(s: any) =>
-																		s.tarrget_date ===
-																		`${calendarData.year}/${toDouble(
-																			calendarData.month
-																		)}/${toDouble(e)}` &&
-																		!((key === 0 && +e > 15) || (key > 1 && +e < 7))
-																)
-															
-															const selectedHospital = schedules?.filter((s: any) => s.tarrget_date === selectedDay)
-
-															const selectedHospitalList = selectedHospital.filter((s: any) => isTimeInRange(s.start_time, s.end_time, shift.start, shift.end) == true)
-
-															selectedHospitalList.length > 0 
-															? (selectedHospitalList[0] && (result[index] = selectedHospitalList[0]))
-															: null
-
-															const checkTimes = hospital.map((job: any) => {
-																[start_time, end_time] = job.times.split('～').map((time: string) => time.replace("：", ":"));
-																const includesTime = isTimeInRange(start_time, end_time, shift.start, shift.end)
-																job.start_time = start_time
-																job.end_time = end_time
-
-																return includesTime
-															})
-															
-															if (!((key === 0 && +e > 15) || (key > 1 && +e < 7))) {
-																return (
-																	<span
-																		className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm`}
-																		onContextMenu={(event) => {
-																			handleContextMenu(event, index,shift.key, selectedDay),
-																			setClasssifi(index)
-																		}}
-																	>{shift.label}</span>
-																)
-															}
-														})
+									return (
+										<>
+											<div
+												key={`day-${_key}`}
+												className={cn(`flex flex-1 flex-col py-1 border-x text-base font-medium h-auto md:h-28 cursor-pointer hover:bg-sky-200`,
+													(lastMonth || nextMonth)
+														? "bg-gray-400 opacity-50"
+														: (selectedDay == `${calendarData.year}/${toDouble(calendarData.month)}/${toDouble(e)}`) 
+															&& !(lastMonth || nextMonth)
+															? " bg-sky-200"
+															: ""
+												)}
+												onClick={() => handleDayClick(lastMonth, nextMonth, e)}
+												onContextMenu={() => handleDayClick(lastMonth, nextMonth, e)}
+											>
+												<div>
+													<span
+														className={today == `${calendarData.year}/${calendarData.month}/${e}` ?
+															"px-2 py-1 bg-sky-500 rounded-full" : ""
 														}
-													</div>
+													>
+														{e}
+													</span>
 												</div>
-											</>
-										);
-									})}
-								</WeekRow>
-							);
-						})}
-					</div>
+
+												<div className="mt-1 flex flex-col justify-center gap-[1px] p-1 mx-2">
+													{shifts.map((shift: any, index: number) => {
+														let [start_time, end_time] = ['', ''];
+
+														const hospital = schedules
+															?.filter(
+																(s: any) =>
+																	s.tarrget_date ===
+																	`${calendarData.year}/${toDouble(
+																		calendarData.month
+																	)}/${toDouble(e)}` &&
+																	!(lastMonth || nextMonth)
+															)
+														
+														//選択した日の予定 [{...}, {...}]
+														const selectedHospital = schedules?.filter((s: any) => s.tarrget_date === selectedDay)
+														
+														//予定の時間をチェック   （午前、午前、夜）
+														const selectedHospitalList = selectedHospital.find((s: any) => isTimeInRange(s.start_time, s.end_time, shift.start, shift.end))
+
+														console.log(selectedHospitalList);
+														// selectedHospitalList.length > 0 ? (result[index] = selectedHospitalList[0]) : (result[index] = "")
+
+														const checkTimes = hospital.map((job: any) => {
+															[start_time, end_time] = job.times.split('～').map((time: string) => time.replace("：", ":"));
+															const includesTime = isTimeInRange(start_time, end_time, shift.start, shift.end)
+
+															return includesTime
+														})
+
+														if (!(lastMonth || nextMonth)) {
+															return (
+																<span
+																	className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm`}
+																	onContextMenu={(event) => {
+																		handleContextMenu(event, index, shift.key, selectedDay),
+																			setClasssifi(index)
+																	}}
+																>{shift.label}</span>
+															)
+														}
+													})
+													}
+												</div>
+											</div>
+										</>
+									);
+								})}
+							</WeekRow>
+						);
+					})}
+				</div>
 			</div>
 		</>
 

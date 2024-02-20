@@ -17,18 +17,10 @@ const formFields = [
 	{ name: 'display_char', label: 'タイプ', type: 'select' },
 	{ name: 'detail', label: '詳細', type: 'textarea' },
 ];
-// no: null,
-// job_no: null,
-// times: "",
-// classification: "02",
-// cancel: false,
-// display_char: "▽"
 
 export const PostChange = (props: any) => {
 	const { jobInfo, form } = props
 	const { register, formState: { errors } } = form;
-
-	console.log(jobInfo);
 
 	return (
 		<div className="flex flex-wrap">

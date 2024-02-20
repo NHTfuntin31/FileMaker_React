@@ -11,8 +11,11 @@ import { PostChange } from "./Req/PostChange";
 
 import { CarouselArea, cn, toDouble } from "./CalendarItem/Effect";
 import { Calendar } from "./CalendarItem/Calendar";
-import { postSchema, userInfo } from "../api/FileMakerApi";
+import { getSchema, postSchema, userInfo } from "../api/FileMakerApi";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useDispatch } from "react-redux";
+import { createSchedule } from "../redux/schemaSlice";
+import { formatTime } from "./CalendarItem/timeCheck";
 
 
 
@@ -21,10 +24,11 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 ************************************/
 
 const ScheduleCalendar = (props: ScheduleCalendarProps) => {
-	const { schedules, startOnMonday } = props;
-
+	const { startOnMonday } = props;
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
+
+	const dispatch = useDispatch()
 
 	const t = new Date();
 
@@ -66,19 +70,15 @@ const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	};
 	
 	//
-	const onClick = (y: any, m: any, d: any, t?: any) => {
-		console.log(t ? `${y}-${m}-${d}-${t}` : `${y}-${m}-${d}`);
-		setContent(
-			t
-				? `${y}/${toDouble(m)}/${toDouble(d)}/${t}`
-				: `${y}/${toDouble(m)}/${toDouble(d)}`
-		);
+	const onClick = (y: any, m: any, d: any) => {
+		console.log(`${y}-${m}-${d}`);
+		setContent(`${y}/${toDouble(m)}/${toDouble(d)}`);
 	};
 
 	const onSubmit = (data: any) => {
 
-		data.start_time = data.start_time + ':00';
-		data.end_time = data.end_time + ':00';
+		data.start_time = formatTime(data.start_time);
+		data.end_time = formatTime(data.end_time);
 
 		const key = {
 			tarrget_date: content,
@@ -89,11 +89,17 @@ const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 		const mergedObject = {
 			Schedule: Object.assign({}, data, key)
 		}
+		console.log(mergedObject);
 		const postData = Object.assign({}, doctor_Info, mergedObject);
 
-		console.log(postData);
-		postSchema(JSON.stringify(postData), setOpenModalRegister)
-
+		const post = postSchema(JSON.stringify(postData), setOpenModalRegister)
+		console.log(post);
+		const fetchSchema = async (id: string) => {
+			const data = await getSchema(id)
+			dispatch(createSchedule(data))
+		}
+		post && fetchSchema(doctor_ID)
+		fetchSchema(doctor_ID)
 	}
 
 	return (
@@ -117,7 +123,6 @@ const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 							year={y}
 							month={m}
 							onClick={onClick}
-							schedules={schedules}
 							startOnMonday={startOnMonday}
 							selectedDay={content}
 						/>
@@ -125,7 +130,7 @@ const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 				</AnimatePresence>
 				<div className={!content ? "hidden" : "block"}>
 					<div className="pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500 mt-14 mb-5">案件詳細</div>
-					{Information(content, schedules)}
+					{Information(content)}
 					<div className="flex justify-center py-2">
 						<button
 							className="w-2/3 border rounded-lg p-2 bg-sky-400 hover:bg-sky-700 hover:text-white hover:font-bold transition duration-500 ease-in-out"
@@ -157,15 +162,12 @@ const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 	);
 };
 
-const CalendarComponent = ({ jsonData }: { jsonData: any}) => {
+const CalendarComponent = () => {
 
-	if (!jsonData) {
-		return <div>Error wtf</div>;
-	}
 	return (
 		<div className="w-full flex justify-center items-start text-black">
 			<div className="mx-5 my-3 md:mx-16 md:my-10 w-full">
-				<ScheduleCalendar schedules={jsonData} startOnMonday />
+				<ScheduleCalendar startOnMonday />
 			</div>
 		</div>
 	)

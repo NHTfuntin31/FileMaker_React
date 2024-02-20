@@ -49,8 +49,8 @@ export interface LoadingI {
 }
 
 export type ScheduleType = {
-	edoctor_id: string;
 	id: number;
+	edoctor_id: string;
 	no: number;
 	tarrget_date: string;
 	display_char: string;
@@ -67,9 +67,13 @@ export type ScheduleType = {
 	detail: string;
 };
 
+export interface ScheduleStateT {
+	schedules: ScheduleType[]
+}
+
 export type ScheduleCalendarProps = {
 	id?: string;
-	schedules: ScheduleType[];
+	schedules?: ScheduleType[];
 	className?: string;
 	defaultYear?: number;
 	defaultMonth?: number;

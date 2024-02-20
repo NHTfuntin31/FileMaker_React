@@ -8,7 +8,11 @@ import { useForm } from "react-hook-form";
 import { DoctorUpdateTest } from "../utils/validationSchema";
 import { CalendarModal } from "./Modal";
 import { PostChange } from "./Req/PostChange";
-import { putSchema, userInfo } from "../api/FileMakerApi";
+import { getSchema, putSchema, userInfo } from "../api/FileMakerApi";
+import { useSelector } from "react-redux";
+import { createSchedule } from "../redux/schemaSlice";
+import { useDispatch } from "react-redux";
+import { formatTime } from "./CalendarItem/timeCheck";
 
 
 // "Code": "{\"01\": \"当社定期\", \"02\": \"当社Spot\", \"03\": \"当社検診\", \"10\": \"他社紹介\", \"11\": \"定期\", \"12\": \"Spot\", \"13\": \"検診\", \"14\": \"常勤\", \"91\": \"プライベート\"}",
@@ -20,13 +24,16 @@ const Color = [
 	{ classification: '91', color: 'pink-700' },
 ];
 
-export const Information = (content: string, schedules: any): ReactNode => {
+export const Information = (content: string): ReactNode => {
+	const schedules = useSelector((state: any) => state.schedule.schedules)
+
 	const matchingSchedules = schedules.filter(
 		(item: any) => item.tarrget_date === content
 	);
 
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
+	const dispatch = useDispatch()
 	
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
@@ -35,7 +42,8 @@ export const Information = (content: string, schedules: any): ReactNode => {
 	const [openModal, setOpenModal] = useState(false);
 
 	const onSubmit = (data: any) => {
-
+		data.start_time = formatTime(data.start_time);
+		data.end_time = formatTime(data.end_time);
 		data.no = parseInt(data.no)
 		data.id = parseInt(data.id)
 
@@ -47,9 +55,14 @@ export const Information = (content: string, schedules: any): ReactNode => {
 		const mergedObject = {
 			Schedule : Object.assign({}, data, key)
 		}
+		const fetchSchema = async (id: string) => {
+			const data = await getSchema(id);
+			dispatch(createSchedule(data));
+		};
 		const revertData = Object.assign({}, doctor_Info, mergedObject);
-		putSchema(JSON.stringify(revertData), setOpenModal)
-
+		const put = putSchema(JSON.stringify(revertData), setOpenModal)
+		put && fetchSchema(doctor_ID)
+		fetchSchema(doctor_ID)
 		console.log(revertData);
 	}
 	return (

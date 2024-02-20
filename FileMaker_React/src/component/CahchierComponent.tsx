@@ -10,8 +10,6 @@ export const CahchierComponent = (jsonData: any) => {
 					</tr>
 					{ jsonData?.jsonData?.length > 0?
 						jsonData.jsonData!.map((item: any, index: number) => {
-						console.log(item);
-
 							return (
 								<tr key={index} className="text-center border-t border-slate-400">
 									<td>{item.tarrget_date}</td>

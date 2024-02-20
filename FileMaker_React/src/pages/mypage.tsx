@@ -7,13 +7,15 @@ import { Loading } from "../component/icon/loading";
 import { CahchierComponent } from "../component/CahchierComponent";
 import { Evenodd_left } from "../component/icon/evenodd";
 import { DropdownMenuProps } from "../utils/interface";
+import { useDispatch } from "react-redux";
+import { createSchedule } from "../redux/schemaSlice";
 
 const MyPage = () => {
 	const navigate = useNavigate();
 	const [isloading, setIsloading] = useState(false)
-	const [schema, setschema] = useState(null)
 	const [cash, setCash] = useState<string | undefined>()
 	const doctor_ID: string = userInfo(true);
+	const dispatch = useDispatch()
 
 	const [menuStates, setMenuStates] = useState<{ [key: number]: boolean }>({});
 
@@ -22,11 +24,11 @@ const MyPage = () => {
 	const sessionUserRef = useRef(userData);
 	const [menuNo, setMenuNo] = useState("61")
 
-	const fetchSchema = async () => {
+	const fetchSchema = async (id: string) => {
 		setIsloading(true)
-		const data = await getSchema(doctor_ID)
+		const data = await getSchema(id)
+		dispatch(createSchedule(data))
 		const cashData = await getCashFAKE()
-		setschema(data)
 		setCash(cashData)
 		setIsloading(false)
 	}
@@ -36,7 +38,7 @@ const MyPage = () => {
 	} 
 
 	useEffect(() => {
-		fetchSchema()
+		fetchSchema(doctor_ID)
 		fetchLogin()
 		if (!doctor_ID) {
 			navigate("/")
@@ -107,7 +109,7 @@ const MyPage = () => {
 							? <>
 								<div className={menuNo != "61" ? "hidden" : "block"}>
 									<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">カレンダー</div>
-									<CalendarComponent jsonData={schema} />
+									<CalendarComponent />
 								</div>
 								<div className={menuNo != "71" ? "hidden" : "block"}>
 									<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">出納帳管理</div>

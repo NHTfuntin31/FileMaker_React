@@ -61,8 +61,10 @@ const postSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) =>
 			body: data
 		})
 		setOpenModal(false)
+		return true
 	} catch (error){
 		console.log("error");
+		return false
 	}
 }
 
@@ -74,8 +76,10 @@ const putSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) => 
 			body: data
 		})
 		setOpenModal(false)
+		return true
 	} catch (error){
 		console.log("error");
+		return false
 	}
 }
 
