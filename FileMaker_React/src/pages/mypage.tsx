@@ -93,7 +93,7 @@ const MyPage = () => {
 			<div className="w-full flex md:w-1/5 md:flex-col">
 						{/* <li className="px-2 hover:bg-secondary-100">One</li> */}
 						{/* slice(1). */}
-						{sessionUserRef.current.Menu.map((menu: any) => (
+						{sessionUserRef?.current?.Menu?.map((menu: any) => (
 							<TaskMenu
 								key={menu.MenuNo}
 								menu={menu}
@@ -112,7 +112,7 @@ const MyPage = () => {
 									<CalendarComponent />
 								</div>
 								<div className={menuNo != "71" ? "hidden" : "block"}>
-									<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">出納帳管理</div>
+									<div className="mx-5 -mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">出納帳管理</div>
 									<CahchierComponent jsonData={cash}/>
 								</div>
 							</>

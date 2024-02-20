@@ -253,10 +253,10 @@ export const Calendar = (props: any) => {
 														const selectedHospital = schedules?.filter((s: any) => s.tarrget_date === selectedDay)
 														
 														//予定の時間をチェック   （午前、午前、夜）
-														const selectedHospitalList = selectedHospital.find((s: any) => isTimeInRange(s.start_time, s.end_time, shift.start, shift.end))
+														const selectedHospitalList = selectedHospital.filter((s: any) => isTimeInRange(s.start_time, s.end_time, shift.start, shift.end) == true)
 
 														console.log(selectedHospitalList);
-														// selectedHospitalList.length > 0 ? (result[index] = selectedHospitalList[0]) : (result[index] = "")
+														selectedHospitalList.length > 0 ? (result[index] = selectedHospitalList[0]) : (result[index] = "")
 
 														const checkTimes = hospital.map((job: any) => {
 															[start_time, end_time] = job.times.split('～').map((time: string) => time.replace("：", ":"));
