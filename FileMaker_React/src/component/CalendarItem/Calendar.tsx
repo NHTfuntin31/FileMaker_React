@@ -73,7 +73,6 @@ export const Calendar = (props: any) => {
 	useEffect(() => {
 		const checkRightClick = () => {
 			const element = (jobArr) && jobArr[classsifi!];
-			console.log(jobArr);
 			element?.classification === "91"
 				? (setSelectAdd(false), setSelectChange(true), setSelectDelete(true))
 				: element?.classification == undefined
@@ -251,17 +250,17 @@ export const Calendar = (props: any) => {
 														
 														//選択した日の予定 [{...}, {...}]
 														const selectedHospital = schedules?.filter((s: any) => s.tarrget_date === selectedDay)
-														
-														//予定の時間をチェック   （午前、午前、夜）
-														const selectedHospitalList = selectedHospital.filter((s: any) => isTimeInRange(s.start_time, s.end_time, shift.start, shift.end) == true)
 
-														console.log(selectedHospitalList);
-														selectedHospitalList.length > 0 ? (result[index] = selectedHospitalList[0]) : (result[index] = "")
-
-														const checkTimes = hospital.map((job: any) => {
+														selectedHospital.map((job: any, i: number) => {
 															[start_time, end_time] = job.times.split('～').map((time: string) => time.replace("：", ":"));
 															const includesTime = isTimeInRange(start_time, end_time, shift.start, shift.end)
+															includesTime && (result[index] = selectedHospital[i])
+															return includesTime
+														})
 
+														const checkTimes = hospital.map((time: any) => {
+															[start_time, end_time] = time.times.split('～').map((time: string) => time.replace("：", ":"));
+															const includesTime = isTimeInRange(start_time, end_time, shift.start, shift.end)
 															return includesTime
 														})
 
