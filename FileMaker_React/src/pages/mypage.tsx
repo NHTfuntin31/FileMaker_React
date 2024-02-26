@@ -41,19 +41,19 @@ const MyPage = () => {
 	const userData = storedData ? JSON.parse(storedData) : "";
 	const [menuNo, setMenuNo] = useState("61")
 
-	const UserDisplay = userData?.Menu?.find((f: any) => f.MenuNo == 6)
+	const UserDisplay = userData?.Menu?.filter((f: any) => f.MenuNo == 6)
 
 	const TaskMenu = () => {
 		return (
 			<div className="w-full">
 				<ul className="w-full flex justify-center items-center gap-1">
 					{
-						UserDisplay?.DisplayName.map((item: any, index: number) => {
+						UserDisplay?.slice(1).map((item: any, index: number) => {
 							return (
 								<li key={index}
 								className="border p-2 rounded-t-xl cursor-pointer whitespace-nowrap hover:bg-sky-200 transition duration-200 ease-in-out"
-								onClick={() => setMenuNo(`6${index+1}`)}>
-									{item}
+								onClick={() => setMenuNo(`6${item?.Function}`)}>
+									{item?.DisplayName}
 								</li>
 							)
 						})

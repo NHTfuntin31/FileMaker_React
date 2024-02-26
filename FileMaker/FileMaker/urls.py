@@ -21,6 +21,8 @@ from FileMaker.view.LinkAuth import Login, Logout, Ping, ChangePass
 #from FileMaker.view.Hospital import FindHospital, HostpitalArea, HospitalMarket
 from FileMaker.view.ScheduleBook import ScheduleBook
 from FileMaker.view.ScheduleBook import Masters
+from FileMaker.view.Calender import Calender
+from FileMaker.view.Cahchier import Cahchier
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,5 +41,8 @@ urlpatterns = [
     #
     # e-doctor機能拡張
     path('api/mypage/schedule', ScheduleBook.as_view()),
-    path('api/mypage/schedule/master', Masters.as_view())
+    path('api/mypage/schedule/master', Masters.as_view()),
+    path('api/mypage/schedule/calender', Calender.as_view()),
+    # 出納帳機能
+    path("api/mypage/schedule/Cahchier", Cahchier.as_view())
 ]
