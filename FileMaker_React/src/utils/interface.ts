@@ -1,3 +1,5 @@
+
+//保留中
 export interface RegisterFormI {
 	firstname: string;
 	lastname: string;
@@ -10,11 +12,14 @@ export interface RegisterFormI {
 	yubin: string;
 }
 
+//保留中
 export interface LoginFormI {
 	username: string;
 	password: string;
 }
 
+
+//保留中
 export interface DoctorFormI {
 	id: number,
 	edoctor_id: string,
@@ -33,6 +38,8 @@ export interface DoctorFormI {
 	overview: string,
 	detail: string,
 }
+
+//保留中
 export interface DoctorFormTestI {
 	start_time: any,
 	end_time: any,
@@ -44,11 +51,13 @@ export interface DoctorFormTestI {
 	detail: string,
 }
 
+//Loadding
 export interface LoadingI {
 	show: boolean;
 }
 
-export type ScheduleType = {
+//スケジュール  ＋  カレンダー
+export interface ScheduleTypeI {
 	id: number;
 	edoctor_id: string;
 	no: number;
@@ -65,27 +74,51 @@ export type ScheduleType = {
 	address: string;
 	overview: string;
 	detail: string;
-};
-
-export interface ScheduleStateT {
-	schedules: ScheduleType[]
 }
 
-export type ScheduleCalendarProps = {
+//schema Slice用
+export interface ScheduleStateI {
+	schedules: ScheduleTypeI[]
+}
+
+//cahchier 
+export interface CahchierI {
+	id: number;
+	no: number;
+	tarrget_date: string;
+	division: string;
+	job_no?: string;
+	expense_item: string;
+	price: number;
+	memo: string;
+	payment_date: string;
+	edoctor_id: string;
+}
+
+//cahchier Slice用
+export interface CahchierStateI {
+	cahchiers: CahchierI[]
+}
+
+
+//親からもらうprops（カレンダー）
+export interface ScheduleCalendarPropsI {
 	id?: string;
-	schedules?: ScheduleType[];
+	schedules?: ScheduleTypeI[];
 	className?: string;
 	defaultYear?: number;
 	defaultMonth?: number;
 	startOnMonday?: boolean;
-};
+}
 
+//メニューアイテム
 interface MenuItem {
 	MenuNo: number;
 	Function: number[];
 	DisplayName: string[];
 	Link: string[];
 }
+//保留中
 export interface DropdownMenuProps {
 	menu: MenuItem;
 	isOpen: boolean;

@@ -7,7 +7,7 @@ import { ReactNode, useState } from "react";
 import { useForm } from "react-hook-form";
 import { DoctorUpdateTest } from "../utils/validationSchema";
 import { CalendarModal } from "./Modal";
-import { PostChange } from "./Req/PostChange";
+import { ScheduleReq } from "./Req/ScheduleReq";
 import { getSchema, putSchema, userInfo } from "../api/FileMakerApi";
 import { useSelector } from "react-redux";
 import { createSchedule } from "../redux/schemaSlice";
@@ -127,7 +127,7 @@ export const Information = (content: string): ReactNode => {
 								hopital={item.factory_name}
 								submit={form.handleSubmit(onSubmit)}
 							>
-								<PostChange jobInfo={item} form={form} />
+								<ScheduleReq jobInfo={item} form={form} />
 							</CalendarModal>
 						</form>
 					</div>

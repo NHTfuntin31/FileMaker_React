@@ -83,15 +83,15 @@ const putSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) => 
 	}
 }
 
-const getCash = (user_id: string) => {
-	const url = `http://osk-196/api/mypage/schedule/Cahchier?edoctor_no=${user_id}`
-
+const getCash = async (user_id: string) => {
+	const url = `http://osk-195:8080/api/mypage/schedule/Cahchier?edoctor_no=${user_id}`
 	try{
-		const response = fetch(url, {
+		const response = await fetch(url, {
 			method: "GET"
 		})
 
-		return response
+		const data = await response.json();
+		return data.Cashier
 	} catch(error) {
 		console.log(error);
 	}

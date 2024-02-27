@@ -2,13 +2,13 @@ import { Item, Menu, useContextMenu } from "react-contexify";
 import { WeekHeader, WeekRow, caculatorMonth, cn, getCalendar, toDouble } from "./Effect";
 import { shifts } from "../ArrObject"
 import { CalendarModal } from "../Modal";
-import { PostChange } from "../Req/PostChange";
+import { ScheduleReq } from "../Req/ScheduleReq";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DoctorUpdateTest } from "../../utils/validationSchema";
 import { getSchema, postSchema, putSchema, userInfo } from "../../api/FileMakerApi";
-import { ScheduleType } from "../../utils/interface";
+import { ScheduleTypeI } from "../../utils/interface";
 import { useSelector } from "react-redux";
 import { createSchedule } from "../../redux/schemaSlice";
 import { useDispatch } from "react-redux";
@@ -33,7 +33,7 @@ export const Calendar = (props: any) => {
 	});
 
 	const result: any[] = []
-	const [jobArr, setJobArr] = useState<ScheduleType[]>()
+	const [jobArr, setJobArr] = useState<ScheduleTypeI[]>()
 
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
@@ -186,7 +186,7 @@ export const Calendar = (props: any) => {
 						title={`${selectedDay}`}
 						submit={form.handleSubmit(onSubmit)}
 					>
-						<PostChange jobInfo={defaultData} form={form} />
+						<ScheduleReq jobInfo={defaultData} form={form} />
 					</CalendarModal>
 				</form>
 			</div>

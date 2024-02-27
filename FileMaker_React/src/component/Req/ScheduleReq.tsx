@@ -18,7 +18,7 @@ const formFields = [
 	{ name: 'detail', label: '詳細', type: 'textarea' },
 ];
 
-export const PostChange = (props: any) => {
+export const ScheduleReq = (props: any) => {
 	const { jobInfo, form } = props
 	const { register, formState: { errors } } = form;
 

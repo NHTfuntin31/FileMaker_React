@@ -5,9 +5,9 @@ import { CalendarModal } from "./Modal";
 import { useForm } from "react-hook-form";
 import { DoctorUpdateTest } from "../utils/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ScheduleCalendarProps } from "../utils/interface";
+import { ScheduleCalendarPropsI } from "../utils/interface";
 import { Information } from "./HospitalList";
-import { PostChange } from "./Req/PostChange";
+import { ScheduleReq } from "./Req/ScheduleReq";
 
 import { CarouselArea, cn, toDouble } from "./CalendarItem/Effect";
 import { Calendar } from "./CalendarItem/Calendar";
@@ -23,7 +23,7 @@ import { formatTime } from "./CalendarItem/timeCheck";
 	schedule component
 ************************************/
 
-const ScheduleCalendar = (props: ScheduleCalendarProps) => {
+const ScheduleCalendar = (props: ScheduleCalendarPropsI) => {
 	const { startOnMonday } = props;
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
@@ -153,7 +153,7 @@ const ScheduleCalendar = (props: ScheduleCalendarProps) => {
 							title={`${content} ⁂ スケジュールを追加`}
 							submit={form.handleSubmit(onSubmit)}
 						>
-							<PostChange jobInfo="" form={form} />
+							<ScheduleReq jobInfo="" form={form} />
 						</CalendarModal>
 					</form>
 				</div>

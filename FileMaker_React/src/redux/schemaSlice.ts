@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ScheduleStateT } from "../utils/interface";
+import { ScheduleStateI } from "../utils/interface";
 
-const initialState: ScheduleStateT = {
+const initialState: ScheduleStateI = {
 	schedules: [],
 };
 
