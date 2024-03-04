@@ -58,9 +58,9 @@ export interface LoadingI {
 
 //スケジュール  ＋  カレンダー
 export interface ScheduleTypeI {
-	id: number;
+	id: number | null;
 	edoctor_id: string;
-	no: number;
+	no: number | null;
 	tarrget_date: string;
 	display_char: string;
 	job_no: string;
@@ -74,6 +74,28 @@ export interface ScheduleTypeI {
 	address: string;
 	overview: string;
 	detail: string;
+}
+
+export interface ScheduleBodyI {
+	Schedule: {
+		id: number | null;
+		edoctor_id: string;
+		no: number | null;
+		tarrget_date: string;
+		display_char: string;
+		job_no: string;
+		time_zone: string;
+		times: string;
+		start_time: any;
+		end_time: any;
+		classification: string;
+		cancel: boolean;
+		factory_name: string;
+		address: string;
+		overview: string;
+		detail: string;
+	}
+	
 }
 
 //schema Slice用

@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { createSchedule } from "../redux/schemaSlice";
 import { useDispatch } from "react-redux";
 import { formatTime } from "./CalendarItem/timeCheck";
+import { createCopy } from "../redux/schemaCopySlice";
 
 
 // "Code": "{\"01\": \"当社定期\", \"02\": \"当社Spot\", \"03\": \"当社検診\", \"10\": \"他社紹介\", \"11\": \"定期\", \"12\": \"Spot\", \"13\": \"検診\", \"14\": \"常勤\", \"91\": \"プライベート\"}",
@@ -34,12 +35,16 @@ export const Information = (content: string): ReactNode => {
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
 	const dispatch = useDispatch()
-	
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
 	});
 
 	const [openModal, setOpenModal] = useState(false);
+
+	const fetchSchema = async (id: string) => {
+		const data = await getSchema(id);
+		dispatch(createSchedule(data));
+	};
 
 	const onSubmit = (data: any) => {
 		data.start_time = formatTime(data.start_time);
@@ -55,15 +60,15 @@ export const Information = (content: string): ReactNode => {
 		const mergedObject = {
 			Schedule : Object.assign({}, data, key)
 		}
-		const fetchSchema = async (id: string) => {
-			const data = await getSchema(id);
-			dispatch(createSchedule(data));
-		};
 		const revertData = Object.assign({}, doctor_Info, mergedObject);
 		const put = putSchema(JSON.stringify(revertData), setOpenModal)
 		put && fetchSchema(doctor_ID)
 		fetchSchema(doctor_ID)
 		console.log(revertData);
+	}
+
+	const onCopy = (data: any) => {
+		dispatch(createCopy(data))
 	}
 	return (
 		<div>
@@ -108,13 +113,17 @@ export const Information = (content: string): ReactNode => {
 									</tr>
 								</table>
 							</div>
-							<div className={"flex justify-center items-center " + `${item.classification != "91" && "hidden"}`}>
+							<div className={"flex flex-col md:flex-row gap-2 justify-center items-center " + `${item.classification != "91" && "hidden"}`}>
 								<button 
-								className={`w-1/2 md:w-1/3 rounded-lg bg-${color} text-white mt-2 self-center p-2 hover:opacity-50 transition duration-500 ease-in-out`}
+								className={`w-1/2 md:w-1/4 rounded-lg bg-${color} whitespace-nowrap text-white mt-2 self-center p-2 hover:opacity-50 transition duration-500 ease-in-out`}
 								onClick={() =>setOpenModal(true)}
 								>スケジュールを編集</button>
-								</div>
+								<button 
+								className={`w-1/2 md:w-1/4 rounded-lg bg-${color} whitespace-nowrap text-white mt-2 self-center p-2 hover:opacity-50 transition duration-500 ease-in-out`}
+								onClick={() =>onCopy(item)}
+								>スケジュールをコピー</button>
 							</div>
+						</div>
 						{/* スケジュールを編集モダール */}
 						<form onSubmit={form.handleSubmit(onSubmit)}>
 							<CalendarModal

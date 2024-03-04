@@ -14,30 +14,27 @@ import { createSchedule } from "../../redux/schemaSlice";
 import { useDispatch } from "react-redux";
 import { formatTime, isTimeInRange } from "./timeCheck";
 import 'react-contexify/ReactContexify.css';
+import { pasteCopy } from "../../redux/schemaCopySlice";
 
 
 export const Calendar = (props: any) => {
 	const { year, month, onClick, startOnMonday, selectedDay } = props;
+
+	const TIME_MENU = "time-menu";
+	const DAY_MENU = "day-menu";
+	const { show: show_time } = useContextMenu({
+		id: TIME_MENU
+	});
+	const { show: show_day } = useContextMenu({
+		id: DAY_MENU
+	})
+
+	const dispatch = useDispatch()
 	const schedules = useSelector((state: any) => state.schedule.schedules)
+	const schedulesCopy = useSelector((state: any) => state.scheduleCopy.Schedule)
 
 	const calendarData = getCalendar(year, month, startOnMonday)
 	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
-
-	const form = useForm({
-		resolver: zodResolver(DoctorUpdateTest),
-	});
-
-	const MENU_ID = "menu-id";
-	const { show } = useContextMenu({
-		id: MENU_ID
-	});
-
-	const result: any[] = []
-	const [jobArr, setJobArr] = useState<ScheduleTypeI[]>()
-
-	const doctor_ID = userInfo(true);
-	const doctor_Info = userInfo();
-	const dispatch = useDispatch()
 
 	const [openModal, setOpenModal] = useState(false);
 
@@ -48,10 +45,20 @@ export const Calendar = (props: any) => {
 	const [selectChange, setSelectChange] = useState(true)
 	const [selectDelete, setSelectDelete] = useState(true)
 	const [classsifi, setClasssifi] = useState<number>();
+	const [checkfetch, setcheckfetch] = useState<boolean>(false);
 
+	const result: any[] = []
+	const [jobArr, setJobArr] = useState<ScheduleTypeI[]>()
+
+	const doctor_ID = userInfo(true);
+	const doctor_Info = userInfo();
 
 	//モダールデータ
 	const [defaultData, setDefaultData] = useState({});
+
+	const form = useForm({
+		resolver: zodResolver(DoctorUpdateTest),
+	});
 	
 
 	const fetchSchema = async (id: string) => {
@@ -63,12 +70,6 @@ export const Calendar = (props: any) => {
 		setJobArr(result)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedDay, defaultData])
-
-	useEffect(() => {
-		fetchSchema(doctor_ID)
-		fetchSchema(doctor_ID)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [openModal])
 
 	useEffect(() => {
 		const checkRightClick = () => {
@@ -93,18 +94,23 @@ export const Calendar = (props: any) => {
 				setAdd("add")
 				if (props.key == "gozen") {
 					key = {
-						start_time: "08:00",
-						end_time: "12:00"
+						start_time: "07:00",
+						end_time: "14:00"
 					}
 				} else if (props.key == "gogo") {
 					key = {
 						start_time: "12:00",
 						end_time: "18:00"
 					}
-				} else {
+				} else if (props.key == "yakin") {
 					key = {
 						start_time: "18:00",
-						end_time: "22:00"
+						end_time: "23:59"
+					}
+				} else {
+					key = {
+						start_time: "00:00",
+						end_time: "08:00"
 					}
 				}
 				setDefaultData(key)
@@ -122,8 +128,19 @@ export const Calendar = (props: any) => {
 		}
 	}
 
-	const handleContextMenu = (event: any, index: number, key: string, selectedDay: string) => {
-		show({
+	const handleItemPaste = async () => {
+		const Schedule = {
+			Schedule : schedulesCopy
+		}
+		const revertData = Object.assign({}, doctor_Info, Schedule);
+		console.log(revertData);
+		await postSchema(JSON.stringify(revertData))
+		setcheckfetch(!checkfetch)
+	}
+
+
+	const handleContextMenuT = (event: any, index: number, key: string, selectedDay: string) => {
+		show_time({
 			event,
 			props: {
 				key: key,
@@ -132,6 +149,18 @@ export const Calendar = (props: any) => {
 			}
 		})
 	}
+
+	const handleContextMenuD = (event: any) => {
+		show_day({
+			event
+		})
+	}
+	
+	useEffect(() => {
+		fetchSchema(doctor_ID)
+		fetchSchema(doctor_ID)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [openModal, checkfetch])
 	const handleDayClick = (lastMonth: boolean, nextMonth: boolean, day: any) => {
 		const [year, month] = lastMonth
 			? caculatorMonth(calendarData.year, calendarData.month - 1)
@@ -139,6 +168,9 @@ export const Calendar = (props: any) => {
 				? caculatorMonth(calendarData.year, calendarData.month + 1)
 				: [calendarData.year, calendarData.month];
 		onClick(year, month, day);
+		const tarrget_date = `${year}/${toDouble(month)}/${toDouble(day)}`
+			console.log(tarrget_date);
+			dispatch(pasteCopy(tarrget_date))
 	};
 
 	const onSubmit = (data: any) => {
@@ -171,6 +203,8 @@ export const Calendar = (props: any) => {
 			case "delete":
 				break;
 		}
+
+		setcheckfetch(!checkfetch)
 	}
 
 	return (
@@ -190,10 +224,13 @@ export const Calendar = (props: any) => {
 					</CalendarModal>
 				</form>
 			</div>
-			<Menu id={MENU_ID} className="z-50">
+			<Menu id={TIME_MENU} className="z-50">
 				<Item id="add" onClick={handleItemClick} disabled={!selectAdd}>追加</Item>
 				<Item id="change" onClick={handleItemClick} disabled={!selectChange}>編集</Item>
 				<Item id="delete" onClick={handleItemClick} disabled={!selectDelete}><p className="text-red-700">削除</p></Item>
+			</Menu>
+			<Menu id={DAY_MENU} className="z-50">
+				<Item id="paste" onClick={handleItemPaste}><p className="text-red-700">ペースト</p></Item>
 			</Menu>
 			<div className="flex gap-1 flex-col z-1">
 				<div className="flex h-[100%] w-[100%] flex-1 flex-col">
@@ -213,7 +250,7 @@ export const Calendar = (props: any) => {
 										<>
 											<div
 												key={`day-${_key}`}
-												className={cn(`flex flex-1 flex-col py-1 border-x text-base font-medium h-auto md:h-28 cursor-pointer hover:bg-sky-200`,
+												className={cn(`flex flex-1 flex-col py-1 border-x text-base font-medium h-auto md:h-32 cursor-pointer hover:bg-sky-200`,
 													(lastMonth || nextMonth)
 														? "bg-gray-400 opacity-50"
 														: (selectedDay == `${calendarData.year}/${toDouble(calendarData.month)}/${toDouble(e)}`) 
@@ -222,9 +259,12 @@ export const Calendar = (props: any) => {
 															: ""
 												)}
 												onClick={() => handleDayClick(lastMonth, nextMonth, e)}
-												onContextMenu={() => handleDayClick(lastMonth, nextMonth, e)}
+												onContextMenu={() => {handleDayClick(lastMonth, nextMonth, e)}}
 											>
-												<div>
+												<div 
+													onClick={(event: any) => handleContextMenuD(event)}
+													onContextMenu={(event: any) => handleContextMenuD(event)}
+													>
 													<span
 														className={today == `${calendarData.year}/${calendarData.month}/${e}` ?
 															"px-2 py-1 bg-sky-500 rounded-full" : ""
@@ -269,8 +309,8 @@ export const Calendar = (props: any) => {
 																<span
 																	className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm`}
 																	onContextMenu={(event) => {
-																		handleContextMenu(event, index, shift.key, selectedDay),
-																			setClasssifi(index)
+																		handleContextMenuT(event, index, shift.key, selectedDay),
+																		setClasssifi(index)
 																	}}
 																>{shift.label}</span>
 															)

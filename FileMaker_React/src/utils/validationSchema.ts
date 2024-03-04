@@ -69,3 +69,13 @@ export const DoctorUpdateTest = z.object({
 	overview: z.string(),
 	detail: z.string(),
 })
+
+export const CashUpdateTest = z.object({
+	id:z.any().optional(),
+	tarrget_date:z.string().nonempty("設定してください"),
+	payment_date:z.string().nonempty("設定してください"),
+	division:z.string().optional(),
+	expense_item:z.string(),
+	price: z.string(),
+	memo: z.string(),
+})

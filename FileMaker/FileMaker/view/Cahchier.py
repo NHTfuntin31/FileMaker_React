@@ -46,12 +46,12 @@ class Cahchier(APIView):
         dLog = settings.LOG_INFO['LogWeb']
         self.cLog = Log.Log(dLog)
         #
-        if "edoctor_no" in request.GET:
-            edoctor_no = request.GET.get("edoctor_no")
+        if "e-doctor_no" in request.GET:
+            edoctor_no = request.GET.get("e-doctor_no")
             #print("edoctor_no",edoctor_no)
         else:
             #print("param 指定なし")
-            return Response({"messegt":"edoctor_noが未指定です。"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"messegt":"e-doctor_noが未指定です。"},status=status.HTTP_400_BAD_REQUEST)
         #print("Request User:",edoctor_no)
         if "date_year" in request.GET and "date_month" in request.GET:
             iDateYear = int(request.GET.get("date_year"))
@@ -90,9 +90,9 @@ class Cahchier(APIView):
         #
         rsp_data = {}
         if len(lRecords) != 0:
-            rsp_data["User"] = {"edoctor_no":lRecords[0]["edoctor_id"], "no":lRecords[0]["no"]}
+            rsp_data["User"] = {"e-doctor_no":lRecords[0]["edoctor_id"], "no":lRecords[0]["no"]}
         else:
-            rsp_data["User"] = {"edoctor_no":edoctor_no}
+            rsp_data["User"] = {"e-doctor_no":edoctor_no}
         if lRecords != None:
             hstatus = status.HTTP_200_OK
             rsp_data["Cashier"] = lRecords
@@ -121,7 +121,7 @@ class Cahchier(APIView):
         dUser = dData['User']
         dRecord = dData["Cashier"]
         #
-        if "edoctor_no" not in dUser:
+        if "e-doctor_no" not in dUser:
             print("Body 指定なし")
             return Response({"messegt":"e-doctor_noが未指定です。"},status=status.HTTP_400_BAD_REQUEST)
         #print("Request User:",dUser["edoctor_no"])
@@ -132,7 +132,7 @@ class Cahchier(APIView):
         #print("Request User:",dUser)
         #
         #print("e-Doctor:{:s}".format(dUser["edoctor_no"]))
-        self.cLog.Logger.log(self.cLog.INFO,"e-Doctor:{:s}".format(dUser["edoctor_no"]))
+        self.cLog.Logger.log(self.cLog.INFO,"e-Doctor:{:s}".format(dUser["e-doctor_no"]))
         #
         sSquIns = "Insert Into cashier_account(edoctor_id,no,tarrget_date,expense_item,\n"+\
                   "    payment_date,division,price,memo,ins_user) Values({:s})"
@@ -140,7 +140,7 @@ class Cahchier(APIView):
         rsp_data = {}
         rsp_data["User"] = dUser
         try:
-            sValue = "'" + dUser["edoctor_no"] + "'," + str(dUser["no"]) + ","
+            sValue = "'" + dUser["e-doctor_no"] + "'," + str(dUser["no"]) + ","
             sValue += "'" + dRecord["tarrget_date"] + "',"
             sValue += "'" + dRecord["expense_item"] + "',"
             if dRecord["payment_date"] != None :
@@ -150,8 +150,9 @@ class Cahchier(APIView):
             sValue += "'" + dRecord["division"] + "',"
             sValue += str(dRecord["price"]) + ","
             sValue += "'" + dRecord["memo"] + "',"
-            sValue += "'" + dUser["edoctor_no"] + "'"
+            sValue += "'" + dUser["e-doctor_no"] + "'"
         except Exception as e:
+            print("sValue:", sValue,e)
             rsp_data["Message"] = "入力項目値が不正です。" + str(e)
             self.cPostgres.disconnect()
             return Response(rsp_data,status = status.HTTP_400_BAD_REQUEST)
@@ -176,7 +177,7 @@ class Cahchier(APIView):
     # 対象ドクター/指定日の収支データを登録する。
     #     Params: None
     #     request.body:以下のJSON
-    #     {"User":{"edoctor_no":"e-doctor_ID", "no":"no"},
+    #     {"User":{"e-doctor_no":"e-doctor_ID", "no":"no"},
     #      "Schedules":{} }
     def put(self, request):
 
@@ -188,15 +189,15 @@ class Cahchier(APIView):
         dData = json.loads(r_data)
         dUser = dData['User']
         dRecord = dData["Cashier"]
-        #print("**",dUser,dRecord)
+        print("**",dUser,dRecord)
         #
         if dRecord == {}:
             print("Body 指定なし")
             return Response({"messegt":"出納情報が未指定です。"},status=status.HTTP_400_BAD_REQUEST)
         #print("Request User:",dRecord)
         #
-        #print("e-Doctor:{:s}".format(dUser["edoctor_no"]))
-        self.cLog.Logger.log(self.cLog.INFO,"e-Doctor:{:s}".format(dUser["edoctor_no"]))
+        print("e-Doctor:{:s}".format(dUser["e-doctor_no"]))
+        self.cLog.Logger.log(self.cLog.INFO,"e-Doctor:{:s}".format(dUser["e-doctor_no"]))
         #
         if dRecord["payment_date"] == None:
             dRecord["payment_date"] = "Null"
@@ -206,16 +207,20 @@ class Cahchier(APIView):
                   "    expense_item = '{:s}', payment_date = {:s}, division = '{:s}', price ={:d},\n"+\
                   "    memo = '{:s}',upd_user = '{:s}' \n"+\
                   "  Where id = {:d}"
+        if dRecord["id"] == None:
+            return Response({"messegt":"ID情報が未指定(新規登録対象）です。"},status=status.HTTP_400_BAD_REQUEST)
         self.cPostgres.connect()
         rsp_data = {}
         rsp_data["User"] = dUser
         if dRecord["payment_date"] == None:
-            dRecord["payment_date"] = ""
+            dRecord["payment_date"] = "Null"
         try:
-            sSql = sSquUpd.format(dUser["edoctor_no"], dUser["no"], dRecord["tarrget_date"],\
+            if dRecord["payment_date"] == None:
+                dRecord["payment_date"] = 'Null'
+            sSql = sSquUpd.format(dUser["e-doctor_no"], dUser["no"], dRecord["tarrget_date"],\
                                   dRecord["expense_item"],dRecord["payment_date"], \
                                   dRecord["division"],dRecord["price"],\
-                                  dRecord["memo"],dUser["edoctor_no"],dRecord["id"])
+                                  dRecord["memo"],dUser["e-doctor_no"],dRecord["id"])
         except Exception as e:
             rsp_data["Message"] = "入力項目値が不正です。" + str(e)
             self.cPostgres.disconnect()

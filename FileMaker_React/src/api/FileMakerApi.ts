@@ -53,14 +53,14 @@ const getSchema = async (user_id: string) => {
 	}
 };
 
-const postSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) => {
+const postSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
 	const url = `http://osk-195:8080/api/mypage/schedule`
 	try {
 		fetch(url,{
 			method: "POST",
 			body: data
 		})
-		setOpenModal(false)
+		setOpenModal && setOpenModal(false)
 		return true
 	} catch (error){
 		console.log("error");
@@ -68,14 +68,14 @@ const postSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) =>
 	}
 }
 
-const putSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) => {
+const putSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
 	const url = `http://osk-195:8080/api/mypage/schedule`
 	try {
 		fetch(url,{
 			method: "PUT",
 			body: data
 		})
-		setOpenModal(false)
+		setOpenModal && setOpenModal(false)
 		return true
 	} catch (error){
 		console.log("error");
@@ -84,7 +84,7 @@ const putSchema = (data: any, setOpenModal : (isOpenModal: boolean) => void) => 
 }
 
 const getCash = async (user_id: string) => {
-	const url = `http://osk-195:8080/api/mypage/schedule/Cahchier?edoctor_no=${user_id}`
+	const url = `http://osk-195:8080/api/mypage/schedule/Cahchier?e-doctor_no=${user_id}`
 	try{
 		const response = await fetch(url, {
 			method: "GET"
@@ -96,20 +96,37 @@ const getCash = async (user_id: string) => {
 		console.log(error);
 	}
 }
-const getCashFAKE = async () => {
-	const url = `/src/fake_json/cash.json`
 
+const postCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
+	const url = `http://osk-195:8080/api/mypage/schedule/Cahchier`
 	try{
-		const response = await fetch(url, {
-			method: "GET"
+		fetch(url, {
+			method: "POST",
+			body: data
 		})
-
-		const data = await response.json();
-		return data.Cashier;
+		setOpenModal && setOpenModal(false)
+		return true
 	} catch(error) {
-		console.log(error);
+		console.log("error");
+		return false
 	}
 }
+
+const putCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
+	const url = `http://osk-195:8080/api/mypage/schedule/Cahchier`
+	try {
+		fetch(url,{
+			method: "PUT",
+			body: data
+		})
+		setOpenModal && setOpenModal(false)
+		return true
+	} catch (error){
+		console.log("error");
+		return false
+	}
+}
+
 
 const userInfo = (id?: any) => {
 	const storedData = localStorage.getItem("User");
@@ -117,4 +134,4 @@ const userInfo = (id?: any) => {
 	return id ? userData.User["e-doctor_no"] : userData
 }
 
-export {LoginApi, getSchema, userInfo, postSchema, putSchema, getCash, getCashFAKE}
+export {LoginApi, userInfo, getSchema, postSchema, putSchema, getCash, postCash, putCash}
