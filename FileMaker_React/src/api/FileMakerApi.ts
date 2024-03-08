@@ -1,8 +1,8 @@
 
-
+import { apiUrl } from "./global"
 // const LoginApi = async (data: LoginFormI, navigate: NavigateFunction, setIsLoading: (isLoading: boolean) => void) => {
 // 	console.log(data);
-// 	const LoginUrl = "http://osk-195:8080/api/login"
+// 	const LoginUrl = "${apiUrl}/api/login"
 
 // 	try {
 //         setIsLoading(true)
@@ -24,7 +24,7 @@ const LoginApi = async(user_id: string) => {
 		password: ""
 	}
 	try{
-		const response = await fetch(`http://osk-195:8080/api/login`, {
+		const response = await fetch(`${apiUrl}/api/login`, {
 			method: "POST",
 			body: JSON.stringify(data)
 		})
@@ -39,7 +39,7 @@ const LoginApi = async(user_id: string) => {
 
 const getSchema = async (user_id: string) => {
 	try {
-		const response = await fetch(`http://osk-195:8080/api/mypage/schedule?edoctor_no=${user_id}`);
+		const response = await fetch(`${apiUrl}/api/mypage/schedule?edoctor_no=${user_id}`);
 		const data = await response.json();
 		const user = {
 			"User": data.User
@@ -54,7 +54,7 @@ const getSchema = async (user_id: string) => {
 };
 
 const postSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
-	const url = `http://osk-195:8080/api/mypage/schedule`
+	const url = `${apiUrl}/api/mypage/schedule`
 	try {
 		fetch(url,{
 			method: "POST",
@@ -69,7 +69,7 @@ const postSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) =
 }
 
 const putSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
-	const url = `http://osk-195:8080/api/mypage/schedule`
+	const url = `${apiUrl}/api/mypage/schedule`
 	try {
 		fetch(url,{
 			method: "PUT",
@@ -84,7 +84,7 @@ const putSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) =>
 }
 
 const getCash = async (user_id: string) => {
-	const url = `http://osk-195:8080/api/mypage/schedule/Cahchier?e-doctor_no=${user_id}`
+	const url = `${apiUrl}/api/mypage/schedule/Cahchier?e-doctor_no=${user_id}`
 	try{
 		const response = await fetch(url, {
 			method: "GET"
@@ -98,7 +98,7 @@ const getCash = async (user_id: string) => {
 }
 
 const postCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
-	const url = `http://osk-195:8080/api/mypage/schedule/Cahchier`
+	const url = `${apiUrl}/api/mypage/schedule/Cahchier`
 	try{
 		fetch(url, {
 			method: "POST",
@@ -113,7 +113,7 @@ const postCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => voi
 }
 
 const putCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
-	const url = `http://osk-195:8080/api/mypage/schedule/Cahchier`
+	const url = `${apiUrl}/api/mypage/schedule/Cahchier`
 	try {
 		fetch(url,{
 			method: "PUT",
@@ -130,8 +130,10 @@ const putCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => void
 
 const userInfo = (id?: any) => {
 	const storedData = localStorage.getItem("User");
+	const idData = localStorage.getItem("DoctorID");
 	const userData = storedData ? JSON.parse(storedData) : "";
-	return id ? userData.User["e-doctor_no"] : userData
+	const DoctorID = idData ? idData : "";
+	return id ? DoctorID : userData
 }
 
 export {LoginApi, userInfo, getSchema, postSchema, putSchema, getCash, postCash, putCash}

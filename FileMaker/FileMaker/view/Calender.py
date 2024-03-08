@@ -22,7 +22,6 @@ from .Common import Strings
 #
 # 祝祭日カレンダーサービス
 # get:当年の祝祭日一覧を返す
-#     Params:"edoctor_no"
 #     respose:以下のJSON
 #     {"Holiday":{"yyyy/mm/dd":"祝祭日名",…} }
 class Calender(APIView):
@@ -39,13 +38,6 @@ class Calender(APIView):
         #
         dLog = settings.LOG_INFO['LogWeb']
         self.cLog = Log.Log(dLog)
-        #
-        if "edoctor_no" in request.GET:
-            edoctor_no = request.GET.get("edoctor_no")
-            print("edoctor_no",edoctor_no)
-        else:
-            print("param 指定なし")
-            return Response({"messegt":"edoctor_noが未指定です。"},status=status.HTTP_400_BAD_REQUEST)
         #
         curDate = datetime.date.today()
         sFromDate = "{:d}/01/01".format(curDate.year)
