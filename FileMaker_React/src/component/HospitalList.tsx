@@ -87,7 +87,7 @@ export const Information = (content: string): ReactNode => {
 									<tr
 										className="border border-gray-600">
 										<td className="whitespace-nowrap px-6 py-4 font-medium border-r border-gray-600 bg-slate-100">出勤日時</td>
-										<td className="px-6 py-4">{content}</td>
+										<td className="px-6 py-4">{content} ({item.times})</td>
 									</tr>
 									<tr
 										className="border border-gray-600">
@@ -124,7 +124,7 @@ export const Information = (content: string): ReactNode => {
 								>スケジュールをコピー</button>
 							</div>
 						</div>
-						{/* スケジュールを編集モダール */}
+						{/* スケジュールを編集モーダル */}
 						<form onSubmit={form.handleSubmit(onSubmit)}>
 							<CalendarModal
 								status={openModal}

@@ -22,11 +22,19 @@ export const Index = () => {
 	const dispatch = useDispatch()
 	const [test, settest] = useState("2")
     return <div>
-		<h1 className="text-black">count: {count}</h1>
-		<h1>{doctor_ID}</h1>
-		<input onChange={(e) => settest(e.target.value)} value={test} />
-		<button onClick={() => dispatch(increment())}>+</button>
-		<button onClick={() => dispatch(decrement())}>-</button>
-		<button onClick={() => dispatch(tuika(parseInt(test)))}>追加</button>
-	</div>;
+				<h1 className="text-black">count: {count}</h1>
+				<h1>{doctor_ID}</h1>
+				<input
+					className="border border-black"
+					onChange={(e) => settest(e.target.value)} value={test} />
+				<button
+				
+				onClick={() => dispatch(increment())}>+</button>
+				<button 
+				
+				onClick={() => dispatch(decrement())}>-</button>
+				<button 
+				
+				onClick={() => dispatch(tuika(parseInt(test)))}>追加</button>
+			</div>;
 };

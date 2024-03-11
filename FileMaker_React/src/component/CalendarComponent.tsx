@@ -141,7 +141,7 @@ const ScheduleCalendar = (props: ScheduleCalendarPropsI) => {
 					</div>
 				</div>
 
-				{/* スケジュールを追加モダール */}
+				{/* スケジュールを追加モーダル */}
 				<div>
 					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<CalendarModal

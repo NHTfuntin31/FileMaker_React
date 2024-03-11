@@ -30,7 +30,8 @@ export const Calendar = (props: any) => {
 	})
 
 	const dispatch = useDispatch()
-	const schedules = useSelector((state: any) => state.schedule.schedules)
+	const schedules = useSelector((state: any) => state.schedule.schedules).filter((cancel: any) => cancel.cancel === false)
+
 	const schedulesCopy = useSelector((state: any) => state.scheduleCopy.Schedule)
 
 	const calendarData = getCalendar(year, month, startOnMonday)
@@ -86,9 +87,14 @@ export const Calendar = (props: any) => {
 
 
 	const handleItemClick = ({ id, props }: { id?: string, event?: any, props?: any }) => {
-		const element = jobArr![props.index] ? jobArr![props.index] : " ";
-		console.log(element);
+		const element = jobArr![props.index] || {};
 		let key: any;
+		const updatedElement = { ...element, cancel: element.cancel == false ? true : element.cancel };
+		const Schedule = {
+			Schedule: updatedElement
+		}
+		const revertData = Object.assign({}, doctor_Info, Schedule);
+		console.log(id);
 		switch (id) {
 			case "add":
 				setAdd("add")
@@ -118,12 +124,15 @@ export const Calendar = (props: any) => {
 				break;
 			case "change":
 				setAdd("change")
+				console.log(element);
 				setDefaultData(element)
 				setOpenModal(true)
 				break;
 			case "delete":
 				setAdd("delete")
-				setOpenModal(true)
+				console.log(revertData);
+				putSchema(JSON.stringify(revertData));
+				setcheckfetch(!checkfetch)
 				break;
 		}
 	}
@@ -179,7 +188,7 @@ export const Calendar = (props: any) => {
 		data.end_time = formatTime(data.end_time);
 		data.id = Number(data.id);
 		data.no = Number(data.no);
-
+		
 		const key = {
 			tarrget_date: selectedDay,
 			edoctor_id: doctor_ID,
@@ -201,6 +210,7 @@ export const Calendar = (props: any) => {
 				putSchema(JSON.stringify(revertData), setOpenModal);
 				break;
 			case "delete":
+				
 				break;
 		}
 
@@ -230,7 +240,7 @@ export const Calendar = (props: any) => {
 				<Item id="delete" onClick={handleItemClick} disabled={!selectDelete}><p className="text-red-700">削除</p></Item>
 			</Menu>
 			<Menu id={DAY_MENU} className="z-50">
-				<Item id="paste" onClick={handleItemPaste}><p className="text-red-700">ペースト</p></Item>
+				<Item id="paste" onClick={handleItemPaste} disabled={!schedulesCopy.edoctor_id}><p className="text-red-700">ペースト</p></Item>
 			</Menu>
 			<div className="flex gap-1 flex-col z-1">
 				<div className="flex h-[100%] w-[100%] flex-1 flex-col">
@@ -262,7 +272,6 @@ export const Calendar = (props: any) => {
 												onContextMenu={() => {handleDayClick(lastMonth, nextMonth, e)}}
 											>
 												<div 
-													onClick={(event: any) => handleContextMenuD(event)}
 													onContextMenu={(event: any) => handleContextMenuD(event)}
 													>
 													<span
