@@ -29,7 +29,7 @@ export const Information = (content: string): ReactNode => {
 	const schedules = useSelector((state: any) => state.schedule.schedules)
 
 	const matchingSchedules = schedules.filter(
-		(item: any) => item.tarrget_date === content
+		(item: any) => item.tarrget_date === content && item.cancel != true
 	);
 
 	const doctor_ID = userInfo(true);
@@ -113,7 +113,7 @@ export const Information = (content: string): ReactNode => {
 									</tr>
 								</table>
 							</div>
-							<div className={"flex flex-col md:flex-row gap-2 justify-center items-center " + `${item.classification != "91" && "hidden"}`}>
+							<div className={"flex flex-col md:flex-row gap-2 justify-center items-center"}>
 								<button 
 								className={`w-1/2 md:w-1/4 rounded-lg bg-${color} whitespace-nowrap text-white mt-2 self-center p-2 hover:opacity-50 transition duration-500 ease-in-out`}
 								onClick={() =>setOpenModal(true)}

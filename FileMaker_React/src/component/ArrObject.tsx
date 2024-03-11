@@ -34,6 +34,10 @@ export const shifts = [
 	{ key: "tochoku", label : "当直", start: "00:00", end: "08:00" ,color : "pink-200", default : "slate-200" },
 ]
 
+export const classification = [
+	
+]
+
 export const masterMenu = [
 	{ key: "61" },
 	{ key: "71" },
