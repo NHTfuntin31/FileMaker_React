@@ -1,8 +1,9 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { classificationArrObj } from "../ArrObject";
 
 const formFields = [
 	{ name: 'id', hidden: true, default: null },
-	{ name: 'classification', hidden: true, default: "91" },
+	// { name: 'classification', hidden: true, default: "91" },
 	{ name: 'times', hidden: true, default: "" },
 	{ name: 'no', hidden: true, default: null },
 	{ name: 'job_no', hidden: true, default: null },
@@ -20,8 +21,14 @@ const formFields = [
 
 export const ScheduleReq = (props: any) => {
 	const { jobInfo, form } = props
-	const { register, formState: { errors } } = form;
+	const { register, setValue , formState: { errors } } = form;
 
+	const [classi, setClassi] = useState("91")
+	useEffect(() => {
+		setValue("classification", classi);
+	}, [classi, setValue]);
+	console.log(classi);
+	
 	return (
 		<div className="flex flex-wrap">
 			{formFields.map((field, index) => (
@@ -62,11 +69,19 @@ export const ScheduleReq = (props: any) => {
 											<select
 												className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-1.5"
 												{...register(field.name)}
-												defaultValue={jobInfo[field.name] ? jobInfo[field.name] : ""}
+												defaultValue={jobInfo[field.name] ? jobInfo[field.name] : ""
+											}
+												onChange={(e: any) => setClassi(e.target.selectedOptions[0].getAttribute("data-key"))}
 											>
 												<option value="">選択してください</option>
-												<option value="▽">プライベート</option>
-												<option value="◇">他業務</option>
+												{
+													classificationArrObj.map((item: any) => (
+														<option 
+															value={item.key}
+															data-key={item.number}
+														>{item.label}</option>
+													))
+												}
 											</select>
 											<div className="text-red-600 font-bold w-full pr-2">{errors[field.name] && <p>{errors[field.name]?.message as ReactNode}</p>}</div>
 
@@ -84,12 +99,19 @@ export const ScheduleReq = (props: any) => {
 								}
 							</div>
 						</>
-
 					) : (
-						<input type="text" className="hidden"
+						<>
+							<input type="text" className="hidden"
 							defaultValue={jobInfo[field.name] ? jobInfo[field.name] : field.default}
 							{...register(field.name)}
-						/>
+							/>
+							<input type="text" className="hidden"
+							defaultValue={jobInfo.classification}
+							value={classi}
+							{...register("classification")}
+							/>
+						</>
+
 					)
 			)
 			)}

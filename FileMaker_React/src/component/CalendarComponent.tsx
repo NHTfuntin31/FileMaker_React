@@ -76,7 +76,7 @@ const ScheduleCalendar = (props: ScheduleCalendarPropsI) => {
 	};
 
 	const onSubmit = (data: any) => {
-
+		console.log(data);
 		data.start_time = formatTime(data.start_time);
 		data.end_time = formatTime(data.end_time);
 

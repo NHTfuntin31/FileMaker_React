@@ -78,11 +78,6 @@ export const Calendar = (props: any) => {
 			element?.classification == undefined
 			? (setSelectAdd(true), setSelectChange(false), setSelectDelete(false))
 			: (setSelectAdd(false), setSelectChange(true), setSelectDelete(true))
-			// element?.classification === "91"
-			// 	? (setSelectAdd(false), setSelectChange(true), setSelectDelete(true))
-			// 	: element?.classification == undefined
-			// 		? (setSelectAdd(true), setSelectChange(false), setSelectDelete(false))
-			// 	: (setSelectAdd(false), setSelectChange(false), setSelectDelete(false))
 		}
 		checkRightClick()
 		// eslint-disable-next-line react-hooks/exhaustive-deps

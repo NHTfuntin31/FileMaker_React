@@ -34,8 +34,12 @@ export const shifts = [
 	{ key: "tochoku", label : "当直", start: "00:00", end: "08:00" ,color : "pink-200", default : "slate-200" },
 ]
 
-export const classification = [
-	
+export const classificationArrObj = [
+	{label: "定期", key : "□", number: "01"},
+	{label: "スポット", key : "△", number: "02"},
+	{label: "検診", key : "〇", number: "03"},
+	{label: "他業務", key : "◇", number: "91"},
+	{label: "プライベート", key : "▽", number: "91"},
 ]
 
 export const masterMenu = [
