@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../component/Header";
-import { LoginApi, getCash, getSchema, userInfo } from "../api/FileMakerApi";
+import { LoginApi, getCash, getHoliday, getSchema, userInfo } from "../api/FileMakerApi";
 import CalendarComponent from "../component/CalendarComponent";
 import { Loading } from "../component/icon/loading";
 import { CahchierComponent } from "../component/CahchierComponent";
 import { useDispatch } from "react-redux";
 import { createSchedule } from "../redux/schemaSlice";
 import { createCahchier } from "../redux/cahchierSlice";
+import { createHoliday } from "../redux/holidaySlice";
 
 const MyPage = () => {
 	const navigate = useNavigate();
@@ -18,9 +19,11 @@ const MyPage = () => {
 	const fetchSchema = async (id: string) => {
 		setIsloading(true)
 		const data = await getSchema(id)
-		dispatch(createSchedule(data))
 		const cashData = await getCash(id)
+		const holiday = await getHoliday()
+		dispatch(createSchedule(data))
 		dispatch(createCahchier(cashData))
+		dispatch(createHoliday(holiday))
 		setIsloading(false)
 	}
 

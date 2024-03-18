@@ -14,6 +14,7 @@ import { createSchedule } from "../redux/schemaSlice";
 import { useDispatch } from "react-redux";
 import { formatTime } from "./CalendarItem/timeCheck";
 import { createCopy } from "../redux/schemaCopySlice";
+import { toast } from "react-toastify";
 
 
 // "Code": "{\"01\": \"当社定期\", \"02\": \"当社Spot\", \"03\": \"当社検診\", \"10\": \"他社紹介\", \"11\": \"定期\", \"12\": \"Spot\", \"13\": \"検診\", \"14\": \"常勤\", \"91\": \"プライベート\"}",
@@ -120,7 +121,10 @@ export const Information = (content: string): ReactNode => {
 								>スケジュールを編集</button>
 								<button 
 								className={`w-1/2 md:w-1/4 rounded-lg bg-${color} whitespace-nowrap text-white mt-2 self-center p-2 hover:opacity-50 transition duration-500 ease-in-out`}
-								onClick={() =>onCopy(item)}
+								onClick={() => {
+									toast.info(`${content}の${item.times}のスケジュールをコピーしました。`)
+									onCopy(item)
+								}}
 								>スケジュールをコピー</button>
 							</div>
 						</div>
@@ -129,7 +133,7 @@ export const Information = (content: string): ReactNode => {
 							<CalendarModal
 								status={openModal}
 								changeStatus={() => {
-									form.reset()
+									// form.reset()
 									setOpenModal(false)
 								}}
 								title={`${content} ⁂ ${item.overview}`}

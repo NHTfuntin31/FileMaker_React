@@ -46,11 +46,13 @@ export const CahchierComponent = () => {
 			const post = await postCash(JSON.stringify(revertData), setOpenModalRegister)
 			console.log("post", post);
 			fetchCash(doctor_ID)
+			form.reset()
 			setDefaultValueCash("")
 		} else if (method == "put") {
 			const put = await putCash(JSON.stringify(revertData), setOpenModalRegister)
 			console.log("put", put);
 			fetchCash(doctor_ID)
+			form.reset()
 			setDefaultValueCash("")
 		}
 	}

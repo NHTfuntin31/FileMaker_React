@@ -31,8 +31,8 @@ export const Calendar = (props: any) => {
 
 	const dispatch = useDispatch()
 	const schedules = useSelector((state: any) => state.schedule.schedules).filter((cancel: any) => cancel.cancel === false)
-
 	const schedulesCopy = useSelector((state: any) => state.scheduleCopy.Schedule)
+	const holiday = useSelector((state: any) => state.holiday.Holiday)
 
 	const calendarData = getCalendar(year, month, startOnMonday)
 	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
@@ -162,6 +162,10 @@ export const Calendar = (props: any) => {
 			event
 		})
 	}
+
+	function isHoliday(dateString: string) {
+		return Object.prototype.hasOwnProperty.call(holiday, dateString);
+	}
 	
 	useEffect(() => {
 		fetchSchema(doctor_ID)
@@ -203,9 +207,11 @@ export const Calendar = (props: any) => {
 		switch (add) {
 			case "add":
 				postSchema(JSON.stringify(revertData), setOpenModal)
+				form.reset()
 				break;
 			case "change":
 				putSchema(JSON.stringify(revertData), setOpenModal);
+				form.reset()
 				break;
 			case "delete":
 				
@@ -223,6 +229,7 @@ export const Calendar = (props: any) => {
 						status={openModal}
 						changeStatus={() => {
 							form.reset()
+							console.log("dmm");
 							setOpenModal(false)
 						}}
 						title={`${selectedDay}`}
@@ -253,15 +260,16 @@ export const Calendar = (props: any) => {
 
 									const lastMonth = (key === 0 && +e > 15)
 									const nextMonth = (key > 1 && +e < 7)
-
+									const dd = `${calendarData.year}/${toDouble(calendarData.month)}/${toDouble(e)}`
+									const yasumi = isHoliday(dd)
 									return (
 										<>
 											<div
 												key={`day-${_key}`}
 												className={cn(`flex flex-1 flex-col py-1 border-x text-base font-medium h-auto md:h-32 cursor-pointer hover:bg-sky-200`,
-													(lastMonth || nextMonth)
+													(lastMonth || nextMonth || yasumi)
 														? "bg-gray-400 opacity-50"
-														: (selectedDay == `${calendarData.year}/${toDouble(calendarData.month)}/${toDouble(e)}`) 
+														: (selectedDay == dd) 
 															&& !(lastMonth || nextMonth)
 															? " bg-sky-200"
 															: ""
@@ -274,7 +282,7 @@ export const Calendar = (props: any) => {
 													>
 													<span
 														className={today == `${calendarData.year}/${calendarData.month}/${e}` ?
-															"px-2 py-1 bg-sky-500 rounded-full" : ""
+															"px-2 py-1 bg-sky-500 rounded-full text-white" : ""
 														}
 													>
 														{e}
@@ -282,6 +290,7 @@ export const Calendar = (props: any) => {
 												</div>
 
 												<div className="mt-1 flex flex-col justify-center gap-[1px] p-1 mx-2">
+													{ yasumi && <span>{holiday[dd]}</span> }
 													{shifts.map((shift: any, index: number) => {
 														let [start_time, end_time] = ['', ''];
 
@@ -311,10 +320,10 @@ export const Calendar = (props: any) => {
 															return includesTime
 														})
 
-														if (!(lastMonth || nextMonth)) {
+														if (!(lastMonth || nextMonth || yasumi)) {
 															return (
 																<span
-																	className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm`}
+																	className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm p-1 md:p-0`}
 																	onContextMenu={(event) => {
 																		handleContextMenuT(event, index, shift.key, selectedDay),
 																		setClasssifi(index)

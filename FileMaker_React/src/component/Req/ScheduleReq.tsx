@@ -43,8 +43,9 @@ export const ScheduleReq = (props: any) => {
 								}
 							>
 								<div className={"text-white whitespace-nowrap p-1 " + (field.type == "time" ? "md:w-1/3" : "md:w-1/5")}>
-								{field.hissu ? <span className="text-red-500">*</span> : ""}{field.label}:
-									</div>
+									{field.hissu ? <span className="text-red-500">*</span> : ""}
+									{field.label}:
+								</div>
 								{
 									field.type == "textarea" ?
 										<textarea className="border rounded-lg p-1 w-full"

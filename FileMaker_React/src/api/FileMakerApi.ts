@@ -1,22 +1,6 @@
 
+import { toast } from "react-toastify"
 import { apiUrl } from "./global"
-// const LoginApi = async (data: LoginFormI, navigate: NavigateFunction, setIsLoading: (isLoading: boolean) => void) => {
-// 	console.log(data);
-// 	const LoginUrl = "${apiUrl}/api/login"
-
-// 	try {
-//         setIsLoading(true)
-//         await axios
-// 		.post(LoginUrl, data)
-// 		.then((res) => {
-// 			console.log(res.data);
-// 			localStorage.setItem('isUser', JSON.stringify(res.data));
-// 			navigate('/mypage')
-// 		})
-//     } catch (error) {
-//         setIsLoading(false)
-//     }
-// }
 
 const LoginApi = async(user_id: string) => {
 	const data = {
@@ -61,9 +45,11 @@ const postSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) =
 			body: data
 		})
 		setOpenModal && setOpenModal(false)
+		toast.success("スケジュールを追加しました。")
 		return true
 	} catch (error){
 		console.log("error");
+		toast.error("スケジュールを追加できませんでした。")
 		return false
 	}
 }
@@ -76,9 +62,11 @@ const putSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) =>
 			body: data
 		})
 		setOpenModal && setOpenModal(false)
+		toast.success("スケジュールを変更しました。")
 		return true
 	} catch (error){
 		console.log("error");
+		toast.error("スケジュールを変更できませんでした。")
 		return false
 	}
 }
@@ -105,9 +93,11 @@ const postCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => voi
 			body: data
 		})
 		setOpenModal && setOpenModal(false)
+		toast.success("出納帳に追加しました。")
 		return true
 	} catch(error) {
 		console.log("error");
+		toast.success("出納帳に追加できませんでした。")
 		return false
 	}
 }
@@ -120,13 +110,27 @@ const putCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => void
 			body: data
 		})
 		setOpenModal && setOpenModal(false)
+		toast.success("出納帳を変更しました。")
 		return true
 	} catch (error){
 		console.log("error");
+		toast.success("出納帳を変更できませんでした。")
 		return false
 	}
 }
 
+const getHoliday = async () => {
+	const url = `${apiUrl}/api/mypage/schedule/calender`
+	try {
+		const response = await fetch(url, {
+			method: "GET"
+		})
+		const data = await response.json()
+		return data.Holiday
+	} catch (error) {
+		console.log(error);
+	}
+}
 
 const userInfo = (id?: any) => {
 	const storedData = localStorage.getItem("User");
@@ -136,4 +140,4 @@ const userInfo = (id?: any) => {
 	return id ? DoctorID : userData
 }
 
-export {LoginApi, userInfo, getSchema, postSchema, putSchema, getCash, postCash, putCash}
+export {LoginApi, userInfo, getSchema, postSchema, putSchema, getCash, postCash, putCash, getHoliday}

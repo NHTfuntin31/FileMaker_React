@@ -158,12 +158,12 @@ class ScheduleBook(APIView):
         # edoctor_id
         print("Date:",dRec)
         if dUser["e-doctor_no"] == None or dUser["e-doctor_no"] == "" :
-                sMessage = "システムエラー。"
+                sMessage = "システムエラー。\n　e-doctor_no未設定"
                 return sMessage, ""
         sRslt = "'{:s}',".format(dUser["e-doctor_no"])
         # no
         if dUser["no"] == None or dUser["no"] == "" :
-                sMessage = "システムエラー。"
+                sMessage = "システムエラー。\n　no未設定"
                 return sMessage, ""
         sRslt += "{:d},".format(dUser["no"])
         # tarrget_date
@@ -182,9 +182,9 @@ class ScheduleBook(APIView):
             sMessage = "日付の形式が不正です。\n入力内容を確認してください。" + str(e)
             return sMessage, ""
         # display_char
-        if dRec["display_char"] != "◇" and dRec["display_char"] != "▽":
-            sMessage = "システムエラー"
-            return sMessage, ""
+        #if dRec["display_char"] != "◇" and dRec["display_char"] != "▽":
+        #    sMessage = "システムエラー"
+        #    return sMessage, ""
         sRslt += "'{:s}',".format(dRec["display_char"])
         # job_no
         sRslt += "Null,"
@@ -302,12 +302,12 @@ class ScheduleBook(APIView):
         #
         # edoctor_id
         if dUser["e-doctor_no"] == None or dUser["e-doctor_no"] == "" :
-                sMessage = "システムエラー。"
+                sMessage = "システムエラー。\n　e-doctor_no未設定"
                 return sMessage, {}
         dRslt["id"] = dRec["id"]
         # no
         if dUser["no"] == None or dUser["no"] == "" :
-                sMessage = "システムエラー。"
+                sMessage = "システムエラー。\n　no未設定"
                 return sMessage, {}
         dRslt["no"] = dUser["no"]
         # tarrget_date
@@ -324,9 +324,9 @@ class ScheduleBook(APIView):
             sMessage = "日付の形式が不正です。\n入力内容を確認してください。"
             return sMessage, {}
         # display_char
-        if dRec["display_char"] != "◇" and dRec["display_char"] != "▽":
-            sMessage = "システムエラー"
-            return sMessage, {}
+        #if dRec["display_char"] != "◇" and dRec["display_char"] != "▽":
+        #    sMessage = "システムエラー"
+        #    return sMessage, {}
         dRslt["display_char"] = dRec["display_char"]
         # job_no
         dRslt["job_no"] = "Null"
