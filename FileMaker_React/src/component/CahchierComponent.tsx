@@ -1,27 +1,22 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CalendarModal } from "./Modal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CashUpdateTest } from "../utils/validationSchema";
 import { useSelector } from "react-redux";
 import { CashReq } from "./Req/CashReq";
-import { getCash, postCash, putCash, userInfo } from "../api/FileMakerApi";
-import { useDispatch } from "react-redux";
-import { createCahchier } from "../redux/cahchierSlice";
+import { usePostCash, usePutCash, userInfo } from "../api/FileMakerApi";
 
 export const CahchierComponent = () => {
 	const pagesize = 10
 	const doctor_ID: string = userInfo(true);
 	const doctor_Info = userInfo();
 
-	const cahchier = useSelector((state: any) => state.cahchier.cahchiers)
-	const dispatch = useDispatch()
+	const postCashMutation = usePostCash(doctor_ID)
+	const putCashMutation = usePutCash(doctor_ID)
 
-	const fetchCash = async (id: string) => {
-		const data = await getCash(id);
-		dispatch(createCahchier(data));
-	};
+	const cahchier = useSelector((state: any) => state.cahchier.cahchiers)
 
 	const pages = Math.ceil(cahchier?.length / pagesize);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -43,25 +38,17 @@ export const CahchierComponent = () => {
 		const revertData = Object.assign({}, doctor_Info, Cashier);
 
 		if (method == "post") {
-			const post = await postCash(JSON.stringify(revertData), setOpenModalRegister)
-			console.log("post", post);
-			fetchCash(doctor_ID)
+			await postCashMutation.mutateAsync(revertData)
+			setOpenModalRegister(false)
 			form.reset()
 			setDefaultValueCash("")
 		} else if (method == "put") {
-			const put = await putCash(JSON.stringify(revertData), setOpenModalRegister)
-			console.log("put", put);
-			fetchCash(doctor_ID)
+			await putCashMutation.mutateAsync(revertData)
+			setOpenModalRegister(false)
 			form.reset()
 			setDefaultValueCash("")
 		}
 	}
-
-	useEffect(() => {
-		fetchCash(doctor_ID)
-		fetchCash(doctor_ID)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [openModalRegister])
 
 	const handlePageChange = (pageNumber: number) => {
 		setCurrentPage(pageNumber);

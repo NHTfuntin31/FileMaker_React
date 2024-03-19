@@ -1,48 +1,53 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../component/Header";
-import { LoginApi, getCash, getHoliday, getSchema, userInfo } from "../api/FileMakerApi";
+import { useGetCash, useGetHoliday, useGetSchema, useLogin, userInfo } from "../api/FileMakerApi";
 import CalendarComponent from "../component/CalendarComponent";
 import { Loading } from "../component/icon/loading";
 import { CahchierComponent } from "../component/CahchierComponent";
-import { useDispatch } from "react-redux";
-import { createSchedule } from "../redux/schemaSlice";
-import { createCahchier } from "../redux/cahchierSlice";
-import { createHoliday } from "../redux/holidaySlice";
 
 const MyPage = () => {
 	const navigate = useNavigate();
-	const [isloading, setIsloading] = useState(false)
 	const doctor_ID: string = userInfo(true);
-	const dispatch = useDispatch()
-
-	const fetchSchema = async (id: string) => {
-		setIsloading(true)
-		const data = await getSchema(id)
-		const cashData = await getCash(id)
-		const holiday = await getHoliday()
-		dispatch(createSchedule(data))
-		dispatch(createCahchier(cashData))
-		dispatch(createHoliday(holiday))
-		setIsloading(false)
-	}
-
-	const fetchLogin = async() => {
-		await LoginApi(doctor_ID)
-	} 
-
+	const [menuNo, setMenuNo] = useState("61")
 	useEffect(() => {
-		fetchSchema(doctor_ID)
-		fetchLogin()
 		if (!doctor_ID) {
 			navigate("/")
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
+	const {error: login_err} = useLogin(doctor_ID);
+	const {isFetching: schema_fetching, error: schema_err} = useGetSchema(doctor_ID);
+	const {isFetching: cash_fetching, error: cash_err} = useGetCash(doctor_ID);
+	const {isFetching: holiday_fetching, error: holiday_err} = useGetHoliday();
+
+	if( schema_fetching || cash_fetching || holiday_fetching ) {
+		return (
+		<>
+			<Header />
+			<div className="bg-white w-full h-screen flex justify-center text-white">
+				<div className="w-full h-[50%] flex justify-center items-center">
+					<Loading />
+				</div>
+			</div>
+		</>
+		)
+	}
+
+	if(schema_err || cash_err || holiday_err) {
+		console.log(schema_err, cash_err, holiday_err, login_err);
+		return(
+			<>
+				メンテナンス中です。
+				またお戻りください。
+				大変申し訳ございません。
+			</>
+		)
+	}
+
 	const storedData = localStorage.getItem("isLogin");
 	const userData = storedData ? JSON.parse(storedData) : "";
-	const [menuNo, setMenuNo] = useState("61")
 
 	const UserDisplay = userData?.Menu?.filter((f: any) => f.MenuNo == 6)
 
@@ -75,20 +80,14 @@ const MyPage = () => {
 			</div>
 			<div className="bg-white w-full h-screen flex justify-center text-white">
 				<div className="flex flex-col w-full max-w-5xl">
-					{
-						!isloading
-							? <>
-								<div className={menuNo != "61" ? "hidden" : "block"}>
-									<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">カレンダー</div>
-									<CalendarComponent />
-								</div>
-								<div className={menuNo != "62" ? "hidden" : "block"}>
-									<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">出納帳管理</div>
-									<CahchierComponent />
-								</div>
-							</>
-							: <div className="w-full h-[50%] flex justify-center items-center"><Loading /></div>
-					}
+					<div className={menuNo != "61" ? "hidden" : "block"}>
+						<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">カレンダー</div>
+						<CalendarComponent />
+					</div>
+					<div className={menuNo != "62" ? "hidden" : "block"}>
+						<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">出納帳管理</div>
+						<CahchierComponent />
+					</div>
 				</div>
 			</div>
 		</>

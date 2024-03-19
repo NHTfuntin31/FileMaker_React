@@ -8,9 +8,9 @@ import { useForm } from "react-hook-form";
 import { DoctorUpdateTest } from "../utils/validationSchema";
 import { CalendarModal } from "./Modal";
 import { ScheduleReq } from "./Req/ScheduleReq";
-import { getSchema, putSchema, userInfo } from "../api/FileMakerApi";
+import { usePutSchema, userInfo } from "../api/FileMakerApi";
 import { useSelector } from "react-redux";
-import { createSchedule } from "../redux/schemaSlice";
+// import { createSchedule } from "../redux/schemaSlice";
 import { useDispatch } from "react-redux";
 import { formatTime } from "./CalendarItem/timeCheck";
 import { createCopy } from "../redux/schemaCopySlice";
@@ -33,8 +33,10 @@ export const Information = (content: string): ReactNode => {
 		(item: any) => item.tarrget_date === content && item.cancel != true
 	);
 
+
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
+	const putSchemaMutation = usePutSchema(doctor_ID)
 	const dispatch = useDispatch()
 	const form = useForm({
 		resolver: zodResolver(DoctorUpdateTest),
@@ -42,12 +44,7 @@ export const Information = (content: string): ReactNode => {
 
 	const [openModal, setOpenModal] = useState(false);
 
-	const fetchSchema = async (id: string) => {
-		const data = await getSchema(id);
-		dispatch(createSchedule(data));
-	};
-
-	const onSubmit = (data: any) => {
+	const onSubmit = async (data: any) => {
 		data.start_time = formatTime(data.start_time);
 		data.end_time = formatTime(data.end_time);
 		data.no = parseInt(data.no)
@@ -62,10 +59,9 @@ export const Information = (content: string): ReactNode => {
 			Schedule : Object.assign({}, data, key)
 		}
 		const revertData = Object.assign({}, doctor_Info, mergedObject);
-		const put = putSchema(JSON.stringify(revertData), setOpenModal)
-		put && fetchSchema(doctor_ID)
-		fetchSchema(doctor_ID)
-		console.log(revertData);
+
+		await putSchemaMutation.mutateAsync(revertData)
+		setOpenModal(false)
 	}
 
 	const onCopy = (data: any) => {

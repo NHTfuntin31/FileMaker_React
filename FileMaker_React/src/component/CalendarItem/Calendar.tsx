@@ -7,11 +7,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DoctorUpdateTest } from "../../utils/validationSchema";
-import { getSchema, postSchema, putSchema, userInfo } from "../../api/FileMakerApi";
+import { usePostSchema, usePutSchema, userInfo } from "../../api/FileMakerApi";
 import { ScheduleTypeI } from "../../utils/interface";
-import { useSelector } from "react-redux";
-import { createSchedule } from "../../redux/schemaSlice";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { formatTime, isTimeInRange } from "./timeCheck";
 import 'react-contexify/ReactContexify.css';
 import { pasteCopy } from "../../redux/schemaCopySlice";
@@ -46,7 +44,6 @@ export const Calendar = (props: any) => {
 	const [selectChange, setSelectChange] = useState(true)
 	const [selectDelete, setSelectDelete] = useState(true)
 	const [classsifi, setClasssifi] = useState<number>();
-	const [checkfetch, setcheckfetch] = useState<boolean>(false);
 
 	const result: any[] = []
 	const [jobArr, setJobArr] = useState<ScheduleTypeI[]>()
@@ -61,30 +58,16 @@ export const Calendar = (props: any) => {
 		resolver: zodResolver(DoctorUpdateTest),
 	});
 	
-
-	const fetchSchema = async (id: string) => {
-		const data = await getSchema(id);
-		dispatch(createSchedule(data));
-	};
+	const postSchemaMutation = usePostSchema(doctor_ID);
+	const putSchemaMutation = usePutSchema(doctor_ID);
 
 	useEffect(() => {
 		setJobArr(result)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedDay, defaultData])
 
-	useEffect(() => {
-		const checkRightClick = () => {
-			const element = (jobArr) && jobArr[classsifi!];
-			element?.classification == undefined
-			? (setSelectAdd(true), setSelectChange(false), setSelectDelete(false))
-			: (setSelectAdd(false), setSelectChange(true), setSelectDelete(true))
-		}
-		checkRightClick()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [jobArr, result])
 
-
-	const handleItemClick = ({ id, props }: { id?: string, event?: any, props?: any }) => {
+	const handleItemClick = async ({ id, props }: { id?: string, event?: any, props?: any }) => {
 		const element = jobArr![props.index] || {};
 		let key: any;
 		const updatedElement = { ...element, cancel: element.cancel == false ? true : element.cancel };
@@ -129,11 +112,21 @@ export const Calendar = (props: any) => {
 			case "delete":
 				setAdd("delete")
 				console.log(revertData);
-				putSchema(JSON.stringify(revertData));
-				setcheckfetch(!checkfetch)
+				await putSchemaMutation.mutateAsync(revertData);
+				setDefaultData({})
 				break;
 		}
 	}
+	useEffect(() => {
+		const checkRightClick = () => {
+			const element = (jobArr) && jobArr[classsifi!];
+			element?.classification == undefined
+			? (setSelectAdd(true), setSelectChange(false), setSelectDelete(false))
+			: (setSelectAdd(false), setSelectChange(true), setSelectDelete(true))
+		}
+		checkRightClick()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [schedules])
 
 	const handleItemPaste = async () => {
 		const Schedule = {
@@ -141,10 +134,9 @@ export const Calendar = (props: any) => {
 		}
 		const revertData = Object.assign({}, doctor_Info, Schedule);
 		console.log(revertData);
-		await postSchema(JSON.stringify(revertData))
-		setcheckfetch(!checkfetch)
+		await postSchemaMutation.mutateAsync(revertData)
+		setDefaultData({})
 	}
-
 
 	const handleContextMenuT = (event: any, index: number, key: string, selectedDay: string) => {
 		show_time({
@@ -166,12 +158,7 @@ export const Calendar = (props: any) => {
 	function isHoliday(dateString: string) {
 		return Object.prototype.hasOwnProperty.call(holiday, dateString);
 	}
-	
-	useEffect(() => {
-		fetchSchema(doctor_ID)
-		fetchSchema(doctor_ID)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [openModal, checkfetch])
+
 	const handleDayClick = (lastMonth: boolean, nextMonth: boolean, day: any) => {
 		const [year, month] = lastMonth
 			? caculatorMonth(calendarData.year, calendarData.month - 1)
@@ -180,17 +167,15 @@ export const Calendar = (props: any) => {
 				: [calendarData.year, calendarData.month];
 		onClick(year, month, day);
 		const tarrget_date = `${year}/${toDouble(month)}/${toDouble(day)}`
-			console.log(tarrget_date);
 			dispatch(pasteCopy(tarrget_date))
 	};
 
-	const onSubmit = (data: any) => {
+	const onSubmit = async (data: any) => {
 
 		data.start_time = formatTime(data.start_time);
 		data.end_time = formatTime(data.end_time);
 		data.id = Number(data.id);
 		data.no = Number(data.no);
-		
 		const key = {
 			tarrget_date: selectedDay,
 			edoctor_id: doctor_ID,
@@ -205,20 +190,17 @@ export const Calendar = (props: any) => {
 		//編集フォーム
 		//追加フォーム
 		switch (add) {
-			case "add":
-				postSchema(JSON.stringify(revertData), setOpenModal)
+			case "add" :
+				await postSchemaMutation.mutateAsync(revertData)
+				setOpenModal(false)
 				form.reset()
 				break;
 			case "change":
-				putSchema(JSON.stringify(revertData), setOpenModal);
+				await putSchemaMutation.mutateAsync(revertData)
+				setOpenModal(false)
 				form.reset()
 				break;
-			case "delete":
-				
-				break;
 		}
-
-		setcheckfetch(!checkfetch)
 	}
 
 	return (
@@ -229,7 +211,6 @@ export const Calendar = (props: any) => {
 						status={openModal}
 						changeStatus={() => {
 							form.reset()
-							console.log("dmm");
 							setOpenModal(false)
 						}}
 						title={`${selectedDay}`}

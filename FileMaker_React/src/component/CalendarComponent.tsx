@@ -11,10 +11,9 @@ import { ScheduleReq } from "./Req/ScheduleReq";
 
 import { CarouselArea, cn, toDouble } from "./CalendarItem/Effect";
 import { Calendar } from "./CalendarItem/Calendar";
-import { getSchema, postSchema, userInfo } from "../api/FileMakerApi";
+import { usePostSchema, userInfo } from "../api/FileMakerApi";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useDispatch } from "react-redux";
-import { createSchedule } from "../redux/schemaSlice";
+// import { useDispatch } from "react-redux";
 import { formatTime } from "./CalendarItem/timeCheck";
 
 
@@ -28,7 +27,9 @@ const ScheduleCalendar = (props: ScheduleCalendarPropsI) => {
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
 
-	const dispatch = useDispatch()
+	const postSchemaMutation = usePostSchema();
+
+	// const dispatch = useDispatch()
 
 	const t = new Date();
 
@@ -75,7 +76,7 @@ const ScheduleCalendar = (props: ScheduleCalendarPropsI) => {
 		setContent(`${y}/${toDouble(m)}/${toDouble(d)}`);
 	};
 
-	const onSubmit = (data: any) => {
+	const onSubmit = async (data: any) => {
 		console.log(data);
 		data.start_time = formatTime(data.start_time);
 		data.end_time = formatTime(data.end_time);
@@ -89,17 +90,9 @@ const ScheduleCalendar = (props: ScheduleCalendarPropsI) => {
 		const mergedObject = {
 			Schedule: Object.assign({}, data, key)
 		}
-		console.log(mergedObject);
 		const postData = Object.assign({}, doctor_Info, mergedObject);
-
-		const post = postSchema(JSON.stringify(postData), setOpenModalRegister)
-		console.log(post);
-		const fetchSchema = async (id: string) => {
-			const data = await getSchema(id)
-			dispatch(createSchedule(data))
-		}
-		post && fetchSchema(doctor_ID)
-		fetchSchema(doctor_ID)
+		await postSchemaMutation.mutateAsync(postData)
+		setOpenModalRegister(false)
 	}
 
 	return (

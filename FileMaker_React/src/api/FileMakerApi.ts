@@ -1,135 +1,178 @@
 
 import { toast } from "react-toastify"
 import { apiUrl } from "./global"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import axios from "axios"
+import { useDispatch } from "react-redux"
+import { createSchedule } from "../redux/schemaSlice"
+import { createCahchier } from "../redux/cahchierSlice"
+import { createHoliday } from "../redux/holidaySlice"
 
-const LoginApi = async(user_id: string) => {
-	const data = {
+const useLogin = (user_id: string) => {
+	const body_data = {
 		username: user_id,
 		password: ""
 	}
-	try{
-		const response = await fetch(`${apiUrl}/api/login`, {
-			method: "POST",
-			body: JSON.stringify(data)
-		})
+	return useQuery({
+		queryKey: ["LoginApi"],
+		queryFn: async () => {
+			const { data } = await axios.post(
+				`${apiUrl}/api/login`,
+				body_data
+			);
+			const userJSON = JSON.stringify(data);
+			localStorage.setItem("isLogin", userJSON)
 
-		const resData = await response.json()
-		const userJSON = JSON.stringify(resData);
-		localStorage.setItem("isLogin", userJSON)
-	} catch (error) {
-		console.log(error);
-	}
+			return true
+		}
+	})
 }
 
-const getSchema = async (user_id: string) => {
-	try {
-		const response = await fetch(`${apiUrl}/api/mypage/schedule?edoctor_no=${user_id}`);
-		const data = await response.json();
-		const user = {
-			"User": data.User
-		}
-		const userJSON = JSON.stringify(user);
-		localStorage.setItem("User", userJSON)
+// ########################################useSchema##############################################
 
-		return data.Schedules
-	} catch (error) {
-		console.error('Error fetching JSON data:', error);
-	}
+
+const useGetSchema = (user_id?: string) => {
+	const dispatch = useDispatch()
+
+	return useQuery({
+		queryKey: ["getSchema"],
+		queryFn: async () => {
+			console.log("hello word get");
+			const { data } = await axios.get(
+				`${apiUrl}/api/mypage/schedule?edoctor_no=${user_id}`
+			);
+			dispatch(createSchedule(data.Schedules))
+			return true
+		}
+	});
 };
 
-const postSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
-	const url = `${apiUrl}/api/mypage/schedule`
-	try {
-		fetch(url,{
-			method: "POST",
-			body: data
-		})
-		setOpenModal && setOpenModal(false)
-		toast.success("スケジュールを追加しました。")
-		return true
-	} catch (error){
-		console.log("error");
-		toast.error("スケジュールを追加できませんでした。")
-		return false
-	}
-}
+const usePostSchema = (user_id?: string) => {
+	const dispatch = useDispatch()
+	return useMutation({
+		mutationFn: async (body_data?: any) => {
+			await axios.post(
+				`${apiUrl}/api/mypage/schedule`,
+				body_data
+			);
+		},
+		onSuccess: async () => {
+			const { data } = await axios.get(
+				`${apiUrl}/api/mypage/schedule?edoctor_no=${user_id}`
+			);
+			toast.success("スケジュールを追加しました。")
+			dispatch(createSchedule(data.Schedules))
+		},
+		onError: (error) => {
+			toast.error("スケジュールを追加できませんでした。")
+			console.log(error);
+		}
+	});
+};
 
-const putSchema = (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
-	const url = `${apiUrl}/api/mypage/schedule`
-	try {
-		fetch(url,{
-			method: "PUT",
-			body: data
-		})
-		setOpenModal && setOpenModal(false)
-		toast.success("スケジュールを変更しました。")
-		return true
-	} catch (error){
-		console.log("error");
-		toast.error("スケジュールを変更できませんでした。")
-		return false
-	}
-}
+const usePutSchema = (user_id?: string) => {
+	const dispatch = useDispatch()
+	return useMutation({
+		mutationFn: async (body_data: any) => {
+			const response = await axios.put(
+                `${apiUrl}/api/mypage/schedule`,
+                body_data
+            );
+            return response.data;
+		},
+		onSuccess: async () => {
+			const { data } = await axios.get(
+				`${apiUrl}/api/mypage/schedule?edoctor_no=${user_id}`
+			);
+			toast.success("スケジュールを変更しました。")
+			dispatch(createSchedule(data.Schedules))
+		},
+		onError: (error) => {
+			toast.error("スケジュールを変更できませんでした。")
+			console.log(error);
+		}
+	});
+};
 
-const getCash = async (user_id: string) => {
-	const url = `${apiUrl}/api/mypage/schedule/Cahchier?e-doctor_no=${user_id}`
-	try{
-		const response = await fetch(url, {
-			method: "GET"
-		})
+// #####################################useCash#################################################
 
-		const data = await response.json();
-		return data.Cashier
-	} catch(error) {
-		console.log(error);
-	}
-}
+const useGetCash = (user_id: string) => {
+	const dispatch = useDispatch()
 
-const postCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
-	const url = `${apiUrl}/api/mypage/schedule/Cahchier`
-	try{
-		fetch(url, {
-			method: "POST",
-			body: data
-		})
-		setOpenModal && setOpenModal(false)
-		toast.success("出納帳に追加しました。")
-		return true
-	} catch(error) {
-		console.log("error");
-		toast.success("出納帳に追加できませんでした。")
-		return false
-	}
-}
+	return useQuery({
+		queryKey: ["getCash"],
+		queryFn: async () => {
+			const { data } = await axios.get(
+				`${apiUrl}/api/mypage/schedule/Cahchier?e-doctor_no=${user_id}`
+			);
+			dispatch(createCahchier(data.Cashier))
 
-const putCash = async (data: any, setOpenModal? : (isOpenModal: boolean) => void) => {
-	const url = `${apiUrl}/api/mypage/schedule/Cahchier`
-	try {
-		fetch(url,{
-			method: "PUT",
-			body: data
-		})
-		setOpenModal && setOpenModal(false)
-		toast.success("出納帳を変更しました。")
-		return true
-	} catch (error){
-		console.log("error");
-		toast.success("出納帳を変更できませんでした。")
-		return false
-	}
-}
+			return true;
+		}
+	});
+};
 
-const getHoliday = async () => {
-	const url = `${apiUrl}/api/mypage/schedule/calender`
-	try {
-		const response = await fetch(url, {
-			method: "GET"
-		})
-		const data = await response.json()
-		return data.Holiday
-	} catch (error) {
-		console.log(error);
-	}
+const usePostCash = (user_id?: string) => {
+	const dispatch = useDispatch()
+
+	return useMutation({
+		mutationFn: async (body_data: any) => {
+			await axios.post(
+				`${apiUrl}/api/mypage/schedule/Cahchier`,
+				body_data
+			);
+		},
+		onSuccess: async () => {
+			const { data } = await axios.get(
+				`${apiUrl}/api/mypage/schedule/Cahchier?e-doctor_no=${user_id}`
+			);
+			toast.success("出納帳に追加しました。")
+			dispatch(createCahchier(data.Cashier))
+		},
+		onError: (error) => {
+			toast.success("出納帳に追加できませんでした。")
+			console.log(error);
+		}
+	});
+};
+
+const usePutCash = (user_id?: string) => {
+	const dispatch = useDispatch()
+	return useMutation({
+		mutationFn: async (body_data: any) => {
+			const response = await axios.put(
+				`${apiUrl}/api/mypage/schedule/Cahchier`,
+				body_data
+			);
+			return response.data;
+		},
+		onSuccess: async () => {
+			const { data } = await axios.get(
+				`${apiUrl}/api/mypage/schedule/Cahchier?e-doctor_no=${user_id}`
+			);
+			toast.success("出納帳を変更しました。")
+			dispatch(createCahchier(data.Cashier))
+		},
+		onError: (error) => {
+			toast.success("出納帳を変更できませんでした。")
+			console.log(error);
+		}
+	});
+};
+
+const useGetHoliday = () => {
+	const dispatch = useDispatch()
+
+	return useQuery({
+		queryKey: ["getHoliday"],
+		queryFn: async () => {
+			const { data } = await axios.get(
+				`${apiUrl}/api/mypage/schedule/calender`
+			);
+			dispatch(createHoliday(data.Holiday))
+			return true
+		}
+	})
 }
 
 const userInfo = (id?: any) => {
@@ -140,4 +183,7 @@ const userInfo = (id?: any) => {
 	return id ? DoctorID : userData
 }
 
-export {LoginApi, userInfo, getSchema, postSchema, putSchema, getCash, postCash, putCash, getHoliday}
+export {
+	userInfo,
+	useLogin, useGetSchema, usePostSchema, usePutSchema, useGetCash, usePostCash, usePutCash, useGetHoliday
+}
