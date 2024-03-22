@@ -30,6 +30,9 @@ export default {
     'text-orange-700',
     'text-green-700',
     'text-pink-700',
+
+    'text-amber-700',
+    'text-indigo-700',
     // Add more dynamic class names as needed
   ],
 }

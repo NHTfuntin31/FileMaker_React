@@ -28,10 +28,10 @@ export const categoryObj = [
 ]
 
 export const shifts = [
-	{ key: "gozen", label : "午前", start: "07:00", end: "14:00" , color : "amber-200", default : "slate-200" },
-	{ key: "gogo", label : "午後", start: "12:00", end: "18:00" , color : "green-200", default : "slate-200" },
-	{ key: "yakin", label : "夜勤", start: "18:00", end: "23:59" ,color : "indigo-200", default : "slate-200" },
-	{ key: "tochoku", label : "当直", start: "00:00", end: "08:00" ,color : "pink-200", default : "slate-200" },
+	{ key: "mimei", label : "未明", start: "00:00", end: "08:00" ,color : "pink-700", default : "slate-200", test :'f7:sunrise-fill'}, 
+	{ key: "gozen", label : "午前", start: "08:00", end: "14:00" , color : "amber-700", default : "slate-200", test :'ic:twotone-wb-sunny'}, 
+	{ key: "gogo", label : "午後", start: "12:00", end: "19:00" , color : "green-700", default : "slate-200", test :'game-icons:sunset'}, 
+	{ key: "yakan", label : "夜間", start: "18:00", end: "23:59" ,color : "indigo-700", default : "slate-200", test :'cbi:scene-nightlight'}, 
 ]
 
 export const classificationArrObj = [

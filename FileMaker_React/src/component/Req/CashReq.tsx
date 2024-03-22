@@ -1,17 +1,17 @@
 import { ReactNode } from "react";
 
 const formFields = [
-	{ name: 'tarrget_date',label: 'tarrget_date', type: 'date', hissu:true },
-	{ name: 'payment_date', label: 'payment_date', type: 'date', hissu:true},
+	{ name: 'tarrget_date',label: '勤務日', type: 'date', hissu:true },
+	{ name: 'payment_date', label: '支払日', type: 'date'},
 	{ name: 'division', hidden: true, default: "01" },
 	{ name: 'id', hidden: true, default: 0  },
-	{ name: 'expense_item', label: 'expense_item', default: "" },
-	{ name: 'price', label: 'price', default: 0 },
-	{ name: 'memo', label: '開始時間'},
+	{ name: 'expense_item', label: '場所', default: "" },
+	{ name: 'price', label: '収入', default: 0 },
+	{ name: 'memo', label: 'メモ'},
 ];
 
 export const CashReq = (props: any) => {
-	const { jobInfo, form } = props
+	const { jobInfo, form , view} = props
 	const { register, formState: { errors } } = form;
 	console.log(jobInfo);
 	return (
@@ -31,6 +31,7 @@ export const CashReq = (props: any) => {
 									placeholder={field.name}
 									className="border rounded-lg p-1 w-full"
 									defaultValue={jobInfo[field.name]}
+									readOnly={view}
 									{...register(field.name)}
 								/>
 								<div className="text-red-600 font-bold w-full pr-2">{errors[field.name] && <p>{errors[field.name]?.message as ReactNode}</p>}</div>

@@ -3,16 +3,17 @@ import { WeekHeader, WeekRow, caculatorMonth, cn, getCalendar, toDouble } from "
 import { shifts } from "../ArrObject"
 import { CalendarModal } from "../Modal";
 import { ScheduleReq } from "../Req/ScheduleReq";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DoctorUpdateTest } from "../../utils/validationSchema";
 import { usePostSchema, usePutSchema, userInfo } from "../../api/FileMakerApi";
-import { ScheduleTypeI } from "../../utils/interface";
 import { useSelector, useDispatch } from "react-redux";
 import { formatTime, isTimeInRange } from "./timeCheck";
 import 'react-contexify/ReactContexify.css';
-import { pasteCopy } from "../../redux/schemaCopySlice";
+import { createCopy, pasteCopy } from "../../redux/schemaCopySlice";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { toast } from "react-toastify";
 
 
 export const Calendar = (props: any) => {
@@ -36,17 +37,11 @@ export const Calendar = (props: any) => {
 	const today = `${(new Date().getFullYear())}/${(new Date().getMonth() + 1)}/${(new Date().getDate())}`;
 
 	const [openModal, setOpenModal] = useState(false);
+	const [view, setView] = useState(false);
 
 	//右クリック  追加・編集・削除
 	const [add, setAdd] = useState("");
 	//右クリックが表示・非表示
-	const [selectAdd, setSelectAdd] = useState(true)
-	const [selectChange, setSelectChange] = useState(true)
-	const [selectDelete, setSelectDelete] = useState(true)
-	const [classsifi, setClasssifi] = useState<number>();
-
-	const result: any[] = []
-	const [jobArr, setJobArr] = useState<ScheduleTypeI[]>()
 
 	const doctor_ID = userInfo(true);
 	const doctor_Info = userInfo();
@@ -61,90 +56,62 @@ export const Calendar = (props: any) => {
 	const postSchemaMutation = usePostSchema(doctor_ID);
 	const putSchemaMutation = usePutSchema(doctor_ID);
 
-	useEffect(() => {
-		setJobArr(result)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedDay, defaultData])
-
-
 	const handleItemClick = async ({ id, props }: { id?: string, event?: any, props?: any }) => {
-		const element = jobArr![props.index] || {};
-		let key: any;
-		const updatedElement = { ...element, cancel: element.cancel == false ? true : element.cancel };
-		const Schedule = {
-			Schedule: updatedElement
-		}
-		const revertData = Object.assign({}, doctor_Info, Schedule);
-		console.log(id);
-		switch (id) {
-			case "add":
-				setAdd("add")
-				if (props.key == "gozen") {
-					key = {
-						start_time: "07:00",
-						end_time: "14:00"
-					}
-				} else if (props.key == "gogo") {
-					key = {
-						start_time: "12:00",
-						end_time: "18:00"
-					}
-				} else if (props.key == "yakin") {
-					key = {
-						start_time: "18:00",
-						end_time: "23:59"
-					}
-				} else {
-					key = {
-						start_time: "00:00",
-						end_time: "08:00"
-					}
-				}
-				setDefaultData(key)
-				setOpenModal(true)
-				break;
-			case "change":
-				setAdd("change")
-				console.log(element);
-				setDefaultData(element)
-				setOpenModal(true)
-				break;
-			case "delete":
-				setAdd("delete")
-				console.log(revertData);
-				await putSchemaMutation.mutateAsync(revertData);
+		if(id == "add"){
+			setAdd("add")
 				setDefaultData({})
-				break;
+				setOpenModal(true)
+		}else{
+			const element = props?.item;
+
+			//削除------------------------------------------------------------------------------------------
+			const updatedElement = { ...element, cancel: element.cancel == false ? true : element.cancel };
+			const Schedule = {
+				Schedule: updatedElement
+			}
+			const revertData = Object.assign({}, doctor_Info, Schedule);
+			//---------------------------------------------------------------------------------------------
+
+			switch (id) {
+				case "change":
+					setAdd("change")
+					console.log(element);
+					setDefaultData(element)
+					setOpenModal(true)
+					break;
+				case "copy":
+					toast.info(`${element.tarrget_date}の${element.times}のスケジュールをコピーしました。`)
+					dispatch(createCopy(element))
+					break;
+				case "delete":
+					setAdd("delete")
+					await putSchemaMutation.mutateAsync(revertData);
+					setDefaultData({})
+					break;
+			}
 		}
 	}
-	useEffect(() => {
-		const checkRightClick = () => {
-			const element = (jobArr) && jobArr[classsifi!];
-			element?.classification == undefined
-			? (setSelectAdd(true), setSelectChange(false), setSelectDelete(false))
-			: (setSelectAdd(false), setSelectChange(true), setSelectDelete(true))
-		}
-		checkRightClick()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [schedules])
+
+	const detailFn = (item: any) => {
+		setDefaultData(item)
+		setView(true)
+		setOpenModal(true)
+	}
 
 	const handleItemPaste = async () => {
 		const Schedule = {
 			Schedule : schedulesCopy
 		}
 		const revertData = Object.assign({}, doctor_Info, Schedule);
-		console.log(revertData);
 		await postSchemaMutation.mutateAsync(revertData)
 		setDefaultData({})
 	}
 
-	const handleContextMenuT = (event: any, index: number, key: string, selectedDay: string) => {
+	const handleContextMenuT = (event: any, item: any) => {
 		show_time({
 			event,
 			props: {
-				key: key,
-				index: index,
-				selectedDay: selectedDay
+				item : item
 			}
 		})
 	}
@@ -185,21 +152,37 @@ export const Calendar = (props: any) => {
 			Schedule: Object.assign({}, data, key)
 		}
 		const revertData = Object.assign({}, doctor_Info, mergedObject);
-		console.log(revertData);
+		if(add == "delete") {
+			revertData.Schedule.cancel = true;
+			await putSchemaMutation.mutateAsync(revertData);
+			setOpenModal(false)
+			form.reset()
+			setDefaultData({})
+		} else {
+				console.log("aa");
+			//編集フォーム
+			//追加フォーム
+			switch (add) {
+				case "add" :
+					await postSchemaMutation.mutateAsync(revertData)
+					setOpenModal(false)
+					form.reset()
+					break;
+				case "change":
+					await putSchemaMutation.mutateAsync(revertData)
+					setOpenModal(false)
+					form.reset()
+					break;
+			}
+		}
+	}
 
-		//編集フォーム
-		//追加フォーム
-		switch (add) {
-			case "add" :
-				await postSchemaMutation.mutateAsync(revertData)
-				setOpenModal(false)
-				form.reset()
-				break;
-			case "change":
-				await putSchemaMutation.mutateAsync(revertData)
-				setOpenModal(false)
-				form.reset()
-				break;
+	const kirikae = (dl?: any) => {
+		if(dl) {
+			setAdd("delete")
+		}else{
+			setAdd("change")
+			setView(false)
 		}
 	}
 
@@ -215,18 +198,21 @@ export const Calendar = (props: any) => {
 						}}
 						title={`${selectedDay}`}
 						submit={form.handleSubmit(onSubmit)}
+						kirikae={(e: any) => kirikae(e)}
+						notFooter={view}
 					>
-						<ScheduleReq jobInfo={defaultData} form={form} />
+						<ScheduleReq jobInfo={defaultData} form={form} view={view}/>
 					</CalendarModal>
 				</form>
 			</div>
 			<Menu id={TIME_MENU} className="z-50">
-				<Item id="add" onClick={handleItemClick} disabled={!selectAdd}>追加</Item>
-				<Item id="change" onClick={handleItemClick} disabled={!selectChange}>編集</Item>
-				<Item id="delete" onClick={handleItemClick} disabled={!selectDelete}><p className="text-red-700">削除</p></Item>
+				<Item id="change" onClick={handleItemClick}>編集</Item>
+				<Item id="copy" onClick={handleItemClick}>スケジュールをコピー</Item>
+				<Item id="delete" onClick={handleItemClick}><p className="text-red-700">削除</p></Item>
 			</Menu>
 			<Menu id={DAY_MENU} className="z-50">
-				<Item id="paste" onClick={handleItemPaste} disabled={!schedulesCopy.edoctor_id}><p className="text-red-700">ペースト</p></Item>
+				<Item id="add" onClick={handleItemClick}>追加</Item>
+				<Item id="paste" onClick={handleItemPaste} disabled={!schedulesCopy.edoctor_id}><p className="">貼り付け</p></Item>
 			</Menu>
 			<div className="flex gap-1 flex-col z-1">
 				<div className="flex h-[100%] w-[100%] flex-1 flex-col">
@@ -243,6 +229,8 @@ export const Calendar = (props: any) => {
 									const nextMonth = (key > 1 && +e < 7)
 									const dd = `${calendarData.year}/${toDouble(calendarData.month)}/${toDouble(e)}`
 									const yasumi = isHoliday(dd)
+
+									const today_schedules = schedules?.filter((s: any) => s.tarrget_date === dd && !(lastMonth || nextMonth || yasumi))
 									return (
 										<>
 											<div
@@ -256,11 +244,12 @@ export const Calendar = (props: any) => {
 															: ""
 												)}
 												onClick={() => handleDayClick(lastMonth, nextMonth, e)}
-												onContextMenu={() => {handleDayClick(lastMonth, nextMonth, e)}}
+												onContextMenu={(event: any) => {
+													handleDayClick(lastMonth, nextMonth, e)
+													handleContextMenuD(event)
+												}}
 											>
-												<div 
-													onContextMenu={(event: any) => handleContextMenuD(event)}
-													>
+												<div>
 													<span
 														className={today == `${calendarData.year}/${calendarData.month}/${e}` ?
 															"px-2 py-1 bg-sky-500 rounded-full text-white" : ""
@@ -270,49 +259,41 @@ export const Calendar = (props: any) => {
 													</span>
 												</div>
 
-												<div className="mt-1 flex flex-col justify-center gap-[1px] p-1 mx-2">
+												<div>
 													{ yasumi && <span>{holiday[dd]}</span> }
-													{shifts.map((shift: any, index: number) => {
-														let [start_time, end_time] = ['', ''];
+													{
+														today_schedules.map((item: any) => {
+															const [start_time, end_time] = item.times.split('～').map((time: string) => time.replace("：", ":"));
+															let isTimeIncluded = false;
+															let color ="";
 
-														const hospital = schedules
-															?.filter(
-																(s: any) =>
-																	s.tarrget_date ===
-																	`${calendarData.year}/${toDouble(
-																		calendarData.month
-																	)}/${toDouble(e)}` &&
-																	!(lastMonth || nextMonth)
-															)
-														
-														//選択した日の予定 [{...}, {...}]
-														const selectedHospital = schedules?.filter((s: any) => s.tarrget_date === selectedDay)
-
-														selectedHospital.map((job: any, i: number) => {
-															[start_time, end_time] = job.times.split('～').map((time: string) => time.replace("：", ":"));
-															const includesTime = isTimeInRange(start_time, end_time, shift.start, shift.end)
-															includesTime && (result[index] = selectedHospital[i])
-															return includesTime
-														})
-
-														const checkTimes = hospital.map((time: any) => {
-															[start_time, end_time] = time.times.split('～').map((time: string) => time.replace("：", ":"));
-															const includesTime = isTimeInRange(start_time, end_time, shift.start, shift.end)
-															return includesTime
-														})
-
-														if (!(lastMonth || nextMonth || yasumi)) {
-															return (
-																<span
-																	className={`bg-${checkTimes.includes(true) ? shift.color : `${shift.default} text-gray-400`} font-serif rounded-lg text-xs text-black hover:opacity-50 md:text-sm p-1 md:p-0`}
+															shifts.some((shift: any) => {
+																const includesTime = isTimeInRange(start_time, end_time, shift.start, shift.end)
+																if(includesTime){
+																	isTimeIncluded = true;
+																	color = shift.test
+																	return true;
+																}
+																return false;
+															})
+															return(
+																<div className="flex hover:opacity-50 items-center"
 																	onContextMenu={(event) => {
-																		handleContextMenuT(event, index, shift.key, selectedDay),
-																		setClasssifi(index)
+																		event.stopPropagation()
+																		handleDayClick(lastMonth, nextMonth, e)
+																		handleContextMenuT(event, item)
 																	}}
-																>{shift.label}</span>
+																	onClick={() => {
+																		detailFn(item)
+																	}}
+																>
+																	{isTimeIncluded && (
+																		<span className=""><Icon icon={color} width="15" height="15" /></span>
+																	)}
+																	<p className="text-sm">{item.overview}</p>
+																</div>
 															)
-														}
-													})
+														})
 													}
 												</div>
 											</div>
