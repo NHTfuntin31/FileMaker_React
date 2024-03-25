@@ -53,14 +53,13 @@ const MyPage = () => {
 
 	const TaskMenu = () => {
 		return (
-			<div className="w-full">
-				<ul className="w-full flex justify-center items-center gap-1">
+				<ul className="w-full flex gap-1 max-w-5xl">
 					{
 						UserDisplay?.slice(1).map((item: any, index: number) => {
 							return (
 								<li key={index}
-								className={"border p-2 rounded-t-xl cursor-pointer whitespace-nowrap hover:bg-sky-200 transition duration-200 ease-in-out "
-											+ (`${item?.MenuNo}${item?.Function[0]}` == menuNo && "bg-sky-200")}
+								className={"border p-2 rounded-t-xl cursor-pointer whitespace-nowrap hover:bg-gray-100 "
+											+ (`${item?.MenuNo}${item?.Function[0]}` == menuNo && "bg-gray-100")}
 								onClick={() => setMenuNo(`6${item?.Function}`)}>
 									{item?.DisplayName}
 								</li>
@@ -68,18 +67,18 @@ const MyPage = () => {
 						})
 					}
 				</ul>
-			</div>
 		);
 	};
 
 	return (
 		<>
 			<Header />
-			<div className="w-full mt-6">
+			<div className="w-full mt-6 flex items-center justify-center">
 				<TaskMenu />
 			</div>
-			<div className="bg-white w-full h-screen flex justify-center text-white">
-				<div className="flex flex-col w-full max-w-5xl">
+			<div className="bg-gray-100 w-full flex justify-center">
+				<div className="bg-white flex flex-col w-full max-w-5xl">
+					<div className="w-full h-3 bg-gray-100"></div>
 					<div className={menuNo != "61" ? "hidden" : "block"}>
 						<div className="mx-5 mt-10 md:mx-16 pl-2 text-blue-500 font-bold bg-blue-100 border-l-4 border-blue-500">カレンダー</div>
 						<CalendarComponent />

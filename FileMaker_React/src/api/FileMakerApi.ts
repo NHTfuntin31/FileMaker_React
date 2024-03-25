@@ -154,7 +154,7 @@ const usePutCash = (user_id?: string) => {
 			dispatch(createCahchier(data.Cashier))
 		},
 		onError: (error) => {
-			toast.success("出納帳を変更できませんでした。")
+			toast.error("出納帳を変更できませんでした。")
 			console.log(error);
 		}
 	});

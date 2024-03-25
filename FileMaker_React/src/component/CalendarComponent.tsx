@@ -158,7 +158,7 @@ const ScheduleCalendar = (props: ScheduleCalendarPropsI) => {
 const CalendarComponent = () => {
 
 	return (
-		<div className="w-full flex justify-center items-start text-black">
+		<div className="w-full flex justify-center items-start text-black bg-white">
 			<div className="mx-5 my-3 md:mx-16 md:my-10 w-full">
 				<ScheduleCalendar startOnMonday />
 			</div>
