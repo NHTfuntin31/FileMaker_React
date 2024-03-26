@@ -277,7 +277,7 @@ export const Calendar = (props: any) => {
 																return false;
 															})
 															return(
-																<div className="flex hover:opacity-50 items-center"
+																<div className="flex justify-center md:justify-start hover:opacity-50 items-center"
 																	onContextMenu={(event) => {
 																		event.stopPropagation()
 																		handleDayClick(lastMonth, nextMonth, e)
@@ -290,7 +290,7 @@ export const Calendar = (props: any) => {
 																	{isTimeIncluded && (
 																		<span className=""><Icon icon={color} width="15" height="15" /></span>
 																	)}
-																	<p className="text-sm">{item.overview}</p>
+																	<p className="text-sm hidden md:block">{item.overview}</p>
 																</div>
 															)
 														})

@@ -58,7 +58,7 @@ const MyPage = () => {
 						UserDisplay?.slice(1).map((item: any, index: number) => {
 							return (
 								<li key={index}
-								className={"border p-2 rounded-t-xl cursor-pointer whitespace-nowrap hover:bg-gray-100 "
+								className={"border border-b-transparent p-2 rounded-t-xl cursor-pointer whitespace-nowrap hover:bg-gray-100 "
 											+ (`${item?.MenuNo}${item?.Function[0]}` == menuNo && "bg-gray-100")}
 								onClick={() => setMenuNo(`6${item?.Function}`)}>
 									{item?.DisplayName}
